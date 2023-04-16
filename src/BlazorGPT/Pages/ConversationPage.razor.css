@@ -1,0 +1,39 @@
+﻿#control {
+    /*  position: fixed;
+    bottom: 0;*/
+    /*left: 0;*/
+    width: 100%;
+
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#message-pane {
+    font-size: 13px;
+}
+
+#message-pane pre {
+    background-color: red;
+    padding: 100px;
+}
+
+.scroll-pane {
+
+    
+    background-color: #363636;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*border: 1px solid gray;*/
+    /*padding: 10px;*/
+    /*height: auto;*/
+    padding-right: 20px;
+}
+
+
+
+
+
+
+.rz-tabview-panel {
+    padding: 0;
+}

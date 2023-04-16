@@ -1,0 +1,48 @@
+﻿@page "/share/{conversationId:guid?}"
+@using BlazorGPT.Managers
+@using Microsoft.EntityFrameworkCore
+@layout EmptyLayout
+<h3>@Conversation?.Summary</h3>
+
+
+<ConversationDisplay Conversation="@Conversation"  Style="height: auto"/>
+
+
+
+@code {
+
+    [Inject]
+    public ChatWrapper Chat { get; set; }
+
+    [Parameter]
+public Guid? ConversationId { get; set; }
+
+    [Inject]
+    public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; }
+
+    [Inject]
+    public ConversationsRepository ConversationsRepository { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Conversation = await ConversationsRepository.GetConversation(ConversationId);
+    }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        Chat.OnStreamCompletion += async (s) =>
+    //        {
+    //            StateHasChanged();
+    //            return s;
+    //        };
+    //        Conversation = Conversation.CreateConversation("", "You are a helpful assistant", "Write a Hello World in C#. Answer in markdown");
+    //        Conversation = await Chat.Send("", Conversation);
+    //    }
+    //}
+
+    public Conversation? Conversation { get; set; }
+
+}

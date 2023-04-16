@@ -1,0 +1,127 @@
+@using Microsoft.EntityFrameworkCore
+@using BlazorGPT.Data
+
+
+<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos"  PageSize="10" AllowPaging="true" class="hide-grid-header" EmptyText="Previous conversations">
+    <Columns>
+        <RadzenDataGridColumn TItem="Conversation">
+            <Template Context="c">
+                
+                @{
+                    string link = "/conversation/" +c.Id;
+                    string text = !string.IsNullOrEmpty(c.Summary) ? c.Summary : "No summary";
+
+                }
+                <a href="@link">@text</a>
+            </Template>
+            <EditTemplate Context="c">
+                <RadzenTextBox @bind-Value="@c.Summary" Rows="3" Class="textarea-full-width"></RadzenTextBox>
+
+            </EditTemplate>
+
+        </RadzenDataGridColumn>
+        
+        <RadzenDataGridColumn TItem="Conversation" Width="100px" >
+            <Template Context="c">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.ExtraSmall" Click="@(args => EditRow(c))" @onclick:stopPropagation="true"/>
+
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Outlined" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" class="my-1 ms-1" Click="@(args => Remove(c))" @onclick:stopPropagation="true" />
+
+            </Template>
+            <EditTemplate Context="c">
+                
+
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.ExtraSmall" Click="@(args => UpdateSummary(c))" @onclick:stopPropagation="true" />
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.ExtraSmall" class="my-1 ms-1" Click="@(args => CancelEdit(c))" @onclick:stopPropagation="true" />
+            </EditTemplate>
+
+        </RadzenDataGridColumn>
+    </Columns>
+
+</RadzenDataGrid>
+
+@if (Convos.Any())
+{
+    <RadzenLink Path="/conversations" class="">See all</RadzenLink>    
+}
+
+
+@code {
+
+    [CascadingParameter(Name = "UserId")]
+    public string UserId { get; set; }
+
+
+    [Inject]
+    public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
+    [Inject]
+    public ConversationsRepository ConversationsRepository{ get; set; } = null!;
+    [Inject]
+public DialogService DialogService { get; set; } = null!;
+
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    RadzenDataGrid<Conversation>? grid;
+
+    string[] _selectedSummary = new string[0];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadConversations();
+    }
+
+    public async Task LoadConversations()
+    {
+        Convos = await ConversationsRepository.GetConversationsByUserId(UserId);
+    ;
+        StateHasChanged();
+    }
+
+    public List<Conversation> Convos { get; set; } = new();
+
+
+
+    private async Task Remove(Conversation conversation)
+    {
+
+        var result = await DialogService.Confirm("Are you sure you want to delete this conversation?", "Delete", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (result.HasValue && result.Value)
+        {
+
+            if (await ConversationsRepository.DeleteConversation((Guid)conversation.Id!))
+            {
+                Convos.Remove(conversation);
+                await grid.Reload();
+            }
+        }
+
+    }
+
+    private async Task EditRow(Conversation value)
+    {
+        await grid?.EditRow(value);
+
+    }
+
+    private async Task UpdateSummary(Conversation value)
+    {
+
+        await using var ctx = await DbContextFactory.CreateDbContextAsync();
+        var c = ctx.Conversations.FirstOrDefault(c => c.Id == value.Id);
+        c.Summary = value.Summary;
+        await ctx.SaveChangesAsync();
+
+        grid.CancelEditRow(value);
+    }
+
+    private async Task CancelEdit(Conversation value)
+    {
+        grid.CancelEditRow(value);
+        await LoadConversations();
+        await grid.Reload();
+    }
+
+}

@@ -1,0 +1,75 @@
+@using BlazorGPT.Data
+@if (Scripts != null)
+{
+        <div class="mt-3">
+            <RadzenText TextStyle="TextStyle.Subtitle1">Script</RadzenText>
+            <RadzenDropDown @ref="dropdown" Data="Scripts" TextProperty="Name" ValueProperty="Id" @bind-Value="SelectedScript" class="form-control" Disabled="SetIsWorking"/>
+
+        </div>
+
+    <div class="mt-3">
+        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary" Click="OnClick" Disabled="@(SelectedScript== null)" IsBusy="SetIsWorking" BusyText="Applying.. " Icon="list" Text="Apply script" />
+        </div>
+
+  
+
+   
+}
+@code {
+
+    [CascadingParameter(Name = "UserId")]
+    public string UserId { get; set; }
+
+    [Inject]
+    public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadScripts();
+    }
+
+    // load scrips from db
+    public async Task LoadScripts()
+    {
+        await using var db = await DbContextFactory.CreateDbContextAsync();
+        Scripts = await db.Scripts.Where(s => s.UserId == UserId).ToListAsync();
+
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SetInitial)
+        {
+            await dropdown!.SelectItem(Scripts.First());
+        }
+    }
+
+    public IEnumerable<Script> Scripts { get; set; } = new List<Script>();
+
+      Guid? SelectedScript;
+
+    [Parameter]
+    public EventCallback<Guid> OnClickCallbackGuid { get; set; }
+
+    [Parameter]
+    public bool SetInitial { get; set; } 
+
+    [Parameter]
+    public bool SetIsWorking { get; set; }
+
+    private Script? selected;
+
+
+    private async Task OnClick()
+    {
+        if (SelectedScript != null && OnClickCallbackGuid.HasDelegate)
+        {
+            await OnClickCallbackGuid.InvokeAsync(SelectedScript.Value);
+        }
+    }
+
+     RadzenDropDown<Guid?> dropdown { get; set; }
+
+}

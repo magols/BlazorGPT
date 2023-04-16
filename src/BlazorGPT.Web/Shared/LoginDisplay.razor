@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorGPT.Web.Areas.Identity
+@inject NavigationManager Navigation
+@inject TokenProvider TokenProvider
+
+<AuthorizeView>
+    <Authorized>
+        <a href="Identity/Account/Manage/Index">
+            My account
+        </a>
+        <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
+            <RadzenButton Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" class="m-3" type="submit">Logout</RadzenButton>
+            <input name="__RequestVerificationToken" type="hidden"
+                   value="@TokenProvider.XsrfToken">
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Identity/Account/Register">Register</a> 
+        <span class="me-5"></span>
+        <a href="Identity/Account/Login">Login</a>
+    </NotAuthorized>
+</AuthorizeView>

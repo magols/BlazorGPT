@@ -1,0 +1,1177 @@
+{
+  "id" : 1,
+  "name" : "Name",
+  "description" : "Description",
+  "lastModifiedDate" : "2023-04-06T07:17:33Z",
+  "lastModifiedAgent" : "structurizr-javascript",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlIHsKICBtb2RlbCB7CiAgICBicmlkZ2VTeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiU3Rvcm0gRWxldmF0ZSBCcmlkZ2UiICJTY2hlZHVsZXMgZXhwb3J0cy4gQ29udmVydHMgZGF0YS4iIHsKICAgICAgICBhenVyZVN0b3JhZ2UgPSBjb250YWluZXIgIkF6dXJlIEJsb2IgU3RvcmFnZSIgIkRvd25sb2FkZWQgYW5kIHByb2Nlc3NlZCBmaWxlcyIKICAgICAgICBhenVyZVRhYmxlcyA9IGNvbnRhaW5lciAiQXp1cmUgVGFibGVTdG9yYWdlIiAiTG9jYWwgZGF0YSwgc3RhdGUgYW5kIGxvZ3MiIHsKICAgICAgICB9CiAgICAgICAgZnVuY3Rpb25BcHAgPSBjb250YWluZXIgIkF6dXJlIEZ1bmN0aW9ucyBBcHAiICJBenVyZSBGdW5jdGlvbnMiIHsKICAgICAgICAgCiAgICAgICAgICAgIFN0b3JtRXhwb3J0T3JjaGVzdHJhdG9yID0gY29tcG9uZW50ICJTdG9ybUV4cG9ydE9yY2hlc3RyYXRvciIgIkF6dXJlIEZ1bmN0aW9ucyBkdXJhYmxlIHRhc2sgT3JjaGVzdHJhdG9yIEZ1bmN0aW9uIgogICAgICAgICAgICBTdG9ybVRyaWdnZXJQcm9kdWN0RXhwb3J0RnVuY3Rpb24gPSBjb21wb25lbnQgIlN0b3JtVHJpZ2dlclByb2R1Y3RFeHBvcnRGdW5jdGlvbiIgIkluaXRpYXRlcyBhbiBleHBvcnQiICAgICAKICAgICAgICAgICAgU3Rvcm1DaGVja1N0YXR1c0FuZERvd25sb2FkRmlsZUZ1bmN0aW9uID0gY29tcG9uZW50ICJTdG9ybUNoZWNrU3RhdHVzQW5kRG93bmxvYWRGaWxlRnVuY3Rpb24iICJDaGVja3MgZXhwb3J0IGpvYiBzdGF0dXMgYW5kIGRvd25sb2FkcyBmaWxlIHdoZW4gcmVhZHkiCgogICAgICAgICAgICBQcm9kdWN0RmlsdGVyID0gY29tcG9uZW50ICJQcm9kdWN0RmlsdGVyIiAiRmlsdGVycyBwcm9kdWN0cyBiYXNlZCBvbiBTdGF0dXMgYW5kIEZsYWdzIgogICAgICAgICAgICBQcm9kdWN0U3RhdHVzQ29udmVydGVyID0gY29tcG9uZW50ICJQcm9kdWN0U3RhdHVzQ29udmVydGVyIiAiQ29udmVydHMgcHJvZHVjdCBzdGF0dXMgdG8gRWxldmF0ZSBmb3JtYXQiCiAgICAgICAgICAgIEFzRWxldmF0ZUdyb3VwID0gY29tcG9uZW50ICJBc0VsZXZhdGVHcm91cCIgIkNvbnZlcnRzIHByb2R1Y3QgdG8gRWxldmF0ZSBmb3JtYXQiCgogICAgICAgICAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3RGaWxlcyA9IGNvbXBvbmVudCAiUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0RmlsZXMiICJQcm9jZXNzZXMgZG93bmxvYWRlZCBwcm9kdWN0IGZpbGVzIgogICAgICAgICAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3RTdGF0dXNGaWxlcyA9IGNvbXBvbmVudCAiUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0U3RhdHVzRmlsZXMiICJQcm9jZXNzZXMgZG93bmxvYWRlZCBwcm9kdWN0IHN0YXR1cyBmaWxlcyIKICAgICAgICAgICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0RGVsdGFGaWxlcyA9IGNvbXBvbmVudCAiUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0RGVsdGFGaWxlcyIgIlByb2Nlc3NlcyBkb3dubG9hZGVkIHByb2R1Y3QgZGVsdGEgZmlsZXMiCgoKICAgICAgICAgICAgRnVsbEV4cG9ydE1lcmdlRnVuY3Rpb24gPSBjb21wb25lbnQgIkZ1bGxFeHBvcnRNZXJnZUZ1bmN0aW9uIiAiTWVyZ2VzIGZ1bGwgZXhwb3J0cyBmb3IgYWxsIDMgbWFya2V0cyBpbnRvIG9uZSBnemlwIiB7CgkJICAgIH0KCiAgICAgICAgICAgIGVsZXZhdGVJbXBvcnQgPSBjb21wb25lbnQgImVsZXZhdGUtaW1wb3J0IiAiUXVldWUgZm9yIHVwbG9hZHMiewogICAgICAgICAgICB9CgogICAgICAgICAgICBFbGV2YXRlSW1wb3J0UXVldWVMaXN0ZW5lciA9IGNvbXBvbmVudCAiRWxldmF0ZUltcG9ydFF1ZXVlTGlzdGVuZXIiICJMaXN0ZW5zIGZvciBtZXNzYWdlIG9uIHF1ZXVlIiB7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICBVcGxvYWQgPSBjb21wb25lbnQgIlVwbG9hZCIgIkltcG9ydCBzZXF1ZW5jZSBmb3IgRWxldmF0ZSIgewoJCSAgICB9CgogICAgICAgICAgICBQb3N0RmlsZVRvRWxldmF0ZSA9IGNvbXBvbmVudCAiUG9zdEZpbGVUb0VsZXZhdGUiICJQb3N0cyBmaWxlIHRvIEVsZXZhdGUgaW1wb3J0IGVuZHBvaW50IgoKICAgICAgICAgICAgRWxldmF0ZUNoZWNrU3RhdHVzID0gY29tcG9uZW50ICJFbGV2YXRlQ2hlY2tTdGF0dXMiICJUcmFja3MgdGhlIHN0YXR1cyBmb3IgdGhlIEVsZXZhdGUgaW1wb3J0IgogICAgICAgIH0KCiAgICAgICAgdGltZXJUcmlnZ2VycyA9IGNvbnRhaW5lciAiVGltZXIgVHJpZ2dlcnMiICJUcmlnZ2VycyB0aGUgb3JjaGVzdHJhdG9yIHRvIHJ1biIgewoJCSAgICAKICAgICAgICAgICAgc2VEZWx0YVByb2R1Y3RzID0gY29tcG9uZW50ICJTRV9EZWx0YV9Qcm9kdWN0cyIgIlRyaWdnZXJzIHRoZSBFeHBvcnQgb3JjaGVzdHJhdG9yIHRvIGV4cG9ydCIKICAgICAgICAgICAgc2VGdWxsUHJvZHVjdHMgPSBjb21wb25lbnQgIlNFX0Z1bGxfUHJvZHVjdHMiICJUcmlnZ2VycyB0aGUgRXhwb3J0IG9yY2hlc3RyYXRvciB0byBleHBvcnQiCiAgICAgICAgICAgIHNlRGVsdGFQcm9kdWN0U3RhdHVzID0gY29tcG9uZW50ICJTRV9EZWx0YV9Qcm9kdWN0U3RhdHVzIiAiVHJpZ2dlcnMgdGhlIEV4cG9ydCBvcmNoZXN0cmF0b3IgdG8gZXhwb3J0IgogICAgICAgICAgICBzZUZ1bGxQcm9kdWN0U3RhdHVzID0gY29tcG9uZW50ICJTRV9GdWxsX1Byb2R1Y3RTdGF0dXMiICJUcmlnZ2VycyB0aGUgRXhwb3J0IG9yY2hlc3RyYXRvciB0byBleHBvcnQiCiAgICAgICAgCiAgICAgICAgICAgIAogICAgICAgICAgICBub0RlbHRhUHJvZHVjdHMgPSBjb21wb25lbnQgIk5PX0RlbHRhX1Byb2R1Y3RzIiAiVHJpZ2dlcnMgdGhlIEV4cG9ydCBvcmNoZXN0cmF0b3IgdG8gZXhwb3J0IgogICAgICAgICAgICBub0Z1bGxQcm9kdWN0cyA9IGNvbXBvbmVudCAiTk9fRnVsbF9Qcm9kdWN0cyIgIlRyaWdnZXJzIHRoZSBFeHBvcnQgb3JjaGVzdHJhdG9yIHRvIGV4cG9ydCIKICAgICAgICAgICAgbm9EZWx0YVByb2R1Y3RTdGF0dXMgPSBjb21wb25lbnQgIk5PX0RlbHRhX1Byb2R1Y3RTdGF0dXMiICJUcmlnZ2VycyB0aGUgRXhwb3J0IG9yY2hlc3RyYXRvciB0byBleHBvcnQiCiAgICAgICAgICAgIG5vRnVsbFByb2R1Y3RTdGF0dXMgPSBjb21wb25lbnQgTk9fRnVsbF9Qcm9kdWN0U3RhdHVzIiAiVHJpZ2dlcnMgdGhlIEV4cG9ydCBvcmNoZXN0cmF0b3IgdG8gZXhwb3J0IgogICAgICAgIAogICAgICAgICAgICAKICAgICAgICAgICBmaURlbHRhUHJvZHVjdHMgPSBjb21wb25lbnQgIkZJX0RlbHRhX1Byb2R1Y3RzIiAiVHJpZ2dlcnMgdGhlIEV4cG9ydCBvcmNoZXN0cmF0b3IgdG8gZXhwb3J0IgogICAgICAgICAgIGZpRnVsbFByb2R1Y3RzID0gY29tcG9uZW50ICJGSV9GdWxsX1Byb2R1Y3RzIiAiVHJpZ2dlcnMgdGhlIEV4cG9ydCBvcmNoZXN0cmF0b3IgdG8gZXhwb3J0IgogICAgICAgICAgIGZpRGVsdGFQcm9kdWN0U3RhdHVzID0gY29tcG9uZW50ICJGSV9EZWx0YV9Qcm9kdWN0U3RhdHVzIiAiVHJpZ2dlcnMgdGhlIEV4cG9ydCBvcmNoZXN0cmF0b3IgdG8gZXhwb3J0IgogICAgICAgICAgIGZpRnVsbFByb2R1Y3RTdGF0dXMgPSBjb21wb25lbnQgIkZJX0Z1bGxfUHJvZHVjdFN0YXR1cyIgIlRyaWdnZXJzIHRoZSBFeHBvcnQgb3JjaGVzdHJhdG9yIHRvIGV4cG9ydCIKCiAgICAgICAgICAgIHNlRGVsdGFQcm9kdWN0cyAtPiBhenVyZVRhYmxlcyAiUmVhZHMgbGFzdCBleHBvcnQgZGVsdGFzIgogICAgICAgICAgICBzZUZ1bGxQcm9kdWN0cyAtPiBhenVyZVRhYmxlcyAiUmVhZHMgbGFzdCBleHBvcnQgZGVsdGFzIgogICAgICAgICAgICBzZURlbHRhUHJvZHVjdFN0YXR1cyAtPiBhenVyZVRhYmxlcyAiUmVhZHMgbGFzdCBleHBvcnQgZGVsdGFzIgogICAgICAgICAgICBzZUZ1bGxQcm9kdWN0U3RhdHVzIC0+IGF6dXJlVGFibGVzICJSZWFkcyBsYXN0IGV4cG9ydCBkZWx0YXMiCgogICAgICAgICAgICBub0RlbHRhUHJvZHVjdHMgLT4gYXp1cmVUYWJsZXMgIlJlYWRzIGxhc3QgZXhwb3J0IGRlbHRhcyIKICAgICAgICAgICAgbm9GdWxsUHJvZHVjdHMgLT4gYXp1cmVUYWJsZXMgIlJlYWRzIGxhc3QgZXhwb3J0IGRlbHRhcyIKICAgICAgICAgICAgbm9EZWx0YVByb2R1Y3RTdGF0dXMgLT4gYXp1cmVUYWJsZXMgIlJlYWRzIGxhc3QgZXhwb3J0IGRlbHRhcyIKICAgICAgICAgICAgbm9GdWxsUHJvZHVjdFN0YXR1cyAtPiBhenVyZVRhYmxlcyAiUmVhZHMgbGFzdCBleHBvcnQgZGVsdGFzIgoKICAgICAgICAgICAgZmlEZWx0YVByb2R1Y3RzIC0+IGF6dXJlVGFibGVzICJSZWFkcyBsYXN0IGV4cG9ydCBkZWx0YXMiCiAgICAgICAgICAgIGZpRnVsbFByb2R1Y3RzIC0+IGF6dXJlVGFibGVzICJSZWFkcyBsYXN0IGV4cG9ydCBkZWx0YXMiCiAgICAgICAgICAgIGZpRGVsdGFQcm9kdWN0U3RhdHVzIC0+IGF6dXJlVGFibGVzICJSZWFkcyBsYXN0IGV4cG9ydCBkZWx0YXMiCiAgICAgICAgICAgIGZpRnVsbFByb2R1Y3RTdGF0dXMgLT4gYXp1cmVUYWJsZXMgIlJlYWRzIGxhc3QgZXhwb3J0IGRlbHRhcyIKCQkJCgogICAgICAgIH0KICAgIH0KCiAgICBzdG9ybVN5c3RlbSA9IHNvZnR3YXJlU3lzdGVtICJTdG9ybSIgIkUtY29tbWVyY2UgcGxhdGZvcm0iIHsKICAgICAgICBzdG9ybVN0b3JhZ2UgPSBjb250YWluZXIgIkF6dXJlIEJsb2IgU3RvcmFnZSIgIiIKICAgICAgICBzdG9ybUNoYW5uZWwgPSBjb250YWluZXIgIlN0b3JtIENoYW5uZWwiICJFeHBvcnRzIHByb2R1Y3QgYW5kIHByb2R1Y3Qgc3RhdHVzIGRhdGEiCiAgICAgICAgc3Rvcm1DaGFubmVsIC0+IHN0b3JtU3RvcmFnZSAiU3RvcmVzIGV4cG9ydCBKU09OIGZpbGVzIgogICAgICAgIFN0b3JtRXhwb3J0T3JjaGVzdHJhdG9yIC0+IGF6dXJlU3RvcmFnZSAiRG93bmxvYWRzIGV4cG9ydGVkIEpTT04gZmlsZXMiCiAgICB9CgogICAgZWxldmF0ZVN5c3RlbSA9IHNvZnR3YXJlU3lzdGVtICJWb3lhZG8gRWxldmF0ZSA0IiAiQ1JNIGFuZCBsb3lhbHR5IHBsYXRmb3JtIiAKCgoKICAgIFN0b3JtVHJpZ2dlclByb2R1Y3RFeHBvcnRGdW5jdGlvbiAtPiBzdG9ybVN5c3RlbSAiTWFrZXMgSFRUUCBHRVQgcmVxdWVzdHMgdG8gdHJpZ2dlciBleHBvcnRzIgogICAgU3Rvcm1DaGVja1N0YXR1c0FuZERvd25sb2FkRmlsZUZ1bmN0aW9uIC0+IHN0b3JtU3lzdGVtICJNYWtlcyBIVFRQIEdFVCByZXF1ZXN0cyB0byBzZWUgaWYgZXhwb3J0IGlzIHJlYWR5IgogICAgU3Rvcm1DaGVja1N0YXR1c0FuZERvd25sb2FkRmlsZUZ1bmN0aW9uIC0+IGF6dXJlU3RvcmFnZSAiV3JpdGVzIGV4cG9ydGVkIEpTT04gZmlsZXMiCgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0RmlsZXMgLT4gYXp1cmVTdG9yYWdlICJSZWFkcyBleHBvcnRlZCBKU09OIGZpbGVzIgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0U3RhdHVzRmlsZXMgLT4gYXp1cmVTdG9yYWdlICJSZWFkcyBleHBvcnRlZCBKU09OIGZpbGVzIgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0RGVsdGFGaWxlcyAtPiBhenVyZVN0b3JhZ2UgIlJlYWRzIGV4cG9ydGVkIEpTT04gZmlsZXMiCgoKICAgIFByb2Nlc3NEb3dubG9hZGVkUHJvZHVjdEZpbGVzIC0+IFByb2R1Y3RGaWx0ZXIgIlVzZXMiCiAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3REZWx0YUZpbGVzIC0+IFByb2R1Y3RGaWx0ZXIgIlVzZXMiCiAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3RTdGF0dXNGaWxlcyAtPiBQcm9kdWN0U3RhdHVzQ29udmVydGVyICJVc2VzIgoKICAgIFByb2Nlc3NEb3dubG9hZGVkUHJvZHVjdEZpbGVzIC0+ICBBc0VsZXZhdGVHcm91cCAiVXNlcyIKICAgIFByb2Nlc3NEb3dubG9hZGVkUHJvZHVjdERlbHRhRmlsZXMgLT4gIEFzRWxldmF0ZUdyb3VwICJVc2VzIgoKICAgIFByb2Nlc3NEb3dubG9hZGVkUHJvZHVjdEZpbGVzIC0+IGF6dXJlVGFibGVzICJXcml0ZXMgbGFzdCBleHBvcnQgZGVsdGFzIgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0U3RhdHVzRmlsZXMgLT4gYXp1cmVUYWJsZXMgIldyaXRlcyBsYXN0IGV4cG9ydCBkZWx0YXMiCiAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3REZWx0YUZpbGVzIC0+IGF6dXJlVGFibGVzICJXcml0ZXMgbGFzdCBleHBvcnQgZGVsdGFzIgoKICAgIFByb2Nlc3NEb3dubG9hZGVkUHJvZHVjdEZpbGVzIC0+IGF6dXJlU3RvcmFnZSAiUmVhZHMgZXhwb3J0IGJsb2IiCiAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3REZWx0YUZpbGVzIC0+IGF6dXJlU3RvcmFnZSAiUmVhZHMgZXhwb3J0IGJsb2IiCiAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3RTdGF0dXNGaWxlcyAtPiBhenVyZVN0b3JhZ2UgIlJlYWRzIGV4cG9ydCBibG9iIgoKICAgIFByb2Nlc3NEb3dubG9hZGVkUHJvZHVjdEZpbGVzIC0+IGF6dXJlU3RvcmFnZSAiV3JpdGVzIFhNTCIKCiAgICBQcm9jZXNzRG93bmxvYWRlZFByb2R1Y3REZWx0YUZpbGVzIC0+IGF6dXJlU3RvcmFnZSAiV3JpdGVzIGd6aXAgWE1MIgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0U3RhdHVzRmlsZXMgLT4gYXp1cmVTdG9yYWdlICJXcml0ZXMgZ3ppcCBYTUwiCgogICAgRnVsbEV4cG9ydE1lcmdlRnVuY3Rpb24gIC0+IGF6dXJlU3RvcmFnZSAiUmVhZHMgWE1MIGZpbGVzIgogICAgRnVsbEV4cG9ydE1lcmdlRnVuY3Rpb24gLT4gYXp1cmVTdG9yYWdlICJNZXJnZSBhbmQgZ3pjb21wcmVzcyBYTUwiCgogICAgRnVsbEV4cG9ydE1lcmdlRnVuY3Rpb24gLT4gYXp1cmVTdG9yYWdlICJXcml0ZXMgZ3ppcCBYTUwiCgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0RGVsdGFGaWxlcyAtPiBlbGV2YXRlSW1wb3J0ICJRdWV1ZXMgZmlsZSBmb3IgaW1wb3J0IgogICAgUHJvY2Vzc0Rvd25sb2FkZWRQcm9kdWN0U3RhdHVzRmlsZXMgLT4gZWxldmF0ZUltcG9ydCAiUXVldWVzIGZpbGUgZm9yIGltcG9ydCIKICAgIEZ1bGxFeHBvcnRNZXJnZUZ1bmN0aW9uICAtPiBlbGV2YXRlSW1wb3J0ICJRdWV1ZXMgZmlsZSBmb3IgaW1wb3J0IgoKICAgIEVsZXZhdGVJbXBvcnRRdWV1ZUxpc3RlbmVyIC0+IGVsZXZhdGVJbXBvcnQgIkxpc3RlbnMgZm9yIG1lc3NhZ2VzIG9uIHF1ZXVlIgogICAgCiAgICBFbGV2YXRlSW1wb3J0UXVldWVMaXN0ZW5lciAtPiBVcGxvYWQgIlN0YXJ0cyBpbXBvcnQgc2VxdWVuY2UiCgogICAgUG9zdEZpbGVUb0VsZXZhdGUgLT4gZWxldmF0ZVN5c3RlbSAiTWFrZXMgSFRUUCBQT1NUIHRvIHVwbG9hZCBkYXRhIgogICAgRWxldmF0ZUNoZWNrU3RhdHVzIC0+IGVsZXZhdGVTeXN0ZW0gIk1ha2VzIEhUVFAgR0VUIHRvIGNoZWNrIHN0YXR1cyIKCgoKCgogIH0KCiAgdmlld3MgewogICAgc3lzdGVtQ29udGV4dCBicmlkZ2VTeXN0ZW0gIlN5c3RlbUNvbnRleHQiIHsKICAgICAgICBpbmNsdWRlICoKICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICB9CgogICAgY29udGFpbmVyIGJyaWRnZVN5c3RlbSAiQ29udGFpbmVycyIgewogICAgICAgIGluY2x1ZGUgKgogICAgICAgIGF1dG9sYXlvdXQgbHIKICAgIH0KCiAgICBjb21wb25lbnQgZnVuY3Rpb25BcHAgIkNvbXBvbmVudHMiIHsKCQlpbmNsdWRlICoKCQlhdXRvbGF5b3V0Cgl9CgogICAgY29tcG9uZW50IHRpbWVyVHJpZ2dlcnMgInRpbWVyVHJpZ2dlcnMiIHsKICAgICAgICBpbmNsdWRlICoKICAgICAgICAKICAgIH0KCiAgICBjb250YWluZXIgc3Rvcm1TeXN0ZW0gIkNvbnRhaW5lcnNTdG9ybSJ7CiAgICAJaW5jbHVkZSAqCiAgICAJYXV0b2xheW91dCBscgogICAgfQoKCiAgICB0aGVtZSBkZWZhdWx0CiAgfQp9Cg=="
+  },
+  "configuration" : { },
+  "model" : {
+    "softwareSystems" : [ {
+      "id" : "46",
+      "tags" : "Element,Software System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "stormsystem"
+      },
+      "name" : "Storm",
+      "description" : "E-commerce platform",
+      "location" : "Unspecified",
+      "containers" : [ {
+        "id" : "48",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "stormchannel"
+        },
+        "name" : "Storm Channel",
+        "description" : "Exports product and product status data",
+        "relationships" : [ {
+          "id" : "49",
+          "tags" : "Relationship",
+          "sourceId" : "48",
+          "destinationId" : "47",
+          "description" : "Stores export JSON files"
+        } ],
+        "documentation" : { }
+      }, {
+        "id" : "47",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "stormstorage"
+        },
+        "name" : "Azure Blob Storage",
+        "documentation" : { }
+      } ],
+      "documentation" : { }
+    }, {
+      "id" : "1",
+      "tags" : "Element,Software System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "bridgesystem"
+      },
+      "name" : "Storm Elevate Bridge",
+      "description" : "Schedules exports. Converts data.",
+      "relationships" : [ {
+        "id" : "86",
+        "sourceId" : "1",
+        "destinationId" : "52",
+        "description" : "Makes HTTP POST to upload data",
+        "linkedRelationshipId" : "84"
+      }, {
+        "id" : "55",
+        "sourceId" : "1",
+        "destinationId" : "46",
+        "description" : "Makes HTTP GET requests to trigger exports",
+        "linkedRelationshipId" : "53"
+      } ],
+      "location" : "Unspecified",
+      "containers" : [ {
+        "id" : "4",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "functionapp"
+        },
+        "name" : "Azure Functions App",
+        "description" : "Azure Functions",
+        "relationships" : [ {
+          "id" : "85",
+          "sourceId" : "4",
+          "destinationId" : "52",
+          "description" : "Makes HTTP POST to upload data",
+          "linkedRelationshipId" : "84"
+        }, {
+          "id" : "67",
+          "sourceId" : "4",
+          "destinationId" : "3",
+          "description" : "Writes last export deltas",
+          "linkedRelationshipId" : "66"
+        }, {
+          "id" : "51",
+          "sourceId" : "4",
+          "destinationId" : "2",
+          "description" : "Downloads exported JSON files",
+          "linkedRelationshipId" : "50"
+        }, {
+          "id" : "54",
+          "sourceId" : "4",
+          "destinationId" : "46",
+          "description" : "Makes HTTP GET requests to trigger exports",
+          "linkedRelationshipId" : "53"
+        } ],
+        "components" : [ {
+          "id" : "12",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "processdownloadedproductstatusfiles"
+          },
+          "name" : "ProcessDownloadedProductStatusFiles",
+          "description" : "Processes downloaded product status files",
+          "relationships" : [ {
+            "id" : "59",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "2",
+            "description" : "Reads exported JSON files"
+          }, {
+            "id" : "80",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "15",
+            "description" : "Queues file for import"
+          }, {
+            "id" : "63",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "9",
+            "description" : "Uses"
+          }, {
+            "id" : "72",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "2",
+            "description" : "Reads export blob"
+          }, {
+            "id" : "75",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "2",
+            "description" : "Writes gzip XML"
+          }, {
+            "id" : "68",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "3",
+            "description" : "Writes last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "15",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "elevateimport"
+          },
+          "name" : "elevate-import",
+          "description" : "Queue for uploads",
+          "documentation" : { }
+        }, {
+          "id" : "18",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "postfiletoelevate"
+          },
+          "name" : "PostFileToElevate",
+          "description" : "Posts file to Elevate import endpoint",
+          "relationships" : [ {
+            "id" : "84",
+            "tags" : "Relationship",
+            "sourceId" : "18",
+            "destinationId" : "52",
+            "description" : "Makes HTTP POST to upload data"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "5",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "stormexportorchestrator"
+          },
+          "name" : "StormExportOrchestrator",
+          "description" : "Azure Functions durable task Orchestrator Function",
+          "relationships" : [ {
+            "id" : "50",
+            "tags" : "Relationship",
+            "sourceId" : "5",
+            "destinationId" : "2",
+            "description" : "Downloads exported JSON files"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "7",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "stormcheckstatusanddownloadfilefunction"
+          },
+          "name" : "StormCheckStatusAndDownloadFileFunction",
+          "description" : "Checks export job status and downloads file when ready",
+          "relationships" : [ {
+            "id" : "57",
+            "tags" : "Relationship",
+            "sourceId" : "7",
+            "destinationId" : "2",
+            "description" : "Writes exported JSON files"
+          }, {
+            "id" : "56",
+            "tags" : "Relationship",
+            "sourceId" : "7",
+            "destinationId" : "46",
+            "description" : "Makes HTTP GET requests to see if export is ready"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "16",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "elevateimportqueuelistener"
+          },
+          "name" : "ElevateImportQueueListener",
+          "description" : "Listens for message on queue",
+          "relationships" : [ {
+            "id" : "83",
+            "tags" : "Relationship",
+            "sourceId" : "16",
+            "destinationId" : "17",
+            "description" : "Starts import sequence"
+          }, {
+            "id" : "82",
+            "tags" : "Relationship",
+            "sourceId" : "16",
+            "destinationId" : "15",
+            "description" : "Listens for messages on queue"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "10",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "aselevategroup"
+          },
+          "name" : "AsElevateGroup",
+          "description" : "Converts product to Elevate format",
+          "documentation" : { }
+        }, {
+          "id" : "14",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fullexportmergefunction"
+          },
+          "name" : "FullExportMergeFunction",
+          "description" : "Merges full exports for all 3 markets into one gzip",
+          "relationships" : [ {
+            "id" : "81",
+            "tags" : "Relationship",
+            "sourceId" : "14",
+            "destinationId" : "15",
+            "description" : "Queues file for import"
+          }, {
+            "id" : "77",
+            "tags" : "Relationship",
+            "sourceId" : "14",
+            "destinationId" : "2",
+            "description" : "Merge and gzcompress XML"
+          }, {
+            "id" : "78",
+            "tags" : "Relationship",
+            "sourceId" : "14",
+            "destinationId" : "2",
+            "description" : "Writes gzip XML"
+          }, {
+            "id" : "76",
+            "tags" : "Relationship",
+            "sourceId" : "14",
+            "destinationId" : "2",
+            "description" : "Reads XML files"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "11",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "processdownloadedproductfiles"
+          },
+          "name" : "ProcessDownloadedProductFiles",
+          "description" : "Processes downloaded product files",
+          "relationships" : [ {
+            "id" : "64",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "10",
+            "description" : "Uses"
+          }, {
+            "id" : "73",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "2",
+            "description" : "Writes XML"
+          }, {
+            "id" : "61",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "8",
+            "description" : "Uses"
+          }, {
+            "id" : "70",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "2",
+            "description" : "Reads export blob"
+          }, {
+            "id" : "58",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "2",
+            "description" : "Reads exported JSON files"
+          }, {
+            "id" : "66",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "3",
+            "description" : "Writes last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "9",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "productstatusconverter"
+          },
+          "name" : "ProductStatusConverter",
+          "description" : "Converts product status to Elevate format",
+          "documentation" : { }
+        }, {
+          "id" : "19",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "elevatecheckstatus"
+          },
+          "name" : "ElevateCheckStatus",
+          "description" : "Tracks the status for the Elevate import",
+          "relationships" : [ {
+            "id" : "87",
+            "tags" : "Relationship",
+            "sourceId" : "19",
+            "destinationId" : "52",
+            "description" : "Makes HTTP GET to check status"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "6",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "stormtriggerproductexportfunction"
+          },
+          "name" : "StormTriggerProductExportFunction",
+          "description" : "Initiates an export",
+          "relationships" : [ {
+            "id" : "53",
+            "tags" : "Relationship",
+            "sourceId" : "6",
+            "destinationId" : "46",
+            "description" : "Makes HTTP GET requests to trigger exports"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "13",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "processdownloadedproductdeltafiles"
+          },
+          "name" : "ProcessDownloadedProductDeltaFiles",
+          "description" : "Processes downloaded product delta files",
+          "relationships" : [ {
+            "id" : "62",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "8",
+            "description" : "Uses"
+          }, {
+            "id" : "69",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "3",
+            "description" : "Writes last export deltas"
+          }, {
+            "id" : "74",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "2",
+            "description" : "Writes gzip XML"
+          }, {
+            "id" : "65",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "10",
+            "description" : "Uses"
+          }, {
+            "id" : "71",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "2",
+            "description" : "Reads export blob"
+          }, {
+            "id" : "60",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "2",
+            "description" : "Reads exported JSON files"
+          }, {
+            "id" : "79",
+            "tags" : "Relationship",
+            "sourceId" : "13",
+            "destinationId" : "15",
+            "description" : "Queues file for import"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "17",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "upload"
+          },
+          "name" : "Upload",
+          "description" : "Import sequence for Elevate",
+          "documentation" : { }
+        }, {
+          "id" : "8",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "productfilter"
+          },
+          "name" : "ProductFilter",
+          "description" : "Filters products based on Status and Flags",
+          "documentation" : { }
+        } ],
+        "documentation" : { }
+      }, {
+        "id" : "20",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "timertriggers"
+        },
+        "name" : "Timer Triggers",
+        "description" : "Triggers the orchestrator to run",
+        "relationships" : [ {
+          "id" : "34",
+          "sourceId" : "20",
+          "destinationId" : "3",
+          "description" : "Reads last export deltas",
+          "linkedRelationshipId" : "33"
+        } ],
+        "components" : [ {
+          "id" : "26",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "nofullproducts"
+          },
+          "name" : "NO_Full_Products",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "39",
+            "tags" : "Relationship",
+            "sourceId" : "26",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "29",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fideltaproducts"
+          },
+          "name" : "FI_Delta_Products",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "42",
+            "tags" : "Relationship",
+            "sourceId" : "29",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "30",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fifullproducts"
+          },
+          "name" : "FI_Full_Products",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "43",
+            "tags" : "Relationship",
+            "sourceId" : "30",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "27",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "nodeltaproductstatus"
+          },
+          "name" : "NO_Delta_ProductStatus",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "40",
+            "tags" : "Relationship",
+            "sourceId" : "27",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "22",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "sefullproducts"
+          },
+          "name" : "SE_Full_Products",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "35",
+            "tags" : "Relationship",
+            "sourceId" : "22",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "21",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "sedeltaproducts"
+          },
+          "name" : "SE_Delta_Products",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "33",
+            "tags" : "Relationship",
+            "sourceId" : "21",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "31",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fideltaproductstatus"
+          },
+          "name" : "FI_Delta_ProductStatus",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "44",
+            "tags" : "Relationship",
+            "sourceId" : "31",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "25",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "nodeltaproducts"
+          },
+          "name" : "NO_Delta_Products",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "38",
+            "tags" : "Relationship",
+            "sourceId" : "25",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "32",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fifullproductstatus"
+          },
+          "name" : "FI_Full_ProductStatus",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "45",
+            "tags" : "Relationship",
+            "sourceId" : "32",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "24",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "sefullproductstatus"
+          },
+          "name" : "SE_Full_ProductStatus",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "37",
+            "tags" : "Relationship",
+            "sourceId" : "24",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "28",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "nofullproductstatus"
+          },
+          "name" : "NO_Full_ProductStatus\"",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "41",
+            "tags" : "Relationship",
+            "sourceId" : "28",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        }, {
+          "id" : "23",
+          "tags" : "Element,Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "sedeltaproductstatus"
+          },
+          "name" : "SE_Delta_ProductStatus",
+          "description" : "Triggers the Export orchestrator to export",
+          "relationships" : [ {
+            "id" : "36",
+            "tags" : "Relationship",
+            "sourceId" : "23",
+            "destinationId" : "3",
+            "description" : "Reads last export deltas"
+          } ],
+          "documentation" : { }
+        } ],
+        "documentation" : { }
+      }, {
+        "id" : "3",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "azuretables"
+        },
+        "name" : "Azure TableStorage",
+        "description" : "Local data, state and logs",
+        "documentation" : { }
+      }, {
+        "id" : "2",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "azurestorage"
+        },
+        "name" : "Azure Blob Storage",
+        "description" : "Downloaded and processed files",
+        "documentation" : { }
+      } ],
+      "documentation" : { }
+    }, {
+      "id" : "52",
+      "tags" : "Element,Software System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "elevatesystem"
+      },
+      "name" : "Voyado Elevate 4",
+      "description" : "CRM and loyalty platform",
+      "location" : "Unspecified",
+      "documentation" : { }
+    } ]
+  },
+  "documentation" : { },
+  "views" : {
+    "systemContextViews" : [ {
+      "key" : "SystemContext",
+      "order" : 1,
+      "softwareSystemId" : "1",
+      "paperSize" : "A5_Landscape",
+      "dimensions" : {
+        "width" : 1616,
+        "height" : 1316
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "enterpriseBoundaryVisible" : true,
+      "elements" : [ {
+        "id" : "1",
+        "x" : 208,
+        "y" : 508
+      }, {
+        "id" : "46",
+        "x" : 958,
+        "y" : 208
+      }, {
+        "id" : "52",
+        "x" : 958,
+        "y" : 808
+      } ],
+      "relationships" : [ {
+        "id" : "86"
+      }, {
+        "id" : "55"
+      } ]
+    } ],
+    "containerViews" : [ {
+      "key" : "Containers",
+      "order" : 2,
+      "softwareSystemId" : "1",
+      "paperSize" : "A4_Portrait",
+      "dimensions" : {
+        "width" : 1858,
+        "height" : 2654
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "externalSoftwareSystemBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "2",
+        "x" : 1079,
+        "y" : 929
+      }, {
+        "id" : "46",
+        "x" : 1079,
+        "y" : 1529
+      }, {
+        "id" : "3",
+        "x" : 1079,
+        "y" : 329
+      }, {
+        "id" : "4",
+        "x" : 329,
+        "y" : 929
+      }, {
+        "id" : "52",
+        "x" : 1079,
+        "y" : 2129
+      }, {
+        "id" : "20",
+        "x" : 329,
+        "y" : 329
+      } ],
+      "relationships" : [ {
+        "id" : "51"
+      }, {
+        "id" : "34"
+      }, {
+        "id" : "54"
+      }, {
+        "id" : "85",
+        "vertices" : [ {
+          "x" : 1079,
+          "y" : 1979
+        } ]
+      }, {
+        "id" : "67"
+      } ]
+    }, {
+      "key" : "ContainersStorm",
+      "order" : 5,
+      "softwareSystemId" : "46",
+      "paperSize" : "A5_Landscape",
+      "dimensions" : {
+        "width" : 1858,
+        "height" : 958
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "externalSoftwareSystemBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "47",
+        "x" : 1079,
+        "y" : 329
+      }, {
+        "id" : "48",
+        "x" : 329,
+        "y" : 329
+      } ],
+      "relationships" : [ {
+        "id" : "49"
+      } ]
+    } ],
+    "componentViews" : [ {
+      "key" : "Components",
+      "order" : 3,
+      "dimensions" : {
+        "width" : 10528,
+        "height" : 1411
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "TopBottom",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "containerId" : "4",
+      "externalContainerBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "11",
+        "x" : 1720,
+        "y" : 220
+      }, {
+        "id" : "12",
+        "x" : 2470,
+        "y" : 220
+      }, {
+        "id" : "46",
+        "x" : 9128,
+        "y" : 820
+      }, {
+        "id" : "13",
+        "x" : 970,
+        "y" : 220
+      }, {
+        "id" : "14",
+        "x" : 3220,
+        "y" : 220
+      }, {
+        "id" : "15",
+        "x" : 2470,
+        "y" : 820
+      }, {
+        "id" : "16",
+        "x" : 220,
+        "y" : 220
+      }, {
+        "id" : "17",
+        "x" : 220,
+        "y" : 820
+      }, {
+        "id" : "18",
+        "x" : 6220,
+        "y" : 220
+      }, {
+        "id" : "19",
+        "x" : 6970,
+        "y" : 220
+      }, {
+        "id" : "2",
+        "x" : 8378,
+        "y" : 820
+      }, {
+        "id" : "3",
+        "x" : 7628,
+        "y" : 820
+      }, {
+        "id" : "5",
+        "x" : 3970,
+        "y" : 220
+      }, {
+        "id" : "6",
+        "x" : 5470,
+        "y" : 220
+      }, {
+        "id" : "7",
+        "x" : 4720,
+        "y" : 220
+      }, {
+        "id" : "8",
+        "x" : 970,
+        "y" : 820
+      }, {
+        "id" : "9",
+        "x" : 3220,
+        "y" : 820
+      }, {
+        "id" : "52",
+        "x" : 9878,
+        "y" : 820
+      }, {
+        "id" : "10",
+        "x" : 1720,
+        "y" : 820
+      } ],
+      "relationships" : [ {
+        "id" : "70",
+        "vertices" : [ {
+          "x" : 2320,
+          "y" : 520
+        }, {
+          "x" : 8228,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "72",
+        "vertices" : [ {
+          "x" : 3070,
+          "y" : 520
+        }, {
+          "x" : 8228,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "50",
+        "vertices" : [ {
+          "x" : 4570,
+          "y" : 520
+        }, {
+          "x" : 8228,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "71",
+        "vertices" : [ {
+          "x" : 1570,
+          "y" : 520
+        }, {
+          "x" : 8228,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "74",
+        "vertices" : [ {
+          "x" : 1870,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "73",
+        "vertices" : [ {
+          "x" : 2620,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "53",
+        "vertices" : [ {
+          "x" : 6070,
+          "y" : 520
+        }, {
+          "x" : 8978,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "76",
+        "vertices" : [ {
+          "x" : 7928,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "75",
+        "vertices" : [ {
+          "x" : 3370,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "66",
+        "vertices" : [ {
+          "x" : 2320,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "69",
+        "vertices" : [ {
+          "x" : 1570,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "68",
+        "vertices" : [ {
+          "x" : 3070,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "82",
+        "vertices" : [ {
+          "x" : 820,
+          "y" : 520
+        }, {
+          "x" : 2320,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "83"
+      }, {
+        "id" : "61"
+      }, {
+        "id" : "80"
+      }, {
+        "id" : "60",
+        "vertices" : [ {
+          "x" : 7928,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "81"
+      }, {
+        "id" : "63"
+      }, {
+        "id" : "87",
+        "vertices" : [ {
+          "x" : 9728,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "62"
+      }, {
+        "id" : "84",
+        "vertices" : [ {
+          "x" : 6820,
+          "y" : 520
+        }, {
+          "x" : 9728,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "65"
+      }, {
+        "id" : "64"
+      }, {
+        "id" : "78",
+        "vertices" : [ {
+          "x" : 4120,
+          "y" : 520
+        } ]
+      }, {
+        "id" : "56",
+        "vertices" : [ {
+          "x" : 5320,
+          "y" : 520
+        }, {
+          "x" : 8978,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "77",
+        "vertices" : [ {
+          "x" : 3820,
+          "y" : 520
+        }, {
+          "x" : 8228,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "57",
+        "vertices" : [ {
+          "x" : 5320,
+          "y" : 520
+        }, {
+          "x" : 8228,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "58",
+        "vertices" : [ {
+          "x" : 7928,
+          "y" : 820
+        } ]
+      }, {
+        "id" : "79"
+      }, {
+        "id" : "59",
+        "vertices" : [ {
+          "x" : 7928,
+          "y" : 820
+        } ]
+      } ]
+    }, {
+      "key" : "timerTriggers",
+      "order" : 4,
+      "paperSize" : "A1_Landscape",
+      "dimensions" : {
+        "width" : 9358,
+        "height" : 958
+      },
+      "containerId" : "20",
+      "externalContainerBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "22",
+        "x" : 7829,
+        "y" : 329
+      }, {
+        "id" : "23",
+        "x" : 7079,
+        "y" : 329
+      }, {
+        "id" : "24",
+        "x" : 6329,
+        "y" : 329
+      }, {
+        "id" : "25",
+        "x" : 5579,
+        "y" : 329
+      }, {
+        "id" : "26",
+        "x" : 4829,
+        "y" : 329
+      }, {
+        "id" : "27",
+        "x" : 4079,
+        "y" : 329
+      }, {
+        "id" : "28",
+        "x" : 3329,
+        "y" : 329
+      }, {
+        "id" : "29",
+        "x" : 2579,
+        "y" : 329
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "30",
+        "x" : 1829,
+        "y" : 329
+      }, {
+        "id" : "31",
+        "x" : 1079,
+        "y" : 329
+      }, {
+        "id" : "32",
+        "x" : 329,
+        "y" : 329
+      }, {
+        "id" : "21",
+        "x" : 8579,
+        "y" : 329
+      } ],
+      "relationships" : [ {
+        "id" : "40"
+      }, {
+        "id" : "41"
+      }, {
+        "id" : "42"
+      }, {
+        "id" : "43"
+      }, {
+        "id" : "37"
+      }, {
+        "id" : "36"
+      }, {
+        "id" : "35"
+      }, {
+        "id" : "33"
+      }, {
+        "id" : "44"
+      }, {
+        "id" : "45"
+      }, {
+        "id" : "38"
+      }, {
+        "id" : "39"
+      } ]
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "styles" : { },
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ],
+      "terminology" : { },
+      "metadataSymbols" : "SquareBrackets",
+      "lastSavedView" : "Components"
+    }
+  }
+}

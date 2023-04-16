@@ -1,0 +1,94 @@
+﻿@using BlazorGPT.Data
+@if (_profiles != null)
+{
+    @if (!_profiles.Any() && ShowLegend)
+    {
+        <div>You do not have any quick profiles. Create some <a href="/quickprofiles">here</a></div>
+    }
+    else
+    {
+        if (ConversationsHasStarted)
+        {
+            if (InsertAt == InsertAt.After) {
+                <div class="m-3 mt-1 ms-0">
+                    @foreach (var profile in _profiles)
+                    {
+                        <RadzenButton Shade="Shade.Dark" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" Click="() => Execute(profile)" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions() { CssClass = "qp-tooltip"}))">@profile.Name</RadzenButton>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="m-3 mt-1 ms-0">
+                <RadzenText TextStyle="TextStyle.Overline">Apply @InsertAt</RadzenText>
+                @foreach (var profile in _profiles)
+                {
+                    <RadzenButton Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" ButtonStyle="@GetButtonStyle(profile)" Click="() => Toggle(profile)" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions() { CssClass = "qp-tooltip"}))">@profile.Name</RadzenButton>
+                }
+            </div>
+        }
+    }
+}   
+
+@code {
+    [Parameter]
+    public InsertAt InsertAt { get; set; }
+
+    [Inject]
+    public QuickProfileRepository? QuickProfileRepository { get; set; }
+
+    [Inject]
+    public TooltipService? tooltipService { get; set; }
+
+    [CascadingParameter(Name = "UserId")]
+    public string? UserId { get; set; }
+
+    List<QuickProfile>? _profiles;
+
+    public List<QuickProfile> SelectedProfiles = new List<QuickProfile>();
+
+    [Parameter]
+    public bool ShowLegend { get; set; }
+
+    [Parameter]
+    public bool ConversationsHasStarted { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _profiles = (List<QuickProfile>?)await QuickProfileRepository!.GetQuickProfiles(UserId, InsertAt);
+        SelectedProfiles = _profiles.Where(p => p.EnabledDefault).ToList();
+    }
+
+    [Parameter]
+    public EventCallback<QuickProfile> OnProfileClickedd { get; set; }
+
+    private EventCallback Toggle(QuickProfile profile)
+    {
+        if (SelectedProfiles.Contains(profile))
+        {
+            SelectedProfiles.Remove(profile);
+        }
+        else
+        {
+            SelectedProfiles.Add(profile);
+        }
+        return EventCallback.Empty;
+    }
+
+    private ButtonStyle GetButtonStyle(QuickProfile profile)
+    {
+        return SelectedProfiles.Contains(profile) ? ButtonStyle.Success : ButtonStyle.Warning;
+    }
+
+    private async Task Execute(QuickProfile profile)
+    {
+        if (OnProfileClickedd.HasDelegate)
+        {
+            await OnProfileClickedd.InvokeAsync(profile);
+        }
+    }
+
+    void ShowTooltip(ElementReference elementReference, string content, TooltipOptions? options = null) => tooltipService!.Open(elementReference, content, options);
+}

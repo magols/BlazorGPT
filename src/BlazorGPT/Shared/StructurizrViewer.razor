@@ -1,0 +1,83 @@
+﻿@using System.Net.Http.Json
+@using System.Text
+@using BlazorGPT.Data
+@using BlazorGPT.Managers
+@using Microsoft.Extensions.Options
+@using Newtonsoft.Json
+
+
+
+<pre>@((MarkupString)svg)
+ </pre>
+
+@code {
+
+    [Parameter]
+    public StateDataBase? State { get; set; }
+
+    //string host = "https://kroki.io";
+    string host = "http://localhost:8001";
+
+    string url = "";
+    private string urlfile;
+    private string DiagramType => "structurizr";
+    string json;
+    string svg;
+
+
+    [Inject]
+    public IHttpClientFactory HttpClientFactory { get; set; }
+
+    [Inject]
+    public IOptions<PipelineOptions> Options { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        host = Options.Value.KrokiHost;
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadDiagram();
+        }
+    }
+
+    private async Task LoadDiagram()
+    {
+        var client = HttpClientFactory.CreateClient();
+
+        var p = new KrokiPayload
+        {
+            diagram_source = State.Content,
+            diagram_type = DiagramType,
+            output_format = "svg",
+            diagram_options = new Dictionary<string, string>
+            {
+                { "view-key", "SystemContext" }
+            }
+        };
+
+        json = JsonConvert.SerializeObject(p, Formatting.Indented);
+
+
+        var result = await client.PostAsJsonAsync(host, p);
+
+        svg = await result.Content.ReadAsStringAsync();
+        svg = svg.Replace(@"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no""?>", "");
+
+        StateHasChanged();
+    }
+
+    public class KrokiPayload
+    {
+        public string diagram_source { get; set; }
+        public string diagram_type { get; set; }
+        public string output_format { get; set; }
+        public Dictionary<string, string> diagram_options { get; set; } = null!;
+    }
+
+}

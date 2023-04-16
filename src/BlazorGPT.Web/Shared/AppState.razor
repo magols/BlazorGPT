@@ -1,0 +1,59 @@
+﻿@using System.Security.Claims
+@inject UserState UserState
+<CascadingValue Value="this" Name="AuthState">
+    <CascadingValue Value="UserState" Name="UserState">
+        <CascadingValue Value="@_userId" Name="UserId">
+        @ChildContent
+        </CascadingValue>
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+
+    //[Inject]
+    //public AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    string? _userId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClaimsPrincipalData();
+        StateHasChanged();
+    }
+
+
+    private async Task GetClaimsPrincipalData()
+    {
+
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                User = user;
+                await UserState.SetUser(User);
+                _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
+
+    }
+
+    public bool IsAdmin => User.IsInRole("Admin");
+    public bool IsSalesAdmin => User.IsInRole("Sales");
+
+
+
+    public ClaimsPrincipal User { get; set; } = new();
+
+    private AuthenticationState? AuthState { get; set; }
+
+}

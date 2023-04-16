@@ -1,0 +1,15 @@
+﻿@using BlazorGPT.Data
+
+@if (Conversation?.BranchedFromMessage != null)
+{
+    string text = "Branched from " + Conversation!.BranchedFromMessageId;
+    string link = "/conversation/" + Conversation!.BranchedFromMessage!.ConversationId + "/" + Conversation!.BranchedFromMessageId;
+    <div>
+        <RadzenLink Text="@text" Path="@link"></RadzenLink>
+    </div>
+}
+
+@code {
+    [Parameter]
+public Conversation? Conversation { get; set; }
+}

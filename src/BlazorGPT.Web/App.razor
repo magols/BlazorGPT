@@ -1,0 +1,38 @@
+﻿@using System.Security.Claims
+@using BlazorGPT.Web.Areas.Identity
+@using Microsoft.AspNetCore.Components
+@inject TokenProvider TokenProvider
+@inject NavigationManager Navigation
+
+<CascadingAuthenticationState>
+    <AppState>
+            <Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(ConversationPage).Assembly }" PreferExactMatches="@true">
+                <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(BlazorGptLayout)" />
+
+                </Found>
+                <NotFound>
+                <LayoutView Layout="@typeof(BlazorGptLayout)">
+                        <p>Sorry, there's nothing at this address.</p>
+                    </LayoutView>
+                </NotFound>
+            </Router>
+    </AppState>
+</CascadingAuthenticationState>
+
+@code
+{
+    [Parameter]
+    public TokenProvider InitialState { get; set; }
+
+  
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TokenProvider.XsrfToken = InitialState.XsrfToken;
+
+        await base.OnInitializedAsync();
+    }
+}

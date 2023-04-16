@@ -1,0 +1,286 @@
+@using BlazorGPT.Data
+
+<RadzenCard Style="margin-bottom:20px">
+
+    <b>@Script?.Name</b>
+    <RadzenButton Click="SaveScript" class="float-end">Save Script</RadzenButton>
+
+</RadzenCard>
+
+
+@if (Script != null)
+{
+
+    <div class="row">
+        <span class="col-3">
+
+           
+            <span class="material-symbols-outlined mt-0">robot</span>
+            <RadzenText>
+
+                System prompt:
+            </RadzenText>
+        </span>
+        <span class="col-7">
+            <RadzenTextArea @bind-Value="@Script.SystemMessage"  Style="width:100%"></RadzenTextArea>
+        </span>
+        <span class="col-2"> 
+    
+        @*<RadzenButton Click="SaveSystemPrompt" Disabled="@(!SystemPromptDirty)">Save</RadzenButton>*@
+        </span>
+    </div>
+
+    <div class="row message-pane">
+        <div class="col">
+            <RadzenDataGrid @ref="grid" TItem="ScriptStep" Data="Script.Steps" 
+                            EditMode="DataGridEditMode.Multiple" 
+                            Class="hide-grid-header"
+                            EmptyText="No steps yet! Add one below.">
+                <Columns>
+
+                    <RadzenDataGridColumn TItem="ScriptStep" Property="SortOrder" Width="50px"></RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ScriptStep" Title="Content" Width="100%">
+                        <EditTemplate Context="step">
+                            <RadzenTextArea @bind-Value="@step.Message" Rows="3" Class="textarea-full-width"></RadzenTextArea>
+                        </EditTemplate>
+                        <Template Context="step">
+                            <RadzenTextArea @bind-Value="@step.Message" Rows="3" Class="textarea-full-width" Disabled="true"></RadzenTextArea>
+
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="ScriptStep" Context="step" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Title="Actions" Width="120px">
+                        <Template Context="step">
+
+                            <RadzenButton Icon="arrow_upward" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => Up(step))" @onclick:stopPropagation="true" Disabled="@(step.SortOrder == 1)" />
+                            <RadzenButton Icon="arrow_downward" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => Down(step))" @onclick:stopPropagation="true" Disabled="@(step.SortOrder == Script?.Steps.Count())" />
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => EditRow(step))" @onclick:stopPropagation="true" />
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => DeleteRow(step))" @onclick:stopPropagation="true" />
+                        </Template>
+
+
+                        <EditTemplate Context="step">
+
+                            <RadzenButton Icon="arrow_upward" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => Up(step))" @onclick:stopPropagation="true" Disabled="@(step.SortOrder == 1)" />
+                            <RadzenButton Icon="arrow_downward" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => Down(step))" @onclick:stopPropagation="true" Disabled="@(step.SortOrder ==Script?.Steps.Count())" />
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => DeleteRow(step))" @onclick:stopPropagation="true" />
+
+                            @*        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => SaveRow(step))" />
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => CancelEdit(step))" />
+       *@                 </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                </Columns>
+            </RadzenDataGrid>
+
+        </div>
+    </div>
+}
+
+ 
+ 
+
+
+<div class="row mt-3">
+    <div class="col-3 col-md-2 ">
+        <RadzenText>
+            Next step:
+        </RadzenText>
+    </div>
+    <div class="col-8 col-md-8">
+        <RadzenTextArea @bind-Value="@newStepData" Class="textarea-full-width"></RadzenTextArea>
+
+    </div>
+    <div class="col-1 col-md-2">
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="Add">Add</RadzenButton>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Guid ScriptId { get; set; }
+
+    Script? Script { get; set; }
+
+    [Inject]
+    public ScriptRepository ScriptRepository { get; set; }
+
+    [Inject]
+    public DialogService DialogService { get; set; }
+
+    [Inject]
+    public NotificationService NotificationService { get; set; }
+
+    [Inject]
+    public IDbContextFactory<BlazorGptDBContext> Context { get; set; }
+    [Inject]
+    public ConversationInterop? ConversationInterop { get; set; }
+
+    RadzenDataGrid<ScriptStep> grid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Script?.Steps != null)
+        {
+            await grid.EditRows(Script.Steps);
+            StateHasChanged();
+
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        Script = await ScriptRepository.GetScript(ScriptId);
+        StateHasChanged();
+       
+    }
+
+
+
+    public string SystemPrompt { get; set; }
+    public string newStepData;
+    private ScriptStep? stepToUpdate;
+
+    private async Task Add()
+    {
+        if (string.IsNullOrEmpty(newStepData))
+        {
+            return;
+        }
+
+
+        var step = new ScriptStep
+        {
+           // Script = Script,
+            Role = "user",
+            Message = newStepData,
+            SortOrder = Script!.Steps .Count() + 1
+        };
+        //await ScriptRepository.AddStep(Script!, step);
+        Script.Steps.Add(step);
+        await grid.Reload();
+        await grid.EditRow(step);
+        StateHasChanged();
+
+        newStepData = "";
+        //await Reload();
+
+        if (ConversationInterop != null)
+            await ConversationInterop.ScrollToBottom("script-list");
+    }
+
+    private async Task DeleteRow(ScriptStep value)
+    {
+        var result = await DialogService.Confirm("This will be deleted before you save the Script", "Delete step?");
+        if (result.HasValue && result.Value)
+        {
+            Script.Steps.Remove(value);
+             await ScriptRepository.DeleteStep(value);
+            // await ScriptRepository.SaveScript(Script);
+            await grid.Reload();
+
+//            await Reload();
+        }
+    }
+
+    private async Task EditRow(ScriptStep value)
+    {
+        stepToUpdate = value;
+        await grid.EditRow(value);
+
+    }
+
+    private async Task SaveRow(ScriptStep value)
+    {
+        stepToUpdate = null;
+        await ScriptRepository.SaveStep(value);
+        grid.CancelEditRow(value);
+
+    }
+
+    private async Task CancelEdit(ScriptStep value)
+    {
+        stepToUpdate = null;
+        grid.CancelEditRow(value);
+
+        await Reload();
+        await grid.Reload();
+    }
+
+    private async Task Up(ScriptStep value)
+    {
+        var index = Script.Steps.FindIndex(0, step => step.Id == value.Id);
+        Script.Steps.Remove(value);
+        Script.Steps.Insert(index - 1, value);
+        Script.Steps = Reorder(Script!.Steps).ToList();
+
+        await grid.Reload();
+        //await ScriptRepository.UpdateSteps(Script!.Steps);
+    }
+
+    private async Task Down(ScriptStep value)
+    {
+        var index = Script.Steps.FindIndex(0, step => step.Id == value.Id);
+        Script.Steps.Remove(value);
+        Script.Steps.Insert(index + 1, value);
+        Script.Steps = Reorder(Script!.Steps).ToList();
+        //await ScriptRepository.UpdateSteps(Script!.Steps);
+        await grid.Reload();
+
+    }
+
+    private IEnumerable<ScriptStep> Reorder(IEnumerable<ScriptStep> steps)
+    {
+        var sortOrder = 1;
+        var scriptSteps = steps as ScriptStep[] ?? steps.ToArray();
+        foreach (var step in scriptSteps)
+        {
+            step.SortOrder = sortOrder;
+            sortOrder++;
+        }
+        return scriptSteps;
+    }
+
+    //private async Task SaveSystemPrompt()
+    //{
+    //    await ScriptRepository.SaveSystemPrompt(Script.Id, Script.SystemMessage);
+    //    SystemPromptDirty = false;
+    //}
+
+    //public bool SystemPromptDirty { get; set; } = false;
+
+    private async Task SaveScript()
+    {
+        // confirm to save
+        var res = await DialogService.Confirm("Save script?");
+        if (res.HasValue && !res.Value)
+        {
+            return;
+        }
+        var saved = await ScriptRepository.SaveScript(Script!);
+        if (saved)
+        {
+            NotificationService.Notify(NotificationSeverity.Success, "Script saved", "");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error", "Script not saved");
+        }
+
+        
+    }
+
+}

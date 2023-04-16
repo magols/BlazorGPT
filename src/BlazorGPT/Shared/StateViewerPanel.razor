@@ -1,0 +1,108 @@
+﻿@page "/state/{stateType}/{renderType}/{id:guid}"
+@using BlazorGPT.Data
+@using BlazorGPT.Managers
+@layout BlankLayout
+
+@switch (StateType)
+{
+    case "message":
+
+        <div>State for message @Message!.Id:</div>
+        <hr/>
+        break;
+
+    case "conversation":
+        <div>State for conversation @Conversation!.Id:</div>
+        <hr/>
+        break;
+
+    case "hive":
+        <div>Hive State for conversation @Conversation!.Id:</div>
+        <hr/>
+        break;
+}
+
+@if (State != null)
+{
+    switch (RenderType)
+    {
+        case "JsonStateInterceptor":
+            <pre>
+                @State?.Content
+            </pre>
+            break;
+        case "StructurizrDslInterceptor":
+
+            <StructurizrViewer State="@State"/>
+            break;
+        case "plantuml":
+            break;
+        default:
+            @State?.Content
+            break;
+    }
+}
+
+
+@code {
+
+    public async Task OnNotify()
+    {
+        await InvokeAsync(LoadState);
+    }
+
+    [Inject]
+    public StateManager StateManager { get; set; }
+
+    [Parameter]
+    public string StateType { get; set; }
+
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+
+    [Parameter]
+    public StateDataBase? State { get; set; }
+
+    [Parameter]
+    public string RenderType { get; set; } = "json";
+
+    [Inject]
+    public ConversationsRepository ConversationsRepository { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        StateManager.OnConversationUpdated += OnNotify;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadState();
+    }
+
+    private async Task LoadState()
+    {
+        switch (StateType)
+        {
+            case "message":
+                Message = await ConversationsRepository.GetMessage(Id);
+                State = Message.State;
+                break;
+
+            case "conversation":
+                Conversation = await ConversationsRepository.GetConversation(Id);
+                State = Conversation!.TreeStateList?.LastOrDefault();
+                break;
+
+            case "hive":
+                Conversation = ConversationsRepository.GetMergedBranchRootConversation(Id);
+                State = Conversation!.HiveState;
+                break;
+        }
+        StateHasChanged();
+    }
+
+    public Conversation? Conversation { get; set; }
+    public ConversationMessage Message { get; set; }
+}

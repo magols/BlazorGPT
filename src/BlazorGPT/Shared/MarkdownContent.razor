@@ -1,0 +1,55 @@
+﻿@using Markdig
+@using Markdown.ColorCode
+@using ColorCode.Styling
+@using System.Text.RegularExpressions
+@inherits ComponentBase
+
+@((MarkupString) AsMarkdown)
+
+@code {
+
+    [Parameter]
+    public string Content { get; set; }
+
+    public string AsMarkdown => GetMarkdown(Content);
+
+
+    protected override void OnInitialized()
+    {
+        markdownPipeline = new MarkdownPipelineBuilder()
+            .UsePipeTables()
+            .UseAdvancedExtensions()
+            .UseColorCode(StyleDictionary.DefaultDark)
+            .UseAutoLinks()
+            .UseEmojiAndSmiley()
+            .UseMediaLinks()
+            .UseCitations()
+            .Build();
+    }
+
+    private MarkdownPipeline markdownPipeline;
+
+    private string GetMarkdown(string toHtml)
+    {
+        try
+        {
+            var html = Markdown.ToHtml(toHtml, markdownPipeline);
+            var pattern = "(<div style=\"color:#DADADA;background-color:#1E1E1E;\"><pre>(.*?)</pre></div>)";
+            var matches = Regex.Matches(html, pattern, RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+            for (var i = matches.Count - 1; i >= 0; i--)
+            {
+                var match = matches[i].ToString();
+                var id = "copy" + i;
+                var replacement = $"<button data-clipboard-target=\"#{id}\" class=\"float-end copyBtn  mt-0\">Copy</button>" + match;
+                html = html.Remove(matches[i].Index, matches[i].Length).Insert(matches[i].Index, replacement);
+            }
+
+            return html;
+        }
+        catch (Exception e)
+        {
+            return "";
+        }
+    }
+}

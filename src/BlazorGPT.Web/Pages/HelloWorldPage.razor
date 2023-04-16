@@ -1,0 +1,30 @@
+﻿@page "/helloworld"
+@using BlazorGPT.Managers
+@layout EmptyLayout
+<h3>Hello World</h3>
+
+<ConversationDisplay Conversation="@Conversation"  Style="height: auto"/>
+
+
+@code {
+
+    [Inject]
+    public ChatWrapper Chat { get; set; }
+
+    public Conversation? Conversation { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Chat.OnStreamCompletion += async (s) =>
+            {
+                StateHasChanged();
+                return s;
+            };
+            Conversation = Conversation.CreateConversation("", "You are a helpful assistant", 
+                "Write a Hello World in C#. Answer in markdown");
+            Conversation = await Chat.SendWithPipeline(Conversation);
+        }
+    }
+}

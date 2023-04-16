@@ -1,0 +1,211 @@
+﻿@using BlazorGPT.Data
+<div class="row m-0 mt-2 p-0" style="@Style">
+    <div class="col-1 col-md-1 ps-1 pe-3 mt-2 mb-4">
+        <ConversationRoleDisplay Role="@Message.Role"/>
+    </div>
+
+    <div class="col-11 col-md-11 ps-0 pe-0 mt-2 mb-0" id="@Message.Id">
+        @if (Message.Role == ConversationRole.System)
+        {
+            <RadzenTextBox Class="system-prompt" Style="font-size: 0.8rem; width: 80%;" @bind-Value="@Message.Content" Disabled="MessagesCount > 1"></RadzenTextBox>
+        }
+        else
+        {
+            <div class="m-0">
+                <div class="float-end align-bottom align-text-bottom">
+
+                    @if (Message.Role == ConversationRole.Assistant)
+                    {
+                        @if (ShowBranches && Message.BranchedConversations.Any())
+                        {
+                            <div class="float-end">
+                                <ul>
+
+                                    @foreach (var branch in Message.BranchedConversations)
+                                    {
+                                        <li>
+                                            <RadzenLink Path="@("/conversation/" + branch.Id)" Text="@branch.Summary"/>
+                                        </li>
+                                    }
+                                </ul>
+
+                            </div>
+                        }
+                        <br/>
+                        <RadzenButton Visible="ShowCopyButton" class="float-end" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here", new TooltipOptions()))"/>
+                    }
+                    <RadzenButton Visible="ShowRestartButton" Class="float-end" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here", new TooltipOptions()))"/>
+                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))"/>
+                </div>
+
+                <MarkdownContent Content="@Message.Content"/>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public ConversationMessage Message { get; set; }
+
+    [Parameter]
+    public int MessagesCount { get; set; }
+
+    [Parameter]
+    public bool ShowTokens { get; set; }
+
+    [Inject]
+    public TooltipService? tooltipService { get; set; }
+
+    [Inject]
+    public ConversationInterop? Interop { get; set; }
+
+
+    void ShowTooltip(ElementReference elementReference, string content, TooltipOptions? options = null)
+    {
+        tooltipService!.Open(elementReference, content, options);
+    }
+
+    [Parameter]
+    public bool ShowBranches { get; set; } = true;
+
+    [Parameter]
+    public bool ShowRestartButton { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<ConversationMessage>? OnRestartClicked { get; set; }
+
+    private async Task RestartClicked()
+    {
+        if (OnRestartClicked.HasValue && OnRestartClicked.Value.HasDelegate)
+        {
+            await OnRestartClicked.Value.InvokeAsync(Message);
+        }
+    }
+
+    [Parameter]
+    public bool ShowCopyButton { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<ConversationMessage>? OnCopyClicked { get; set; }
+
+    private async Task CopyClicked()
+    {
+        if (OnCopyClicked.HasValue && OnCopyClicked.Value.HasDelegate)
+        {
+            await OnCopyClicked.Value.InvokeAsync(Message);
+        }
+    }
+
+    public bool ShowShouldDisplayStateButton => Message.State?.Content != null;
+
+    private async Task StateClicked()
+    {
+        if (Interop != null)
+        {
+            await Interop.OpenStateViewer("message", Message!.Id!.ToString() ?? string.Empty, "json");
+        }
+    }
+
+    public string Style =>
+        GetBorder() +
+        Background() +
+        Color()
+
+        ;
+
+    private string Color()
+    {
+        var color = "";
+
+        switch (Message.Role)
+        {
+            case "system":
+
+                break;
+            case "assistant":
+
+                color = "white";
+                break;
+            case "user":
+                color = "white";
+                break;
+        }
+
+        return color != "" ? $" color:{color};" : "";
+    }
+
+    private string GetBorder()
+    {
+        var color = BorderColor();
+        if (color != "")
+        {
+            return @$"border-radius:6px; border: {BorderColor()} {BorderWidth()}px solid;";
+            
+        }
+        return "";
+    }
+
+    private string BorderColor()
+    {
+        var border = "";
+        switch (Message.Role)
+        {
+            case "system":
+                border = "#424242";
+                break;
+            case "assistant":
+                border = "#424242";
+                break;
+            case "user":
+                border = "#424242";
+                break;
+            default:
+                border = "#262626";
+                break;
+        }
+
+        return border;
+    }
+
+    private int BorderWidth()
+    {
+        switch (Message.Role)
+        {
+            case "system":
+                return 1;
+            case "assistant":
+                return 1;
+            case "user":
+                return 1;
+            default:
+                return 1;
+        }
+    }
+
+    private string Background()
+    {
+        var c = "";
+        switch (Message.Role)
+        {
+            case "system":
+                c = "#242424";
+                break;
+            case "assistant":
+                c = "#303030";
+
+                break;
+            case "user":
+                c = "#424242";
+                break;
+            default:
+                return "";
+        }
+
+        return c != "" ? $" background-color:{c};" : "";
+    }
+
+}

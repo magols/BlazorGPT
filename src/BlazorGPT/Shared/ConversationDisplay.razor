@@ -1,0 +1,55 @@
+@using BlazorGPT.Data
+@if (Conversation != null)
+{
+    <div id="message-pane" class="scroll-pane" style="@Style"
+         >
+        <BranchedFrom Conversation="@Conversation"/>
+        @if (Conversation.Messages.Any())
+        {
+            <!-- system prompt -->
+            <ConversationMessageDisplay Message="Conversation.Messages.FirstOrDefault()" MessagesCount="Conversation.Messages.Count()"></ConversationMessageDisplay>
+            @foreach (var message in Conversation.Messages.Skip(1))
+            {
+                var isLastMessage = Conversation.Messages.IndexOf(message) + 1 == Conversation.Messages.Count();
+                <ConversationMessageDisplay 
+                    ShowBranches="@ShowBranches"
+                    ShowRestartButton="RestartConversation.HasDelegate && !isLastMessage"
+                    ShowCopyButton="CopyConversation.HasDelegate"
+                    OnRestartClicked="RestartConversation"
+                    OnCopyClicked="CopyConversation" 
+                    Message="message" 
+                    >
+                </ConversationMessageDisplay>
+            }
+        }
+    </div>
+}
+@code
+{
+    [Inject]
+    public ConversationInterop? Interop { get; set; }
+
+    [Parameter]
+    public Conversation? Conversation { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+
+
+    [Parameter]
+    public EventCallback<ConversationMessage> RestartConversation { get; set; }
+
+    [Parameter]
+    public EventCallback<ConversationMessage> CopyConversation { get; set; }
+
+    [Parameter]
+    public bool ShowBranches { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (Interop != null) await Interop.SetupCopyButtons();
+        }
+    }
+}

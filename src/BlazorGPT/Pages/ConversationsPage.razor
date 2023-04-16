@@ -1,0 +1,256 @@
+﻿@page "/conversations"
+@using BlazorGPT.Data
+@attribute [Authorize]
+
+<div class="row">
+    <div class="col">
+        <RadzenText TextStyle="TextStyle.H5">Conversations</RadzenText>
+    </div>
+    <div class="col">
+        @if (Conversations.Any())
+        {
+            <RadzenButton class="float-end" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Disabled="@(_selectedSummaries == null || !_selectedSummaries.Any())" Click="DeleteSelectedConversations">Delete selected</RadzenButton>
+        }
+    </div>
+
+</div>
+<RadzenDataGrid @ref="grid" TItem="Conversation" 
+                Data="Conversations" 
+                @bind-Value=@_selectedSummaries
+                PageSize="15" AllowPaging="true"
+                class="hide-grid-header"
+                AllowFiltering="false"
+                FilterMode="FilterMode.Advanced"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                SelectionMode="DataGridSelectionMode.Multiple"
+                EditMode="DataGridEditMode.Single"
+                EmptyText="You do not have any conversations"
+                RowSelect="OnRowSelect"
+                RowRender="RowRender"
+                ExpandMode="@expandMode"
+                >
+    <Columns>
+        <RadzenDataGridColumn TItem="Conversation">
+            <Template Context="c">
+
+                @{
+                    string link = "/conversation/" + c.Id;
+                    string text = !string.IsNullOrEmpty(c.Summary) ? c.Summary : "No summary";
+                }
+                <a href="@link">@text</a>
+            </Template>
+            <EditTemplate Context="c">
+                <RadzenTextBox @bind-Value="@c.Summary" Rows="3" Class="textarea-full-width"></RadzenTextBox>
+
+            </EditTemplate>
+
+        </RadzenDataGridColumn>
+        
+        <!-- column for BranchedFromMessage -->
+<RadzenDataGridColumn TItem="Conversation" Title="Branched From Message">
+<Template Context="c">
+    @{
+        if (c.BranchedFromMessage != null)
+        {
+            string link = "/conversation/" + c.BranchedFromMessage.ConversationId + "/" + c.BranchedFromMessageId;
+             <a href="@link">@c.BranchedFromMessage.Conversation?.Summary</a>
+        }
+    }
+</Template>
+</RadzenDataGridColumn>
+
+
+
+        <RadzenDataGridColumn TItem="Conversation" Title="QP">
+            <Template Context="c">
+                
+                <QuickProfilesPanel Data="@c.QuickProfiles"></QuickProfilesPanel>
+            </Template>
+        </RadzenDataGridColumn>
+   
+
+
+        <RadzenDataGridColumn TItem="Conversation" Width="100px">
+            <Template Context="c">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.ExtraSmall" Click="@(args => EditRow(c))" @onclick:stopPropagation="true" />
+
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Outlined" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" class="my-1 ms-1" Click="@(args => Remove(c))" @onclick:stopPropagation="true" />
+
+            </Template>
+            <EditTemplate Context="c">
+
+
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.ExtraSmall" Click="@(args => UpdateSummary(c))" @onclick:stopPropagation="true" />
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.ExtraSmall" class="my-1 ms-1" Click="@(args => CancelEdit(c))" @onclick:stopPropagation="true" />
+            </EditTemplate>
+
+        </RadzenDataGridColumn>
+    </Columns>
+
+</RadzenDataGrid>
+
+<pre class="position-absolute end-50">
+<ConversationsCost></ConversationsCost>
+
+</pre>
+
+@if (!Conversations.Any())
+{
+    <div>
+        <RadzenLink Path="/conversation">
+            Start a new Conversation
+        </RadzenLink>
+    </div>
+}
+
+@*<div>The Conversations are filterable by Quick Profile when clicked.</div>*@
+
+@code {
+
+    [CascadingParameter(Name = "UserId")]
+    public string UserId { get; set; }
+
+
+    [Inject]
+    public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
+
+    [Inject]
+    public ConversationsRepository ConversationsRepository { get; set; } = null!;
+
+    [Inject]
+    public DialogService DialogService { get; set; } = null!;
+
+    [Inject]
+    public NotificationService NotificationService { get; set; } = null!;
+
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    RadzenDataGrid<Conversation>? grid;
+
+    IList<Conversation>? _selectedSummaries;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadConversations();
+
+    }
+
+    public async Task LoadConversations()
+    {
+        Conversations = await ConversationsRepository.GetConversationsByUserId(UserId);
+        StateHasChanged();
+    }
+
+    public List<Conversation> Conversations { get; set; } = new();
+
+
+
+    private async Task Remove(Conversation conversation)
+    {
+
+        var result = await DialogService.Confirm("Are you sure you want to delete this conversation?", "Delete", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (result.HasValue && result.Value)
+        {
+
+            if (await ConversationsRepository.DeleteConversation((Guid)conversation.Id!))
+            {
+                Conversations.Remove(conversation);
+                await grid!.Reload();
+
+                NotificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Success",
+                    Detail = "Conversation deleted",
+                    Duration = 3000
+                });
+            }
+        }
+
+    }
+
+    private async Task EditRow(Conversation value)
+    {
+        await grid!.EditRow(value);
+
+    }
+
+    private async Task UpdateSummary(Conversation value)
+    {
+
+        await using var ctx = await DbContextFactory.CreateDbContextAsync();
+        var c = ctx.Conversations.FirstOrDefault(c => c.Id == value.Id);
+        c.Summary = value.Summary;
+        await ctx.SaveChangesAsync();
+
+        grid!.CancelEditRow(value);
+    }
+
+    private async Task CancelEdit(Conversation value)
+    {
+        grid!.CancelEditRow(value);
+        await LoadConversations();
+        await grid.Reload();
+    }
+
+
+
+    private void OnRowSelect(Conversation obj)
+    {
+    }
+
+    private async Task DeleteSelectedConversations()
+    {
+        var confirm = await DialogService.Confirm("Are you sure you want to delete the selected conversations?", "Delete", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (confirm.HasValue && confirm.Value)
+        {
+            foreach (var c in _selectedSummaries!)
+            {
+                await ConversationsRepository.DeleteConversation((Guid)c.Id!);
+                Conversations.Remove(c);
+
+            }
+
+            await grid!.Reload();
+            _selectedSummaries = null;
+
+            NotificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Success",
+                Detail = "Conversations deleted",
+                Duration = 3000
+            });
+        }
+    }
+
+    private void RowRender(RowRenderEventArgs<Conversation> args)
+    {
+        args.Expandable = args.Data.Messages.Any();
+    }
+
+    DataGridExpandMode expandMode = DataGridExpandMode.Single;
+    bool? allRowsExpanded;
+
+    async Task ToggleRowsExpand(bool? value)
+    {
+        allRowsExpanded = value;
+
+        if (value == true)
+        {
+            await grid.ExpandRows(grid.PagedView);
+        }
+        else if (value == false)
+        { 
+            await grid.CollapseRows(grid.PagedView);
+        }
+    }
+
+
+
+}

@@ -1,0 +1,26 @@
+﻿@using BlazorGPT.Data
+@if (Data != null)
+{
+    <div class="m-3 ms-0">
+        @foreach (var profile in Data)
+        {
+
+            <RadzenButton Shade="Shade.Dark" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions()))">@profile.Name</RadzenButton>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public IList<QuickProfile>? Data { get; set; } = new List<QuickProfile>();
+
+    [Inject]
+    public TooltipService? TooltipService { get; set; }
+
+    void ShowTooltip(ElementReference elementReference, string content, TooltipOptions? options = null)
+    {
+        TooltipService!.Open(elementReference, content, options);
+    }
+
+}

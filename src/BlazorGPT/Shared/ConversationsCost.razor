@@ -1,0 +1,28 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using BlazorGPT.Data
+@InTokens tokens @Cost
+
+
+@code {
+    [Inject]
+public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
+
+    [CascadingParameter(Name = "UserId")]
+    public string UserId { get; set; }
+
+    public decimal InTokens = 0;
+
+    // sum the tokens for all messages in the conversation
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var ctx = await DbContextFactory.CreateDbContextAsync();
+        InTokens = await ctx.Messages.Where(m => m.Conversation.UserId == UserId).SumAsync(m => m.PromptTokens + m.CompletionTokens) ?? 0;
+
+    }
+
+    public decimal CostPerToken = 0.002m / 1000;
+
+    public string Cost => (InTokens * CostPerToken).ToString("C");
+
+}

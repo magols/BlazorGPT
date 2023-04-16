@@ -1,0 +1,188 @@
+﻿@page "/quickprofiles"
+@using BlazorGPT.Data
+@attribute [Authorize]
+
+<h3>Quick Profiles</h3>
+
+
+<RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" class="mt-2 mb-4" Text="Add New Quick profile" Click="@InsertRow" Disabled=@(profileToInsert != null || profileToUpdate != null) />
+
+<RadzenDataGrid @ref="_grid" TItem="QuickProfile" Data="_quickProfiles" SelectionMode="DataGridSelectionMode.Single" AllowSorting="true" so RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow"
+AllowFiltering="true" FilterMode="FilterMode.Advanced"
+EmptyText="No profiles yet :("
+>
+    <Columns>
+        <RadzenDataGridColumn TItem="QuickProfile" Property="EnabledDefault" Title="Default" Width="100px">
+            <Template Context="profile">
+                <RadzenCheckBox @bind-Value="@profile.EnabledDefault" Disabled="true"></RadzenCheckBox>
+            </Template>
+            <EditTemplate Context="profile">
+                <RadzenCheckBox @bind-Value="@profile.EnabledDefault"></RadzenCheckBox>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="QuickProfile" Property="ConversationLocation" Title="Insert" Width="200px">
+            <Template Context="profile">
+                @profile.InsertAt
+            </Template>
+            <EditTemplate Context="profile">
+                <RadzenRadioButtonList @bind-Value=@profile.InsertAt TValue="InsertAt" class="mb-5" Disabled="false">
+                    <Items>
+                        <RadzenRadioButtonListItem Text="Start" Value="InsertAt.Before" />
+                        <RadzenRadioButtonListItem Text="End" Value="InsertAt.After" />
+                    </Items>
+                </RadzenRadioButtonList>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="QuickProfile" Property="Name" Title="Name" Width="200px">
+            <EditTemplate Context="profile">
+                <RadzenTextBox @bind-Value="@profile.Name" Class="form-control"></RadzenTextBox>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="QuickProfile" Property="Content" Title="Content" Width="400px">
+            <Template Context="profile">
+                <RadzenTextArea @bind-Value="@profile.Content" Disabled="true" Class="textarea-full-width"></RadzenTextArea>
+
+            </Template>
+            <EditTemplate Context="profile">
+                <RadzenTextArea @bind-Value="@profile.Content" Class="textarea-full-width form-control"></RadzenTextArea>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="QuickProfile" TextAlign="TextAlign.End" Width="100px" Filterable="false">
+            <Template Context="profile">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => EditRow(profile))" @onclick:stopPropagation="true"/>
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" Size="ButtonSize.Small" Click="async () => await DeleteRow(profile)" @onclick:stopPropagation="true"/>
+
+            </Template>
+            <EditTemplate Context="profile">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Outlined" Size="ButtonSize.Small" Click="@(args => SaveRow(profile))" @onclick:stopPropagation="true"/>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => CancelEdit(profile))" @onclick:stopPropagation="true"/>
+
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenCard>
+    
+        <RadzenText TextStyle="TextStyle.Body2">Profiles that are marked with InsertAt Start are only available before your first prompt. End profiles are both available to set before your first prompt but also manually later on in the conversation</RadzenText>
+    
+</RadzenCard>
+
+@code {
+
+    [Inject]
+    public QuickProfileRepository QuickProfileRepository { get; set; }
+
+    [Inject]
+    public DialogService DialogService { get; set; }
+
+[Inject]
+public NotificationService NotificationService { get; set; }
+
+    [CascadingParameter(Name = "UserId")]
+    public string? UserId { get; set; }
+
+    List<QuickProfile> _quickProfiles;
+    private RadzenDataGrid<QuickProfile>? _grid;
+
+
+    QuickProfile? profileToInsert;
+    QuickProfile? profileToUpdate;
+
+    protected override async Task OnInitializedAsync() {
+
+        await LoadProfiles();
+    }
+
+    private async Task LoadProfiles()
+    {
+        _quickProfiles = (List<QuickProfile>)await QuickProfileRepository.GetQuickProfiles(UserId);
+
+    }
+
+    private void  EditRow(QuickProfile profile)
+    {
+        profileToUpdate = profile;
+        _grid!.EditRow(profile);
+    }
+
+    private async Task CancelEdit(QuickProfile profile)
+    {
+        if (profile == profileToInsert)
+        {
+            profileToInsert = null;
+        }
+        profileToUpdate = null;
+
+        _grid!.CancelEditRow(profile);
+        await LoadProfiles();
+    }
+
+    private async Task SaveRow(QuickProfile profile)
+    {
+        await _grid!.UpdateRow(profile);
+
+
+    }
+
+    private async Task DeleteRow(QuickProfile profile)
+    {
+
+
+        var result = await DialogService.Confirm("Are you sure you want to delete this script?", "Delete script", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (result.HasValue && result.Value)
+        {
+
+
+            if (profile == profileToInsert) {
+                profileToInsert = null;
+            }
+
+            if (profile == profileToUpdate) {
+                profileToUpdate = null;
+            }
+
+
+            await QuickProfileRepository.DeleteQuickProfile(profile.Id);
+
+            NotificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Success",
+                Detail = "Profile deleted",
+                Duration = 3000
+            });
+
+            _quickProfiles.Remove(profile);
+            await _grid!.Reload();
+        }
+
+        //await LoadProfiles();
+    }
+
+    private async Task InsertRow()
+    {
+        profileToInsert = new QuickProfile() { Id = Guid.NewGuid(), UserId = UserId};
+        await _grid!.InsertRow(profileToInsert);
+    }
+
+    private async Task OnUpdateRow(QuickProfile profile) {
+        if (profileToUpdate == profile )
+        {
+            profileToInsert = null;
+        }
+        profileToUpdate = null;
+
+       await QuickProfileRepository.UpdateQuickProfile(profile);
+    }
+
+    private async Task OnCreateRow(QuickProfile profile)
+    {
+        await QuickProfileRepository.SaveQuickProfile(profile);
+        profileToInsert = null;
+    }
+
+}

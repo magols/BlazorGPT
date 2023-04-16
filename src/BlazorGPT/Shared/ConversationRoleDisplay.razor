@@ -1,0 +1,30 @@
+
+@switch (Role)
+{
+    case "system":
+    <span class="material-symbols-outlined">
+            settings_suggest
+        </span>
+        break;
+case "assistant":
+<span class="material-symbols-outlined">
+            smart_toy
+        </span>
+        break;
+case "user":
+<span class="material-symbols-outlined">
+            person
+        </span>
+        break;
+default:
+<span class="material-symbols-outlined">
+            help_outline
+        </span>
+        break;
+}
+
+@code {
+
+    [Parameter]
+    public string Role { get; set; }
+}

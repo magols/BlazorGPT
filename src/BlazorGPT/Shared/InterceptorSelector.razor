@@ -1,0 +1,50 @@
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Options
+@using BlazorGPT.Managers
+
+<RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string" 
+                    Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)" 
+                    Change="OnListChanged"
+                    class="mb-3 mt-0">
+</RadzenCheckBoxList>
+
+@code {
+
+    [Inject]
+    public IServiceProvider ServiceProvider { get; set; } = null!;
+
+    [Inject]
+    public IOptions<PipelineOptions> Options { get; set; } = null!;
+
+    [Inject]
+    public DialogService DialogService { get; set; } = null!;
+
+    [Parameter]
+    public IEnumerable<string> PreSelected { get; set; }
+
+
+    IEnumerable<IInterceptor> Interceptors => ServiceProvider.GetServices<IInterceptor>();
+    private IEnumerable<IInterceptor> EnabledInterceptors => Interceptors.Where(i => Options.Value.EnabledInterceptors != null && Options.Value.EnabledInterceptors.Contains(i.Name));
+    IEnumerable<string> Selected = new List<string>();
+    public IEnumerable<IInterceptor>? SelectedInterceptors => EnabledInterceptors.Where(i => Selected.Contains(i.Name) || i.Internal);
+
+    protected override void OnInitialized()
+    {
+        Selected = EnabledInterceptors.Where(i => PreSelected.Contains(i.GetType().Name)).Select(i => i.Name);
+        
+
+
+    }
+
+    private void OnListChanged()
+    {
+        if (SelectedInterceptors?.Count(i => i is IStateWritingInterceptor) > 1)
+        {
+            DialogService.Alert("You can only use one hive interceptor at a time.");
+
+        } 
+    }
+
+    public RadzenCheckBoxList<string> list { get; set; }
+
+}

@@ -1,0 +1,34 @@
+﻿@using BlazorPro.BlazorSize
+@implements IDisposable
+@inject IResizeListener listener
+@page "/size"
+
+<h3>Height: <span id="browserHeight">@browser.Height</span></h3>
+<h3>Width: <span id="browserWidth">@browser.Width</span></h3>
+<h3>MQ: <span id="isSmallMedia">@IsSmallMedia</span></h3>
+
+@code {
+
+    BrowserWindowSize browser = new BrowserWindowSize();
+
+    bool IsSmallMedia = false;
+
+
+    protected override void OnAfterRender(bool firstRender) {
+        if (firstRender) {
+            listener.OnResized += WindowResizedA;
+        }
+    }
+
+    void IDisposable.Dispose() {
+        listener.OnResized -= WindowResizedA;
+    }
+
+    async void WindowResizedA(object _, BrowserWindowSize window) {
+        browser = window;
+        IsSmallMedia = await listener.MatchMedia(Breakpoints.XLargeUp);
+        StateHasChanged();
+    }
+
+
+}
