@@ -4,10 +4,21 @@ BlazorGPT is a Blazor Server application that uses the ChatGPT 3.5 or ChatGPT-4 
 
 ## Features
 - Chat with GPT-3.5 or GPT-4
+  ![](docs/images/chat.png)
+  
 - Create and manage multiple chat sessions with history
+  ![](docs/images/history.png)
+  
 - QuickProfiles for quick access to your favorite text snippet shortcuts
+  ![](docs/images/QP.png)
+
 - Scripts with mutiple steps for automating a conversation
+  ![](docs/images/editscript.png)
+  
 - Branching of conversations into side conversations with the same context
+  ![](docs/images/hasbranch.png)
+  ![](docs/images/branched.png)
+
 - Restart a conversation from a previous step
 - (Developer) Chat pipeline for customizing the chat experience with middlewares and filters
 
