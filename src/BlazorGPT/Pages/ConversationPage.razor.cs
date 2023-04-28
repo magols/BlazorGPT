@@ -216,7 +216,7 @@ namespace BlazorGPT.Pages
             {
                 var stream =  Ai.ChatCompletion.CreateCompletionAsStream(new ChatCompletionCreateRequest()
                 {
-                    Model = Conversation.HasStarted() ? Conversation.Model : _modelSelector.SelectedModel,
+                    Model = Conversation?.Id != null ? Conversation.Model : _modelSelector.SelectedModel,
                     MaxTokens = 2000,
                     Temperature = 0.9f,
                     Messages = conv.Messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList()
@@ -265,6 +265,7 @@ namespace BlazorGPT.Pages
                 if (conv.Id == null || conv.Id == default(Guid))
                 {
                     conv.UserId = UserId;
+                    conv.Model = _modelSelector!.SelectedModel!;
                     isNew = true;
 
                     foreach (var p in _profileSelectorStart.SelectedProfiles)
