@@ -141,9 +141,15 @@
                                 </div>
 
 
-                                <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile"/>
-                                <br/>
-                                <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
+                                <RadzenButton Visible="ConversationId != null" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
+                                <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
+                              
+                                
+                                <div class="mt-4">
+                                    <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
+                                    <GPTModelSelector Class="m-0" @ref="_modelSelector" Enabled="@(Conversation.Id == null)" SelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"/>
+                                    <a class="float-end mt-2" href="#" @onclick="GoToNew">New conversation</a>
+                                </div>
 
                                 <span class="float-end mt-2 mb-0">
                                     <AuthorizeView Roles="Beta">
@@ -155,11 +161,9 @@
                                     <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state"/>
 
                                     <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state"/>
-                                    <RadzenButton Visible="ConversationId != null" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" />
 
                                 </span>
                                 
-                                <a class="float-end" href="#" @onclick="GoToNew">New conversation</a>
 
                                 <span>
                                 </span>

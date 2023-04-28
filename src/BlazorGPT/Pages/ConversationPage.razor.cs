@@ -61,6 +61,8 @@ namespace BlazorGPT.Pages
         public ConversationInterop? Interop { get; set; }
         public Conversation Conversation = new();
 
+        private GPTModelSelector? _modelSelector;
+
         bool promptIsReady;
         string scriptInput;
         bool showTokens = false;
@@ -118,12 +120,15 @@ namespace BlazorGPT.Pages
             }
             else
             {
-                Conversation = new Conversation();
-                Conversation.UserId = UserId;
+                Conversation = new Conversation
+                {
+                    Model = !string.IsNullOrEmpty(_modelSelector?.SelectedModel) ?_modelSelector!.SelectedModel: PipelineOptions.Value.Model!,
+                    UserId = UserId
+                };
                 Conversation.AddMessage(new ConversationMessage(ChatMessage.FromSystem("You are a helpful assistant.")));
             }
             StateHasChanged();
-        }
+        } 
 
 
         private async Task Summarize()
@@ -211,7 +216,7 @@ namespace BlazorGPT.Pages
             {
                 var stream =  Ai.ChatCompletion.CreateCompletionAsStream(new ChatCompletionCreateRequest()
                 {
-                    Model = PipelineOptions.Value.Model,
+                    Model = Conversation.HasStarted() ? Conversation.Model : _modelSelector.SelectedModel,
                     MaxTokens = 2000,
                     Temperature = 0.9f,
                     Messages = conv.Messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList()

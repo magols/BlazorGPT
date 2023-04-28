@@ -162,6 +162,10 @@ public class QuickProfile
 public class Conversation
 {
     public Guid? Id { get; set; }
+
+    [Required]
+    public string Model { get; set; } = null!;
+
     [Required]
     public string? UserId { get; set; } = null!;
 
