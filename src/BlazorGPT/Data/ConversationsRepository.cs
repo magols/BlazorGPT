@@ -142,6 +142,7 @@ public class ConversationsRepository
     {
         var nc = new Conversation();
         nc.UserId = userId;
+        nc.Model  = conversation.Model;
         nc.Id = null;
         nc.BranchedFromMessageId = msg.Id;
         nc.BranchedFromMessage = null;
@@ -167,22 +168,7 @@ public class ConversationsRepository
             message.Id = null;
             message.ConversationId = null;
             message.Conversation = null;
-            //if (message.BranchedConversations.Any())
-            //{
-              
 
-            //    foreach (var branchedConversation in message.BranchedConversations.Where(m => m.Id != msg.Id))
-            //    {
-            //        branchedConversation.Id = null;
-            //        branchedConversation.BranchedFromMessageId = msg.Id;
-            //        branchedConversation.BranchedFromMessage = null;
-            //        branchedConversation.Messages = new List<ConversationMessage>();
-            //        branchedConversation.QuickProfiles.Clear();
-
-            //        newmsg.BranchedConversations.Add(nc);
-            //    }
-            //}
-            
 
             copiedMessages.Add(newmsg);
         }

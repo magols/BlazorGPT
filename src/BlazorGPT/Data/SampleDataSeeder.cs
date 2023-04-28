@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BlazorGPT.Managers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using OpenAI.GPT3.ObjectModels.RequestModels;
 
 namespace BlazorGPT.Data
@@ -9,12 +11,16 @@ namespace BlazorGPT.Data
         private readonly IDbContextFactory<BlazorGptDBContext> _dbContextFactory;
         private readonly QuickProfileRepository _quickProfileRepository;
         private readonly ScriptRepository _scriptRepository;
-        private ConversationsRepository _conversationsRepository;
+        private readonly ConversationsRepository _conversationsRepository;
+        private readonly PipelineOptions _options;
 
         public ConversationCreatorAndDeleter(IDbContextFactory<BlazorGptDBContext> dbContextFactory, 
             ConversationsRepository conversationsRepository,
-            ScriptRepository scriptRepository, QuickProfileRepository quickProfileRepository)
+            ScriptRepository scriptRepository,
+            QuickProfileRepository quickProfileRepository,
+            IOptions<PipelineOptions> options)
         {
+            _options = options.Value;
             _conversationsRepository = conversationsRepository;
             _dbContextFactory = dbContextFactory;
             _quickProfileRepository = quickProfileRepository;
@@ -49,6 +55,7 @@ namespace BlazorGPT.Data
             var conversation = new Conversation()
             {
                 UserId = userId,
+                Model = _options.Model!,
                 DateStarted = DateTime.Now,
                 Summary = summary
             };
