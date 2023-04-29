@@ -41,10 +41,11 @@ public class Conversation
     }
 
 
-    public static Conversation CreateConversation(string userId, string systemMessage, string? message = null)
+    public static Conversation CreateConversation(string model, string userId, string systemMessage, string? message = null)
     {
         Conversation conversation = new Conversation
         {
+            Model = model,
             UserId = userId,
             DateStarted = DateTime.Now
         };
