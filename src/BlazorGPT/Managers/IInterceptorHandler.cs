@@ -1,4 +1,5 @@
 ﻿using BlazorGPT.Data;
+using BlazorGPT.Data.Model;
 
 namespace BlazorGPT.Managers;
 

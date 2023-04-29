@@ -1,4 +1,5 @@
 ﻿using BlazorGPT.Data;
+using BlazorGPT.Data.Model;
 using Microsoft.EntityFrameworkCore;
 using OpenAI.GPT3.ObjectModels.RequestModels;
 

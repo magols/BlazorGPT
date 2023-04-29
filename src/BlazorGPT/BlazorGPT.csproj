@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Pipeline\" />
     <Folder Include="wwwroot\state\messages\" />
   </ItemGroup>
 

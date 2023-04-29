@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BlazorGPT.Data.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorGPT.Data
 {

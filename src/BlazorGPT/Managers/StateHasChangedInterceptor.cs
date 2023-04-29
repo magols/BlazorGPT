@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using BlazorGPT.Data;
+using BlazorGPT.Data.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorGPT.Managers;

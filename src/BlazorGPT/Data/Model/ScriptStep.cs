@@ -1,4 +1,4 @@
-﻿namespace BlazorGPT.Data;
+﻿namespace BlazorGPT.Data.Model;
 
 public class ScriptStep
 {
