@@ -1,4 +1,4 @@
-﻿namespace BlazorGPT.Managers;
+﻿namespace BlazorGPT.Pipeline.Interceptors;
 
 public interface IStateWritingInterceptor
 {

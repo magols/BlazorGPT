@@ -1,6 +1,7 @@
 using BlazorGPT;
 using BlazorGPT.Data;
-using BlazorGPT.Managers;
+using BlazorGPT.Pipeline;
+using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web.Areas.Identity;
 using BlazorGPT.Web.Data;
 using BlazorGPT.Web.Shared;
@@ -56,7 +57,7 @@ builder.Services.AddScoped<StateRepository>();
 
 builder.Services.AddScoped<SampleDataSeeder>();
 
-builder.Services.AddSingleton<StateManager>();
+builder.Services.AddSingleton<StateHasChangedInterceptorService>();
 
 builder.Services.AddScoped<ChatWrapper>();
 

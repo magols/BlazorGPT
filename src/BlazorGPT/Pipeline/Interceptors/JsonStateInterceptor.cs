@@ -1,9 +1,6 @@
 ﻿using System.Text;
-using BlazorGPT.Data;
-using BlazorGPT.Data.Model;
-using Microsoft.EntityFrameworkCore;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline.Interceptors;
 
 public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWritingInterceptor
 {

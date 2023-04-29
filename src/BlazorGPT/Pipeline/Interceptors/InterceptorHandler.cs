@@ -1,10 +1,8 @@
-﻿using BlazorGPT.Data;
-using BlazorGPT.Data.Model;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline.Interceptors;
 
 public class InterceptorHandler : IInterceptorHandler
 {

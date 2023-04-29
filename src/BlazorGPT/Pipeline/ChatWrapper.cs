@@ -1,11 +1,9 @@
-﻿using BlazorGPT.Data;
-using BlazorGPT.Data.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using BlazorGPT.Pipeline.Interceptors;
 using Microsoft.Extensions.Options;
 using OpenAI.GPT3.Interfaces;
 using OpenAI.GPT3.ObjectModels.RequestModels;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline;
 
 public class ChatWrapper
 {

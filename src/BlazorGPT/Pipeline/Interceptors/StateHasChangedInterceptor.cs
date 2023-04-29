@@ -1,17 +1,14 @@
 ﻿using System.Text.RegularExpressions;
-using BlazorGPT.Data;
-using BlazorGPT.Data.Model;
-using Microsoft.EntityFrameworkCore;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline.Interceptors;
 
 public class StateHasChangedInterceptor : InterceptorBase, IInterceptor
 {
-    private StateManager _stateManager;
+    private StateHasChangedInterceptorService _stateHasChangedInterceptorService;
 
-    public StateHasChangedInterceptor(StateManager stateManager, IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository) : base(context, conversationsRepository)
+    public StateHasChangedInterceptor(StateHasChangedInterceptorService stateHasChangedInterceptorService, IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository) : base(context, conversationsRepository)
     {
-        _stateManager = stateManager;
+        _stateHasChangedInterceptorService = stateHasChangedInterceptorService;
     }
 
     public bool Internal { get; } = true;
@@ -37,7 +34,7 @@ public class StateHasChangedInterceptor : InterceptorBase, IInterceptor
         if (matches.Any())
         {
 
-            await _stateManager.ConversationUpdated((Guid)lastMsg.ConversationId);
+            await _stateHasChangedInterceptorService.ConversationUpdated((Guid)lastMsg.ConversationId);
         }
     }
 }

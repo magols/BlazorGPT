@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BlazorGPT.Managers;
+using BlazorGPT.Pipeline;
+using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;

@@ -1,6 +1,6 @@
 ﻿@page "/state/{stateType}/{renderType}/{id:guid}"
 @using BlazorGPT.Data
-@using BlazorGPT.Managers
+@using BlazorGPT.Pipeline
 @layout BlankLayout
 
 @switch (StateType)
@@ -52,7 +52,7 @@
     }
 
     [Inject]
-    public StateManager StateManager { get; set; }
+    public StateHasChangedInterceptorService StateHasChangedInterceptorService { get; set; }
 
     [Parameter]
     public string StateType { get; set; }
@@ -73,7 +73,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        StateManager.OnConversationUpdated += OnNotify;
+        StateHasChangedInterceptorService.OnConversationUpdated += OnNotify;
     }
 
     protected override async Task OnParametersSetAsync()
