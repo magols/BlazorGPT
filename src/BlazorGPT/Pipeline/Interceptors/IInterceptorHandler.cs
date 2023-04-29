@@ -1,6 +1,4 @@
-﻿using BlazorGPT.Data;
-
-namespace BlazorGPT.Managers;
+﻿namespace BlazorGPT.Pipeline.Interceptors;
 
 public interface IInterceptorHandler
 {

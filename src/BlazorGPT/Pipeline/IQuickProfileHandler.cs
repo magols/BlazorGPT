@@ -1,6 +1,4 @@
-﻿using BlazorGPT.Data;
-
-namespace BlazorGPT.Managers;
+﻿namespace BlazorGPT.Pipeline;
 
 public interface IQuickProfileHandler
 {

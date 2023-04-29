@@ -1,6 +1,7 @@
 ﻿@page "/pinball"
 @page "/pinball/{table}"
-@using BlazorGPT.Managers
+@using BlazorGPT.Pipeline
+@inject IOptions<PipelineOptions> PipelineOptions
 @layout EmptyLayout
 <h3>PinballGPT</h3>
 
@@ -55,7 +56,7 @@
 
     private void CreateConversation()
     {
-        Conversation = Conversation.CreateConversation("", "You are a very experienced pinball player. You know the rules of all the individual pinball machines. You can explain how to start and collect modes. You will explain how to light and start multiballs. You will explain what to focus on during the different specific multiballs");
+        Conversation = Conversation.CreateConversation(PipelineOptions.Value.Model,"", "You are a very experienced pinball player. You know the rules of all the individual pinball machines. You can explain how to start and collect modes. You will explain how to light and start multiballs. You will explain what to focus on during the different specific multiballs");
 
         if (Table != null)
         {

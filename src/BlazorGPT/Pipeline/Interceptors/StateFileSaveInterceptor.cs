@@ -1,15 +1,16 @@
 ﻿using System.Text.RegularExpressions;
-using BlazorGPT.Data;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline.Interceptors;
 
 public class StateFileSaveInterceptor : InterceptorBase, IInterceptor
 {
-    private string path = @"C:\source\BlazorGPT\BlazorGPT\wwwroot\state\";
+    private readonly string _path;
 
-    public StateFileSaveInterceptor(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository) : base(context, conversationsRepository)
+    public StateFileSaveInterceptor(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository, IOptions<PipelineOptions> options
+    ) : base(context, conversationsRepository)
     {
+        _path = options.Value.StateFileSaveInterceptorPath;
     }
 
     public string Name { get; } = "Save file";
@@ -35,7 +36,7 @@ public class StateFileSaveInterceptor : InterceptorBase, IInterceptor
         {
             var state = matches.First().Groups[1].Value;
             
-                await File.WriteAllTextAsync(path  + lastMsg.Id, state);
+                await File.WriteAllTextAsync( Path.Join(_path, lastMsg.Id.ToString()), state);
           
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using BlazorGPT.Data;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline.Interceptors;
 
 public abstract class InterceptorBase
 {

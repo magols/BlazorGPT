@@ -1,6 +1,6 @@
-﻿namespace BlazorGPT.Managers;
+﻿namespace BlazorGPT.Pipeline;
 
-public class StateManager
+public class StateHasChangedInterceptorService
 {
     // eventcallback for state change
 

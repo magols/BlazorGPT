@@ -1,6 +1,7 @@
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Options
-@using BlazorGPT.Managers
+@using BlazorGPT.Pipeline.Interceptors
+@using BlazorGPT.Pipeline
 
 <RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string" 
                     Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)" 

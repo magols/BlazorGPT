@@ -1,5 +1,6 @@
 ﻿@page "/helloworld"
-@using BlazorGPT.Managers
+@using BlazorGPT.Pipeline
+@inject IOptions<PipelineOptions> PipelineOptions
 @layout EmptyLayout
 <h3>Hello World</h3>
 
@@ -22,7 +23,7 @@
                 StateHasChanged();
                 return s;
             };
-            Conversation = Conversation.CreateConversation("", "You are a helpful assistant", 
+            Conversation = Conversation.CreateConversation(PipelineOptions.Value.Model, "You are a helpful assistant", 
                 "Write a Hello World in C#. Answer in markdown");
             Conversation = await Chat.SendWithPipeline(Conversation);
         }

@@ -1,8 +1,6 @@
-﻿using BlazorGPT.Data;
-using Microsoft.EntityFrameworkCore;
-using OpenAI.GPT3.ObjectModels.RequestModels;
+﻿using OpenAI.GPT3.ObjectModels.RequestModels;
 
-namespace BlazorGPT.Managers;
+namespace BlazorGPT.Pipeline;
 
 public class QuickProfileHandler : IQuickProfileHandler
 {
