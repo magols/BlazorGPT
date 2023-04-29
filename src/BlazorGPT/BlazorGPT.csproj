@@ -13,22 +13,22 @@
   <ItemGroup>
 
 
-    <PackageReference Include="Betalgo.OpenAI.GPT3" Version="6.8.3" />
-    <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.0" />
+    <PackageReference Include="Betalgo.OpenAI" Version="6.8.5" />
+    <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.1" />
     <PackageReference Include="Markdig" Version="0.31.0" />
     <PackageReference Include="Markdown.ColorCode" Version="1.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.5" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Radzen.Blazor" Version="4.8.4" />
+    <PackageReference Include="Radzen.Blazor" Version="4.10.1" />
 
   </ItemGroup>
 
