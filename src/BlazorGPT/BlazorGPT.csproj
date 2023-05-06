@@ -28,6 +28,7 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NRedisStack" Version="0.6.1" />
     <PackageReference Include="Radzen.Blazor" Version="4.10.1" />
 
   </ItemGroup>

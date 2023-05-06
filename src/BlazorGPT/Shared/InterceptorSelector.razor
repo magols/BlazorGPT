@@ -31,10 +31,7 @@
 
     protected override void OnInitialized()
     {
-        Selected = EnabledInterceptors.Where(i => PreSelected.Contains(i.GetType().Name)).Select(i => i.Name);
-        
-
-
+        Selected = EnabledInterceptors.Where(i => PreSelected.Contains(i.Name)).Select(i => i.Name);
     }
 
     private void OnListChanged()
