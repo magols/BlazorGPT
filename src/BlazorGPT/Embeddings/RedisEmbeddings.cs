@@ -60,7 +60,7 @@ namespace BlazorGPT.Embeddings
             //Buffer.BlockCopy(hash.First(h => h.Name== "embedding").Value, 0, vector, 0, 1536 * sizeof(float));
             //e.Embedding = vector;
 
-            e.Data = hash.FirstOrDefault(h => h.Name == "data").Value;
+            e.Data = hash.First(h => h.Name == "data").Value.ToString().Replace("\\n", " ");
             return e;
         }
 
@@ -104,9 +104,8 @@ namespace BlazorGPT.Embeddings
                 int docId = 0;
                 foreach (var item in embeddingResult.Data)
                 {
-                    await SaveEmbedding(prefix + docId, item.Embedding.Select(o => (float)o).ToArray(), input.ElementAt(docId));
-//                    await StoreVectorAndStringAsHashAsync
-//(_db, prefix + docId.ToString(), input.ElementAt(docId), item.Embedding.Select(o => (float)o).ToArray());
+                    await SaveEmbedding(prefix + docId, item.Embedding.Select(o => (float)o).ToArray(),
+                        input.ElementAt(docId));
                     docId++;
                 }
             }
@@ -123,8 +122,7 @@ namespace BlazorGPT.Embeddings
         public async Task SaveEmbedding(string id, float[] vector, string data)
         {
             Connect();
-            string prefix = "blazor-gpt:";
-
+         
             await _db.HashSetAsync(id, "data", data);
             await _db.HashSetAsync(id, "embedding", vector.SelectMany(BitConverter.GetBytes).ToArray());
         }
@@ -133,7 +131,10 @@ namespace BlazorGPT.Embeddings
         {
             Connect();
 
-            _db.FT().Create(indexName, new FTCreateParams().On(IndexDataType.HASH).Prefix("auto-gpt:", "blazor-gpt:"),
+            _db.FT().Create(indexName, 
+                new FTCreateParams().On(IndexDataType.HASH)
+                    //.Prefix("auto-gpt:", "blazor-gpt:", "c:")
+                    ,
                 new Schema()
                     .AddVectorField("embedding", Schema.VectorField.VectorAlgo.FLAT,
                         new Dictionary<string, object>()
