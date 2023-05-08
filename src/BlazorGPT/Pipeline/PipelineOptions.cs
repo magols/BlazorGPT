@@ -16,5 +16,6 @@ public class EmbeddingsSettings
 {
     public string RedisConfigurationString { get; set; }
     public string RedisIndexName { get; set; }
+    public int MaxTokensToIncludeAsContext { get; set; }
 
 }

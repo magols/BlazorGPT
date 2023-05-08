@@ -50,7 +50,7 @@ namespace BlazorGPT.Embeddings
                 contextBuilder.Append("[EMBEDDINGS]");
 
                 // make a counter, loop while counter < 1500
-                int maxEmbeddingsTokens = 3500;    
+                int maxEmbeddingsTokens = _options.Embeddings.MaxTokensToIncludeAsContext;    
                 int currentEmbeddingsTokens = 0;
 
                 foreach (var doc in docs)
