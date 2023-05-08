@@ -1,5 +1,6 @@
 using BlazorGPT;
 using BlazorGPT.Data;
+using BlazorGPT.Embeddings;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web.Areas.Identity;
@@ -68,6 +69,11 @@ builder.Services.AddScoped<IInterceptor, StructurizrDslInterceptor>();
 builder.Services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
 
 builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
+
+builder.Services.AddScoped<RedisEmbeddings>();
+
+builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
+
 
 
 // register the GPT context

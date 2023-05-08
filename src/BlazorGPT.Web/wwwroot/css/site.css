@@ -90,3 +90,8 @@ body {
     max-width: 500px;
     word-wrap: break-word;
 }
+
+.markdown-embeddings {
+    /*color: darkgreen;*/
+    font-size: smaller;
+}
