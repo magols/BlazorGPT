@@ -44,17 +44,25 @@ namespace BlazorGPT.Embeddings
                 var prompt = conversation.Messages.First(m => m.Role == "user");
                 var promptEmbed = await CreatePromptEmbedding(prompt.Content);
                 // search for embeddings in redis 
-                var docs = await _redisEmbeddings.Search(IndexName, promptEmbed.Embedding, 5);
+                var docs = await _redisEmbeddings.Search(IndexName, promptEmbed.Embedding, 30);
 
                 StringBuilder contextBuilder = new StringBuilder();
                 contextBuilder.Append("[EMBEDDINGS]");
+
+                // make a counter, loop while counter < 1500
+                int maxEmbeddingsTokens = 3500;    
+                int currentEmbeddingsTokens = 0;
+
                 foreach (var doc in docs)
                 {
+                    if (currentEmbeddingsTokens > maxEmbeddingsTokens)
+                        break;
                     var embeddingDoc = await _redisEmbeddings.GetEmbedding(doc.Id);
                     contextBuilder.Append(embeddingDoc.Data + " ");
+                    currentEmbeddingsTokens += AI.Dev.OpenAI.GPT.GPT3Tokenizer.Encode(embeddingDoc.Data).Count;
                 }
-                contextBuilder.Append("[/EMBEDDINGS]");
-                contextBuilder.Append("User prompt: ");
+                
+                contextBuilder.Append("[/EMBEDDINGS] ");
                 prompt.Content = contextBuilder + prompt.Content;
             }
 

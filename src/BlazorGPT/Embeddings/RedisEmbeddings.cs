@@ -70,7 +70,7 @@ namespace BlazorGPT.Embeddings
             Connect();
             var res = await _db.FT().SearchAsync(indexName,
                 new Query($"*=>[KNN {limit} @embedding $query_vec]")
-
+                    
                     .AddParam("query_vec", vec.SelectMany(BitConverter.GetBytes).ToArray())
                     .ReturnFields("__embedding_score")
                     .SetSortBy("__embedding_score")

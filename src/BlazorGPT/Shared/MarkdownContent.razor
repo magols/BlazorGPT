@@ -4,6 +4,10 @@
 @using System.Text.RegularExpressions
 @inherits ComponentBase
 
+@if (Embedding != null)
+{
+    <EmbeddingsDisplay Value="@Embedding"></EmbeddingsDisplay>
+}
 @((MarkupString) AsMarkdown)
 
 @code {
@@ -11,8 +15,9 @@
     [Parameter]
     public string Content { get; set; }
 
-    public string AsMarkdown => GetMarkdown(Content);
+    public string AsMarkdown;
 
+    string? Embedding { get; set; }
 
     protected override void OnInitialized()
     {
@@ -27,13 +32,25 @@
             .Build();
     }
 
+
+    protected override void OnParametersSet()
+    {
+        var embeddingsRemoved = RemoveEmbeddingsElement(Content);
+        AsMarkdown = GetMarkdown(embeddingsRemoved);
+        StateHasChanged();
+    }
+
     private MarkdownPipeline markdownPipeline;
 
     private string GetMarkdown(string toHtml)
     {
         try
         {
+             toHtml = RemoveEmbeddingsElement(toHtml);
+
             var html = Markdown.ToHtml(toHtml, markdownPipeline);
+
+
             var pattern = "(<div style=\"color:#DADADA;background-color:#1E1E1E;\"><pre>(.*?)</pre></div>)";
             var matches = Regex.Matches(html, pattern, RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
@@ -52,4 +69,21 @@
             return "";
         }
     }
+
+    private string RemoveEmbeddingsElement(string data)
+    {
+        string pattern = @"\[EMBEDDINGS\](.*?)\[/EMBEDDINGS\]";
+        var matches = Regex.Matches(data, pattern, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+        if (matches.Count == 0)
+        {
+            return data;
+        }
+
+        data = Regex.Replace(data, pattern, "", RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+       
+        Embedding =  $"{matches[0].Groups[1].Value}";
+        return data;
+    }
+
 }
