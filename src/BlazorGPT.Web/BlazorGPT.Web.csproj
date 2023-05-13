@@ -27,7 +27,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6" />
-    <PackageReference Include="Radzen.Blazor" Version="4.10.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.10.4" />
     <PackageReference Include="Sendgrid" Version="9.28.1" />
 
   </ItemGroup>
