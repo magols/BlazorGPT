@@ -1,0 +1,87 @@
+@using BlazorGPT.Pipeline
+@using Microsoft.Extensions.Options
+@inject IOptions<PipelineOptions> PipelineOptions
+<RadzenButton Icon="menu_open" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Model settings" Click="Toggle" Class="ms-3"/>
+@if (Toggled)
+{
+    <div class="@Class border border-secondary m-2 p-2">
+        <div class="row">
+            <div class="col-3">
+                <RadzenText Class="mt-3">Model</RadzenText>
+            </div>
+            <div class="col-9">
+                <RadzenDropDown TValue="string" Style="font-size: small;" Disabled="!ModelSelectEnabled!.Value" 
+                                TValue="string" Data=@models @bind-Value=@SelectedModel/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <RadzenText>Max tokens</RadzenText>
+
+            </div>
+            <div class="col-9">
+                <RadzenNumeric TValue="int" Value="@MaxTokens" Max="10000" Step="1"></RadzenNumeric>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <RadzenText>Temperature</RadzenText>
+            </div>
+            <div class="col-1">
+                <RadzenText>@Temperature</RadzenText>
+            </div>
+            <div class="col-8">
+                <RadzenSlider TValue="float" @bind-Value="@Temperature" Min="0" Max="1" Step="0.1" Class="me-3"/>
+            </div>
+        </div>
+    </div>
+}
+@code {
+
+    [Parameter]
+    public bool? ModelSelectEnabled { get; set; } = true;
+
+    [Parameter]
+    public string? PreSelectedModel { get; set; }
+    public string? SelectedModel { get; set; }
+
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public float Temperature { get; set; } = 0.0f;
+
+    [Parameter]
+    public int MaxTokens { get; set; } = 2000;
+
+    [Parameter]
+    public bool Toggled { get; set; } = false;
+
+
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        models = PipelineOptions.Value.Models;
+        SelectedModel ??= PreSelectedModel ?? PipelineOptions.Value.Model;
+        StateHasChanged();
+    }
+
+    private async Task Toggle()
+    {
+        Toggled = !Toggled;
+        await Resize();
+    }
+
+    [Parameter]
+    public EventCallback OnResize { get; set; }
+
+    private async Task Resize()
+    {
+        await OnResize.InvokeAsync();
+    }
+
+    string[] models;
+}
