@@ -62,15 +62,19 @@ namespace BlazorGPT.Pages
         public ConversationInterop? Interop { get; set; }
         public Conversation Conversation = new();
 
-        private GPTModelSelector? _modelSelector;
+        private GPTModelConfiguration? _modelConfiguration;
 
         bool promptIsReady;
         string scriptInput;
         bool showTokens = false;
 
-        private int controlHeight => _browserIsSmall ? 400 : 350;
+        private int baserControlHeight => _browserIsSmall ? 400 : 350;
+        private int controlHeight { get; set; }
+
+
         protected override async Task OnParametersSetAsync()
         {
+            controlHeight = baserControlHeight;
             await SetupConversation();
         }
 
@@ -123,7 +127,7 @@ namespace BlazorGPT.Pages
             {
                 Conversation = new Conversation
                 {
-                    Model = !string.IsNullOrEmpty(_modelSelector?.SelectedModel) ?_modelSelector!.SelectedModel: PipelineOptions.Value.Model!,
+                    Model = !string.IsNullOrEmpty(_modelConfiguration?.SelectedModel) ?_modelConfiguration!.SelectedModel: PipelineOptions.Value.Model!,
                     UserId = UserId
                 };
                 Conversation.AddMessage(new ConversationMessage(ChatMessage.FromSystem("You are a helpful assistant.")));
@@ -217,9 +221,9 @@ namespace BlazorGPT.Pages
             {
                 var stream =  Ai.ChatCompletion.CreateCompletionAsStream(new ChatCompletionCreateRequest()
                 {
-                    Model = Conversation?.Id != null ? Conversation.Model : _modelSelector.SelectedModel,
-                    MaxTokens = 2000,
-                    Temperature = 0.9f,
+                    Model = Conversation?.Id != null ? Conversation.Model : _modelConfiguration.SelectedModel,
+                    MaxTokens = _modelConfiguration.MaxTokens,
+                    Temperature = _modelConfiguration.Temperature,
                     Messages = conv.Messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList()
 
                 }).ConfigureAwait(true);
@@ -266,7 +270,7 @@ namespace BlazorGPT.Pages
                 if (conv.Id == null || conv.Id == default(Guid))
                 {
                     conv.UserId = UserId;
-                    conv.Model = _modelSelector!.SelectedModel!;
+                    conv.Model = _modelConfiguration!.SelectedModel!;
                     isNew = true;
 
                     foreach (var p in _profileSelectorStart.SelectedProfiles)
@@ -344,8 +348,13 @@ namespace BlazorGPT.Pages
         void IDisposable.Dispose()
         {
             ResizeListener.OnResized -= WindowResized;
+
         }
 
+        async void modelselectorResize()
+        {
+
+        }
         async void WindowResized(object _, BrowserWindowSize window)
         {
             browser = window;
@@ -467,6 +476,18 @@ namespace BlazorGPT.Pages
             if (Interop != null)
             {
                 await Interop.OpenStateViewer("hive", Conversation.Id!.ToString() ?? string.Empty, RenderType());
+            }
+        }
+
+        private async Task ModelConfigResized()
+        {
+            if (_modelConfiguration!.Toggled)
+            {
+                controlHeight = controlHeight + 100;
+            }
+            else
+            {
+                controlHeight = baserControlHeight;
             }
         }
     }

@@ -147,7 +147,10 @@
                                 
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-                                    <GPTModelSelector Class="m-0" @ref="_modelSelector" Enabled="@(Conversation.Id == null)" SelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"/>
+                                    <GPTModelConfiguration Class="m-0" @ref="_modelConfiguration" 
+                                                           ModelSelectEnabled="@(Conversation.Id == null)" 
+                                                           PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"  
+                                                           OnResize="@ModelConfigResized" />
                                     <a class="float-end mt-2" href="#" @onclick="GoToNew">New conversation</a>
                                 </div>
 
