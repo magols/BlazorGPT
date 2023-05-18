@@ -1,13 +1,12 @@
-﻿@using AI.Dev.OpenAI.GPT
-@if (Value != null)
+﻿@if (Value != null)
 {
     <RadzenTree Expand=@OnExpand Collapse=@OnCollapse >
         <RadzenTreeItem Text="">
             <ChildContent>
                 <div class="markdown-embeddings">@Value</div>
-                @if (tokens != null)
+                @if (tokens.Any())
                 {
-                    <span>Token count: @tokens.Count</span>
+                    <span>Token count: @tokens.Count()</span>
                 }
             </ChildContent>
             <Template>
@@ -23,11 +22,11 @@
     [Parameter]
     public string? Value { get; set; }
 
-    List<int>? tokens;
+    IEnumerable<int> tokens;
 
     protected override void OnParametersSet()
     {
-        tokens = GPT3Tokenizer.Encode(Value);
+        if (Value != null) tokens = OpenAI.GPT3.Tokenizer.GPT3.TokenizerGpt3.Encode(Value);
     }
 
     private void OnExpand(TreeExpandEventArgs arg)

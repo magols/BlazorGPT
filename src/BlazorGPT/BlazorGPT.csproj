@@ -11,11 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-
-
-    <PackageReference Include="AI.Dev.OpenAI.GPT" Version="1.0.2" />
-
-
     <PackageReference Include="Betalgo.OpenAI" Version="6.8.6" />
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.1" />
     <PackageReference Include="Markdig" Version="0.31.0" />

@@ -53,15 +53,16 @@ namespace BlazorGPT.Embeddings
                 int maxEmbeddingsTokens = _options.Embeddings.MaxTokensToIncludeAsContext;    
                 int currentEmbeddingsTokens = 0;
 
+
                 foreach (var doc in docs)
                 {
+                    var embeddingDoc = await _redisEmbeddings.GetEmbedding(doc.Id);
+                    currentEmbeddingsTokens += OpenAI.GPT3.Tokenizer.GPT3.TokenizerGpt3.TokenCount(embeddingDoc.Data);
                     if (currentEmbeddingsTokens > maxEmbeddingsTokens)
                         break;
-                    var embeddingDoc = await _redisEmbeddings.GetEmbedding(doc.Id);
                     contextBuilder.Append(embeddingDoc.Data + " ");
-                    currentEmbeddingsTokens += AI.Dev.OpenAI.GPT.GPT3Tokenizer.Encode(embeddingDoc.Data).Count;
                 }
-                
+
                 contextBuilder.Append("[/EMBEDDINGS] ");
                 prompt.Content = contextBuilder + prompt.Content;
             }
