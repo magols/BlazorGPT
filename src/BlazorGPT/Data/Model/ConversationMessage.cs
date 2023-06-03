@@ -1,20 +1,28 @@
-﻿using OpenAI.GPT3.ObjectModels.RequestModels;
+﻿using Azure.AI.OpenAI;
+using Microsoft.SemanticKernel.AI.ChatCompletion;
+
 
 namespace BlazorGPT.Data.Model;
 
-public class ConversationMessage : ChatMessage
+public class ConversationMessage
 {
 
 
-    public ConversationMessage(string role, string content) : base(role, content)
+    public ConversationMessage(string role, string content)  
     {
+        Role = role;
+        Content = content;
     }
 
-    public ConversationMessage(ChatMessage msg) : base(msg.Role, msg.Content)
+    public ConversationMessage(ChatMessage msg)  
     {
+        Role = msg.Role == ChatRole.User ? "user" : "assistant";
+        Content = msg.Content;
     }
 
     public Guid? Id { get; set; }
+    public string Role { get; set; }
+    public string Content { get; set; }
     public Conversation? Conversation { get; set; }
     public Guid? ConversationId { get; set; }
 

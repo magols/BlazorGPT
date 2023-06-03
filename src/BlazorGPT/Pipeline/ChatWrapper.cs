@@ -1,7 +1,6 @@
 ﻿using BlazorGPT.Pipeline.Interceptors;
 using Microsoft.Extensions.Options;
-using OpenAI.GPT3.Interfaces;
-using OpenAI.GPT3.ObjectModels.RequestModels;
+using Microsoft.SemanticKernel.AI.ChatCompletion;
 
 namespace BlazorGPT.Pipeline;
 
@@ -10,18 +9,16 @@ public class ChatWrapper
     // This is the wrapper class that will be used to call the pipeline
     // it shall have the same methods as the pipeline
     private readonly IInterceptorHandler _interceptorHandler;
-    private readonly IOpenAIService _openAiService;
     private readonly IDbContextFactory<BlazorGptDBContext> _contextFactory;
 
-    public ChatWrapper(IInterceptorHandler interceptorHandler, 
+    public ChatWrapper(KernelService kernelService, IInterceptorHandler interceptorHandler, 
         IQuickProfileHandler quickProfileHandler,
-        IOpenAIService openAiService, 
         IDbContextFactory<BlazorGptDBContext> contextFactory, IOptions<PipelineOptions> pipelineOptions)
     {
+        _kernelService = kernelService;
         _pipelineOptions = pipelineOptions;
         _quickProfileHandler = quickProfileHandler;
         _contextFactory = contextFactory;
-        _openAiService = openAiService;
         _interceptorHandler = interceptorHandler;
     }
 
@@ -65,54 +62,58 @@ public class ChatWrapper
     };
 
     private IOptions<PipelineOptions> _pipelineOptions;
+    private KernelService _kernelService;
 
     public async Task<Conversation> Send(Conversation conversation, IEnumerable<QuickProfile> profiles)
     {
 
-            var stream = _openAiService.ChatCompletion.CreateCompletionAsStream(new ChatCompletionCreateRequest()
+        ChatHistory chatHistory = new ChatHistory();
+        foreach (var message in conversation.Messages)
+        {
+            var role =
+                message.Role == "system" ? ChatHistory.AuthorRoles.System : // if the role is system, set the role to system
+                message.Role == "user" ? ChatHistory.AuthorRoles.User : ChatHistory.AuthorRoles.Assistant;
+
+            chatHistory.AddMessage(role, message.Content);
+        }
+
+
+        var kernelStream = _kernelService.ChatCompletionAsStreamAsync(chatHistory, ChatHistory.AuthorRoles.User);
+
+        var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
+        conversation.AddMessage(conversationMessage);
+        await foreach (var completion in kernelStream)
+        {
+            if (true)
             {
-                Model = _pipelineOptions.Value.Model,
-                MaxTokens = 2000,
-                Temperature = 0.3f,
-                Messages = conversation.Messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList()
-
-            });
-
-            var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
-            // add the result, with cost
-            conversation.AddMessage(conversationMessage);
-
-            await foreach (var completion in stream)
-            {
-                if (completion.Successful)
+                string? content ; // = completion.Choices.First()?.Message.Content;
+                content = completion;
+                if (content != null)
                 {
-                    string? content = completion.Choices.First()?.Message.Content;
-                    if (content != null)
+                    conversationMessage.Content += content;
+                    if (OnStreamCompletion != null)
                     {
-                        conversationMessage.Content += content;
-                        if (OnStreamCompletion!= null)
-                        {
-                          await  OnStreamCompletion.Invoke(content);   
-                        }
-                        
-                        await Task.Delay(50); // adjust the delay time as needed
+                        await OnStreamCompletion.Invoke(content);
                     }
-                }
-                else
-                {
-                    if (completion.Error == null)
-                    {
-                        throw new Exception("Unknown Error");
-                    }
-                    Console.WriteLine($"{completion.Error.Code}: {completion.Error.Message}");
+                    
+                    await Task.Delay(50); // adjust the delay time as needed
                 }
             }
+            else
+            {
+                //if (completion.Error == null)
+                //{
+                //    throw new Exception("Unknown Error");
+                //}
+                //Console.WriteLine($"{completion.Error.Code}: {completion.Error.Message}");
+            }
+        }
 
 
-            // save stuff
-     //       StateHasChanged();
 
-            await using var ctx = await _contextFactory.CreateDbContextAsync();
+
+
+        await using var ctx = await _contextFactory.CreateDbContextAsync();
 
         //    bool isNew = false;
          //   bool wasSummarized = false;

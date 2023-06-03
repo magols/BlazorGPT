@@ -1,10 +1,11 @@
-﻿@if (Value != null)
+﻿@using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers
+@if (Value != null)
 {
     <RadzenTree Expand=@OnExpand Collapse=@OnCollapse >
         <RadzenTreeItem Text="">
             <ChildContent>
                 <div class="markdown-embeddings">@Value</div>
-                @if (tokens.Any())
+                @if (tokens != null && tokens.Any())
                 {
                     <span>Token count: @tokens.Count()</span>
                 }
@@ -22,11 +23,11 @@
     [Parameter]
     public string? Value { get; set; }
 
-    IEnumerable<int> tokens;
+    IEnumerable<int>? tokens;
 
     protected override void OnParametersSet()
     {
-        if (Value != null) tokens = OpenAI.GPT3.Tokenizer.GPT3.TokenizerGpt3.Encode(Value);
+        if (Value != null) tokens = GPT3Tokenizer.Encode(Value);
     }
 
     private void OnExpand(TreeExpandEventArgs arg)

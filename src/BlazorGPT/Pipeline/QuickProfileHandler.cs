@@ -1,4 +1,6 @@
-﻿using OpenAI.GPT3.ObjectModels.RequestModels;
+﻿ 
+
+using Microsoft.SemanticKernel.AI.ChatCompletion;
 
 namespace BlazorGPT.Pipeline;
 
@@ -21,7 +23,7 @@ public class QuickProfileHandler : IQuickProfileHandler
             {
                 string startMsg = string.Join(" ", selected.Select(p => p.Content)) + "\n\n\n";
 
-                conversation.Messages.Insert(1, new ConversationMessage(ChatMessage.FromUser(startMsg)));
+                conversation.Messages.Insert(1, new ConversationMessage("user", startMsg));
 
             }
         }
@@ -51,9 +53,8 @@ public class QuickProfileHandler : IQuickProfileHandler
             {
                 foreach (var profile in profiles)
                 {
-                    conversation.AddMessage(new ConversationMessage(ChatMessage.FromUser(profile.Content)));
+                    conversation.AddMessage(new ConversationMessage("user", profile.Content));
                     conversation = await chatWrapper.Send(conversation).ConfigureAwait(true);
-
                 }
             }
         }
