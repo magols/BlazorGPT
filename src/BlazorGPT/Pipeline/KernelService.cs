@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Memory.Sqlite;
@@ -13,8 +14,9 @@ namespace BlazorGPT.Pipeline
         //private readonly IKernel _kernel;
         //private readonly IChatCompletion _chatGPT;
         readonly KernelSettings _kernelSettings;
-        public KernelService()
+        public KernelService(IOptions<PipelineOptions> options)
         {
+            _options = options.Value;
              _kernelSettings = KernelSettings.LoadSettings();
         }
 
@@ -26,16 +28,16 @@ namespace BlazorGPT.Pipeline
             if (useAzureOpenAI)
             {
                 builder
-                    .WithAzureChatCompletionService(_kernelSettings.ChatDeploymentOrModelId, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
-                    .WithAzureTextCompletionService(_kernelSettings.ChatDeploymentOrModelId, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
-                    .WithAzureTextEmbeddingGenerationService(_kernelSettings.ChatDeploymentOrModelId, _kernelSettings.Endpoint, _kernelSettings.ApiKey);
+                    .WithAzureChatCompletionService(_options.Model, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
+                    .WithAzureTextCompletionService(_options.ModelTextCompletions, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
+                    .WithAzureTextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.Endpoint, _kernelSettings.ApiKey);
             }
             else
             {
                 builder
-                    .WithOpenAIChatCompletionService(_kernelSettings.ChatDeploymentOrModelId, _kernelSettings.ApiKey, _kernelSettings.OrgId)
-                    .WithOpenAITextCompletionService(_kernelSettings.TextDeploymentOrModelId, _kernelSettings.ApiKey, _kernelSettings.OrgId)
-                    .WithOpenAITextEmbeddingGenerationService(_kernelSettings.EmbeddingsDeploymentOrModelId, _kernelSettings.ApiKey, _kernelSettings.OrgId)
+                    .WithOpenAIChatCompletionService(_options.Model, _kernelSettings.ApiKey, _kernelSettings.OrgId)
+                    .WithOpenAITextCompletionService(_options.ModelTextCompletions, _kernelSettings.ApiKey, _kernelSettings.OrgId)
+                    .WithOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.ApiKey, _kernelSettings.OrgId)
                     .WithOpenAIImageGenerationService(_kernelSettings.ApiKey, _kernelSettings.OrgId);
             }
 
@@ -46,6 +48,7 @@ namespace BlazorGPT.Pipeline
 
 
         public Func<string, Task<string>> OnChatStreamCompletion = async (string s) => s;
+        private readonly PipelineOptions _options;
 
         public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync( ChatHistory chatHistory,
             ChatHistory.AuthorRoles authorRole = ChatHistory.AuthorRoles.Assistant)
