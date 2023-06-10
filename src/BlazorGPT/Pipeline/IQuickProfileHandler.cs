@@ -1,8 +1,10 @@
-﻿namespace BlazorGPT.Pipeline;
+﻿using Microsoft.SemanticKernel;
+
+namespace BlazorGPT.Pipeline;
 
 public interface IQuickProfileHandler
 {
-    Task<Conversation> Send(Conversation conversation, IEnumerable<QuickProfile>? beforeProfiles = null);
-    Task<Conversation> Receive(ChatWrapper chatWrapper, Conversation conversation,
+    Task<Conversation> Send(IKernel kernel, Conversation conversation, IEnumerable<QuickProfile>? beforeProfiles = null);
+    Task<Conversation> Receive(IKernel kernel, ChatWrapper chatWrapper, Conversation conversation,
         IEnumerable<QuickProfile>? profiles = null);
 }

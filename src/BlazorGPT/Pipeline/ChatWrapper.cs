@@ -1,5 +1,6 @@
 ﻿using BlazorGPT.Pipeline.Interceptors;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 
 namespace BlazorGPT.Pipeline;
@@ -23,27 +24,28 @@ public class ChatWrapper
     }
 
 
-    public async Task<Conversation> SendWithPipeline(Conversation conversation,
-        IEnumerable<QuickProfile>? quickProfiles = null
-   , IEnumerable<IInterceptor>? enabledInterceptors = null)
+    public async Task<Conversation> SendWithPipeline(IKernel kernel,
+        Conversation conversation ,
+        IEnumerable<QuickProfile>? quickProfiles = null, 
+        IEnumerable<IInterceptor>? enabledInterceptors = null)
     {
         var profiles = quickProfiles?.ToArray() ?? Array.Empty<QuickProfile>();
         var interceptors = enabledInterceptors?.ToArray() ?? Array.Empty<IInterceptor>();
         
-        conversation = await _quickProfileHandler.Send(conversation, profiles.Where(p => p.InsertAt == InsertAt.Before));
+        conversation = await _quickProfileHandler.Send(kernel, conversation, profiles.Where(p => p.InsertAt == InsertAt.Before));
 
         if (interceptors.Any())    
         {
-            conversation = await _interceptorHandler.Send(conversation, interceptors);
+            conversation = await _interceptorHandler.Send(kernel, conversation, interceptors);
         }
         
-        conversation = await Send(conversation, profiles);
+        conversation = await Send(kernel, conversation, profiles);
 
-        conversation = await _quickProfileHandler.Receive(this, conversation, profiles.Where(p => p.InsertAt == InsertAt.After));
+        conversation = await _quickProfileHandler.Receive(kernel, this, conversation, profiles.Where(p => p.InsertAt == InsertAt.After));
 
         if (interceptors.Any())
         {
-            conversation = await _interceptorHandler.Receive(conversation, interceptors);
+            conversation = await _interceptorHandler.Receive(kernel, conversation, interceptors);
         }
 
         return  conversation;
@@ -51,11 +53,9 @@ public class ChatWrapper
     }
 
 
-    //public Func<Task<string>>? OnStreamCompletion = null;
     private IQuickProfileHandler _quickProfileHandler;
 
 
-    // make an OnCompletion func that also takes string as a parameter
     public Func<string, Task<string>> OnStreamCompletion = async (string s) =>
     {
         return s;
@@ -64,7 +64,9 @@ public class ChatWrapper
     private IOptions<PipelineOptions> _pipelineOptions;
     private KernelService _kernelService;
 
-    public async Task<Conversation> Send(Conversation conversation, IEnumerable<QuickProfile> profiles)
+    public async Task<Conversation> Send(IKernel kernel, 
+        Conversation conversation, 
+        IEnumerable<QuickProfile> profiles)
     {
 
         ChatHistory chatHistory = new ChatHistory();
@@ -78,15 +80,13 @@ public class ChatWrapper
         }
 
 
-        var kernelStream = _kernelService.ChatCompletionAsStreamAsync(chatHistory, ChatHistory.AuthorRoles.User);
+        var kernelStream = _kernelService.ChatCompletionAsStreamAsync(kernel, chatHistory, ChatHistory.AuthorRoles.User);
 
         var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
         conversation.AddMessage(conversationMessage);
         await foreach (var completion in kernelStream)
         {
-            if (true)
-            {
-                string? content ; // = completion.Choices.First()?.Message.Content;
+                  string? content ; // = completion.Choices.First()?.Message.Content;
                 content = completion;
                 if (content != null)
                 {
@@ -98,31 +98,15 @@ public class ChatWrapper
                     
                     await Task.Delay(50); // adjust the delay time as needed
                 }
-            }
-            else
-            {
-                //if (completion.Error == null)
-                //{
-                //    throw new Exception("Unknown Error");
-                //}
-                //Console.WriteLine($"{completion.Error.Code}: {completion.Error.Message}");
-            }
         }
-
-
-
 
 
         await using var ctx = await _contextFactory.CreateDbContextAsync();
 
-        //    bool isNew = false;
-         //   bool wasSummarized = false;
 
             if (conversation.Id == null || conversation.Id == default(Guid))
             {
-           //     conversation.UserId = userId;
-              //  isNew = true;
-
+         
                 foreach (var p in profiles.Where(p => p.Id != Guid.Empty))
                 {
                     ctx.Attach(p);
@@ -142,7 +126,6 @@ public class ChatWrapper
                 var last = conversation.Messages.Last().Content;
                 conversation.Summary =
                     last.Substring(0, last.Length >= 75 ? 75 : last.Length);
-          //      wasSummarized = true;
             }
 
             if (!string.IsNullOrEmpty(conversation.UserId))
@@ -155,8 +138,8 @@ public class ChatWrapper
 
     }
 
-    public async Task<Conversation> Send(Conversation conversation)
+    public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
     {
-        return await Send(conversation, Array.Empty<QuickProfile>());
+        return await Send(kernel, conversation, Array.Empty<QuickProfile>());
     }
 }

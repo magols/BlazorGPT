@@ -40,6 +40,10 @@ public class Conversation
         Messages.Add(message);
     }
 
+    public void AddMessage(string role, string content)
+    {
+        AddMessage(new ConversationMessage(role, content));
+    }   
 
     public static Conversation CreateConversation(string model, string userId, string systemMessage, string? message = null)
     {

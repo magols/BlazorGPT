@@ -2,6 +2,7 @@
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers;
@@ -32,12 +33,12 @@ namespace BlazorGPT.Embeddings
             }
         }
 
-        public async Task<Conversation> Receive(Conversation conversation)
+        public async Task<Conversation> Receive(IKernel kernel, Conversation conversation)
         {
             return conversation;
         }
 
-        public async Task<Conversation> Send(Conversation conversation)
+        public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
         {
 
             if (conversation.Messages.Count == 2)

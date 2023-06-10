@@ -50,10 +50,10 @@ namespace BlazorGPT.Pipeline
         public Func<string, Task<string>> OnChatStreamCompletion = async (string s) => s;
         private readonly PipelineOptions _options;
 
-        public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync( ChatHistory chatHistory,
+        public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync(IKernel kernel, ChatHistory chatHistory,
             ChatHistory.AuthorRoles authorRole = ChatHistory.AuthorRoles.Assistant)
         {
-            var kernel = await CreateKernelAsync();
+           
             var chatCompletion = kernel.GetService<IChatCompletion>();
 
             string fullMessage = string.Empty;

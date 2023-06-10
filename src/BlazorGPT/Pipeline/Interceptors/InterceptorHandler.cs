@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
@@ -24,18 +25,20 @@ public class InterceptorHandler : IInterceptorHandler
 
     private IEnumerable<IInterceptor> EnabledInterceptors => Interceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
         
-    public async Task<Conversation> Send(Conversation conversation, IEnumerable<IInterceptor>? enabledInterceptors = null)
+    public async Task<Conversation> Send(IKernel kernel, Conversation conversation,
+        IEnumerable<IInterceptor>? enabledInterceptors = null)
     {
         IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
         foreach (var interceptor in enabled)
         {
-            conversation = await interceptor.Send(conversation);
+            conversation = await interceptor.Send(kernel, conversation);
         }
         return conversation;
 
     }
 
-    public async Task<Conversation> Receive(Conversation conversation, IEnumerable<IInterceptor>? enabledInterceptors)
+    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation,
+        IEnumerable<IInterceptor>? enabledInterceptors)
     {
         IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
 
@@ -44,12 +47,12 @@ public class InterceptorHandler : IInterceptorHandler
         {
             var stateFileSaveInterceptor = enabled.First(i => i.Name == "Save file");
 
-            await stateFileSaveInterceptor.Receive(conversation);
+            await stateFileSaveInterceptor.Receive(kernel, conversation);
         }
 
         foreach (var interceptor in enabled.Where(e => e.Name != "Save File"))
         {
-            conversation = await interceptor.Receive(conversation);
+            conversation = await interceptor.Receive(kernel, conversation);
         }
 
         return conversation;

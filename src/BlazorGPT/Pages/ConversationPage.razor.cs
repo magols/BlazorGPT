@@ -7,7 +7,9 @@ using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using Microsoft.SemanticKernel.CoreSkills;
 using Radzen;
 using Radzen.Blazor;
 
@@ -72,6 +74,16 @@ namespace BlazorGPT.Pages
         private int baserControlHeight => _browserIsSmall ? 400 : 350;
         private int controlHeight { get; set; }
 
+
+        private IKernel _kernel = null!;
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            _kernel = await KernelService.CreateKernelAsync();
+            _kernel.ImportSkill(new TimeSkill(), "time");
+
+        }
 
         protected override async Task OnParametersSetAsync()
         {
@@ -182,7 +194,7 @@ namespace BlazorGPT.Pages
 
             }
 
-            await InterceptorHandler.Send(Conversation, inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>());
+            await InterceptorHandler.Send(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>());
 
             await Send();
                 
@@ -236,7 +248,7 @@ namespace BlazorGPT.Pages
                     chatHistory.AddMessage(role, message.Content);
                 }
 
-                var kernelStream = KernelService.ChatCompletionAsStreamAsync(chatHistory, ChatHistory.AuthorRoles.User);
+                var kernelStream = KernelService.ChatCompletionAsStreamAsync(_kernel, chatHistory, ChatHistory.AuthorRoles.User);
 
                 var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
                 conv.AddMessage(conversationMessage);
@@ -337,7 +349,7 @@ namespace BlazorGPT.Pages
 
                     await ctx.SaveChangesAsync();
 
-                    conv = await InterceptorHandler.Receive(conv, inteceptorSelector?.SelectedInterceptors);
+                    conv = await InterceptorHandler.Receive(_kernel, conv, inteceptorSelector?.SelectedInterceptors);
 
                     if (wasSummarized)
                     {

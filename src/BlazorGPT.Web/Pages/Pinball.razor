@@ -2,6 +2,7 @@
 @page "/pinball/{table}"
 @using BlazorGPT.Pipeline
 @inject IOptions<PipelineOptions> PipelineOptions
+@inject KernelService KernelService 
 @layout EmptyLayout
 <h3>PinballGPT</h3>
 
@@ -43,13 +44,14 @@
 
             if (Table != null && Conversation != null)
             {
-                Conversation = await Chat.SendWithPipeline(Conversation);
+                var kernel = await KernelService.CreateKernelAsync();
+                Conversation = await Chat.SendWithPipeline(kernel, Conversation);
 
                 Conversation.AddMessage(new ConversationMessage("user", "What are the different modes or objectives in the game " + Table + " and how do I start a mode?"));
-                Conversation = await Chat.SendWithPipeline(Conversation);
+                Conversation = await Chat.SendWithPipeline(kernel, Conversation);
 
                 Conversation.AddMessage(new ConversationMessage("user", "How do I start the different multi balls in the game " + Table + "?"));
-                Conversation = await Chat.SendWithPipeline(Conversation);
+                Conversation = await Chat.SendWithPipeline(kernel, Conversation);
             }
         }
     }
