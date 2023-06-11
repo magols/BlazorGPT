@@ -20,8 +20,8 @@
     [Inject]
     public DialogService DialogService { get; set; } = null!;
 
-    [Parameter]
-    public IEnumerable<string> PreSelected { get; set; }
+    
+    public IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
 
 
     IEnumerable<IInterceptor> Interceptors => ServiceProvider.GetServices<IInterceptor>();
@@ -31,7 +31,7 @@
 
     protected override void OnInitialized()
     {
-        Selected = EnabledInterceptors.Where(i => PreSelected.Contains(i.Name)).Select(i => i.Name);
+        Selected = EnabledInterceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
     }
 
     private void OnListChanged()

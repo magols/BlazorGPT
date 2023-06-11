@@ -6,7 +6,6 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers;
-using Microsoft.SemanticKernel.Services;
 
 namespace BlazorGPT.Embeddings
 {

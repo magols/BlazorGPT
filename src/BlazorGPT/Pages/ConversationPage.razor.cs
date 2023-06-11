@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BlazorGPT.Data.Model;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Shared;
@@ -229,7 +228,7 @@ namespace BlazorGPT.Pages
 
 
             var conv = Conversation;
-            Conversation = conv;
+            
             try
             {
 
@@ -248,122 +247,71 @@ namespace BlazorGPT.Pages
                     chatHistory.AddMessage(role, message.Content);
                 }
 
-                var kernelStream = KernelService.ChatCompletionAsStreamAsync(_kernel, chatHistory, ChatHistory.AuthorRoles.User);
+
+                var kernelStream = KernelService.ChatCompletionAsStreamAsync(_kernel, chatHistory);
 
                 var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
                 conv.AddMessage(conversationMessage);
+                StateHasChanged();
                 await foreach (var completion in kernelStream)
                 {
-                    if (true)
-                    {
-                        //string? content; // = completion.Choices.First()?.Message.Content;
-                        //content = completion;
-                        //if (content != null)
-                        {
-                            conversationMessage.Content += completion;
-                            StateHasChanged();
-
-
-                            await Task.Delay(20); // adjust the delay time as needed
-                        }
-                    }
-
+                    conversationMessage.Content += completion;
+                        Console.Write(completion);
+                    StateHasChanged();
                 }
 
-                //var stream =  Ai.ChatCompletion.CreateCompletionAsStream(new ChatCompletionCreateRequest()
-                    //{
-                    //    Model = Conversation?.Id != null ? Conversation.Model : _modelConfiguration.SelectedModel,
-                    //    MaxTokens = _modelConfiguration.MaxTokens,
-                    //    Temperature = _modelConfiguration.Temperature,
-                    //    Messages = conv.Messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList()
-
-                    //}).ConfigureAwait(true);
 
 
+                await using var ctx = await DbContextFactory.CreateDbContextAsync();
 
-                    //    conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
-                    // add the result, with cost
-                //    conv.AddMessage(conversationMessage);
+                bool isNew = false;
+                bool wasSummarized = false;
+
+                if (conv.Id == null || conv.Id == default(Guid))
+                {
+                    conv.UserId = UserId;
+                    conv.Model = _modelConfiguration!.SelectedModel!;
+                    isNew = true;
+
+                    foreach (var p in _profileSelectorStart.SelectedProfiles)
+                    {
+                        ctx.Attach(p);
+                        conv.QuickProfiles.Add(p);
+                    }
+
+                    ctx.Conversations.Add(conv);
+                }
+                else
+                {
+                    ctx.Attach(conv);
+                }
+
+
+                if (conv.Summary == null)
+                {
+                    var last = conv.Messages.First(m => m.Role == ConversationRole.User).Content;
+                    conv.Summary =
+                        Model.Prompt?.Substring(0, Model.Prompt.Length >= 75 ? 75 : Model.Prompt.Length);
+                    wasSummarized = true;
+                }
+
+                await ctx.SaveChangesAsync();
+
+                conv = await InterceptorHandler.Receive(_kernel, conv, inteceptorSelector?.SelectedInterceptors);
+
+                if (wasSummarized)
+                {
+                    await _conversations.LoadConversations();
                     StateHasChanged();
-                    //await foreach (var completion in stream)
-                    //{
-                    //    if (completion.Successful)
-                    //    {
-                    //        string? content = completion.Choices.First()?.Message.Content;
-                    //        if (content != null)
-                    //        {
-                    //            conversationMessage.Content += content;
-                    //            Console.Write(content);
-                    //            await Task.Delay(1); // adjust the delay time as needed
-                    //            Conversation = conv;
-                    //            StateHasChanged();
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        if (completion.Error == null)
-                    //        {
-                    //            throw new Exception("Unknown Error");
-                    //        }
-                    //        Console.WriteLine($"{completion.Error.Code}: {completion.Error.Message}");
-                    //    }
-                    //}
-                            
+                }
 
 
-                    // save stuff
-                    StateHasChanged();
+                if (isNew)
+                {
+                    NavigationManager.NavigateTo("/conversation/" + conv.Id, false);
+                }
 
-                    await using var ctx = await DbContextFactory.CreateDbContextAsync();
-
-                    bool isNew = false;
-                    bool wasSummarized = false;
-
-                    if (conv.Id == null || conv.Id == default(Guid))
-                    {
-                        conv.UserId = UserId;
-                        conv.Model = _modelConfiguration!.SelectedModel!;
-                        isNew = true;
-
-                        foreach (var p in _profileSelectorStart.SelectedProfiles)
-                        {
-                            ctx.Attach(p);
-                            conv.QuickProfiles.Add(p);
-                        }
-
-                        ctx.Conversations.Add(conv);
-                    }
-                    else
-                    {
-                        ctx.Attach(conv);
-                    }
-
-
-                    if (conv.Summary == null)
-                    {
-                        var last = conv.Messages.First(m => m.Role == ConversationRole.User).Content;
-                        conv.Summary =
-                            Model.Prompt?.Substring(0, Model.Prompt.Length >= 75 ? 75 : Model.Prompt.Length);
-                        wasSummarized = true;
-                    }
-
-                    await ctx.SaveChangesAsync();
-
-                    conv = await InterceptorHandler.Receive(_kernel, conv, inteceptorSelector?.SelectedInterceptors);
-
-                    if (wasSummarized)
-                    {
-                        await _conversations.LoadConversations();
-                        StateHasChanged();
-                    }
-
-
-                    if (isNew)
-                    {
-                        NavigationManager.NavigateTo("/conversation/" + conv.Id, false);
-                    }
-
-                    StateHasChanged();
+                StateHasChanged();
 
                 
 

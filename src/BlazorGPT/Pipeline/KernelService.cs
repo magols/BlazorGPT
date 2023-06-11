@@ -5,7 +5,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.Memory.Redis;
 using Microsoft.SemanticKernel.Connectors.Memory.Sqlite;
+using StackExchange.Redis;
 
 namespace BlazorGPT.Pipeline
 {
@@ -41,21 +43,29 @@ namespace BlazorGPT.Pipeline
                     .WithOpenAIImageGenerationService(_kernelSettings.ApiKey, _kernelSettings.OrgId);
             }
 
-            return builder
-                .WithMemoryStorage(await SqliteMemoryStore.ConnectAsync(@"c:\temp\memory.sqlite"))
-                .Build();
+
+            if (_options.Embeddings.UseRedis)
+            {
+                ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_options.Embeddings.RedisConfigurationString);
+                var _db = redis.GetDatabase();
+                builder.WithMemoryStorage(new RedisMemoryStore(_db, 1536));
+            }
+
+            if (_options.Embeddings.UseSqlite)
+            {
+                builder.WithMemoryStorage(await SqliteMemoryStore.ConnectAsync(_options.Embeddings.SqliteConnectionString));
+            }
+
+            return builder.Build();
         }
 
 
         public Func<string, Task<string>> OnChatStreamCompletion = async (string s) => s;
         private readonly PipelineOptions _options;
 
-        public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync(IKernel kernel, ChatHistory chatHistory,
-            ChatHistory.AuthorRoles authorRole = ChatHistory.AuthorRoles.Assistant)
+        public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync(IKernel kernel, ChatHistory chatHistory)
         {
-           
             var chatCompletion = kernel.GetService<IChatCompletion>();
-
             string fullMessage = string.Empty;
 
             await foreach (string message in chatCompletion.GenerateMessageStreamAsync(chatHistory))
@@ -68,8 +78,8 @@ namespace BlazorGPT.Pipeline
 
                 yield return message;
             }
-
-            chatHistory.AddMessage(authorRole, fullMessage);
+            chatHistory.AddMessage(AuthorRole.Assistant, fullMessage);
+            //chatHistory.AddMessage(authorRole, fullMessage);
         }
 
 

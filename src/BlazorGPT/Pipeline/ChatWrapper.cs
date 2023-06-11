@@ -73,14 +73,14 @@ public class ChatWrapper
         foreach (var message in conversation.Messages)
         {
             var role =
-                message.Role == "system" ? ChatHistory.AuthorRoles.System : // if the role is system, set the role to system
-                message.Role == "user" ? ChatHistory.AuthorRoles.User : ChatHistory.AuthorRoles.Assistant;
+                message.Role == "system" ? AuthorRole.System: // if the role is system, set the role to system
+                message.Role == "user" ?  AuthorRole.User : AuthorRole.Assistant;
 
             chatHistory.AddMessage(role, message.Content);
         }
 
 
-        var kernelStream = _kernelService.ChatCompletionAsStreamAsync(kernel, chatHistory, ChatHistory.AuthorRoles.User);
+        var kernelStream = _kernelService.ChatCompletionAsStreamAsync(kernel, chatHistory);
 
         var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
         conversation.AddMessage(conversationMessage);

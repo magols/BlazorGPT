@@ -74,6 +74,7 @@ builder.Services.AddSingleton<KernelService>();
 builder.Services.AddScoped<RedisEmbeddings>();
 
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
+builder.Services.AddScoped<IInterceptor, CerveraMemoryInterceptor>();
 
 
 
