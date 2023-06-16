@@ -11,6 +11,7 @@ using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.CoreSkills;
 using Radzen;
 using Radzen.Blazor;
+using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 namespace BlazorGPT.Pages
 {
@@ -79,8 +80,7 @@ namespace BlazorGPT.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _kernel = await KernelService.CreateKernelAsync();
-            _kernel.ImportSkill(new TimeSkill(), "time");
+
 
         }
 
@@ -99,6 +99,10 @@ namespace BlazorGPT.Pages
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
                 await Interop.SetupCopyButtons();
+
+
+                _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
+                KernelService.OnStreamCompletion += OnStreamCompletion;
 
             }
 
@@ -222,6 +226,7 @@ namespace BlazorGPT.Pages
         }
 
 
+
         private async Task Send()
         {
             promptIsReady = false;
@@ -249,17 +254,20 @@ namespace BlazorGPT.Pages
 
 
                 var kernelStream = KernelService.ChatCompletionAsStreamAsync(_kernel, chatHistory);
+                
 
-                var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
+                var conversationMessage = new ConversationMessage(new ChatMessage("assistant", "..."));
                 conv.AddMessage(conversationMessage);
                 StateHasChanged();
+                conv.Messages.Last().Content = "";
                 await foreach (var completion in kernelStream)
                 {
-                    conversationMessage.Content += completion;
-                        Console.Write(completion);
+                 //   conversationMessage.Content += completion;
+                    //Console.WriteLine("Completion: " + completion);
                     StateHasChanged();
                 }
 
+                StateHasChanged();
 
 
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
@@ -339,6 +347,15 @@ namespace BlazorGPT.Pages
             Model.Prompt = "";
         }
 
+        private async Task<string> OnStreamCompletion(string s)
+        {
+            Console.WriteLine("stream" + s);
+
+            Conversation.Messages.Last().Content += s;
+
+            StateHasChanged();
+            return s;
+        }
 
         private Conversations _conversations;
 
@@ -353,7 +370,6 @@ namespace BlazorGPT.Pages
         void IDisposable.Dispose()
         {
             ResizeListener.OnResized -= WindowResized;
-
         }
 
         async void modelselectorResize()
@@ -495,5 +511,6 @@ namespace BlazorGPT.Pages
                 controlHeight = baserControlHeight;
             }
         }
+
     }
 }

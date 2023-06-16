@@ -1,0 +1,27 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Translates text to a given language.",
+    "completion": {
+        "max_tokens": 256,
+        "temperature": 0,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "input",
+                "description": "Text to be translated.",
+                "defaultValue": ""
+            },
+            {
+                "name": "language",
+                "description": "Language that the text will be translated to.",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "default_backends": []
+}

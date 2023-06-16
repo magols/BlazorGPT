@@ -1,8 +1,15 @@
 @using BlazorGPT.Data
 @if (Conversation != null)
 {
-    <div id="message-pane" class="scroll-pane" style="@Style"
-         >
+    <div id="message-pane" class="scroll-pane" style="@Style">
+        
+        @if (Conversation.SKPlan != null)
+        {
+
+            <SKPlan Plan="@Conversation.SKPlan"></SKPlan>
+        }
+        
+
         <BranchedFrom Conversation="@Conversation"/>
         @if (Conversation.Messages.Any())
         {
@@ -11,14 +18,13 @@
             @foreach (var message in Conversation.Messages.Skip(1))
             {
                 var isLastMessage = Conversation.Messages.IndexOf(message) + 1 == Conversation.Messages.Count();
-                <ConversationMessageDisplay 
+                <ConversationMessageDisplay
                     ShowBranches="@ShowBranches"
                     ShowRestartButton="RestartConversation.HasDelegate && !isLastMessage"
                     ShowCopyButton="CopyConversation.HasDelegate"
                     OnRestartClicked="RestartConversation"
-                    OnCopyClicked="CopyConversation" 
-                    Message="message" 
-                    >
+                    OnCopyClicked="CopyConversation"
+                    Message="message">
                 </ConversationMessageDisplay>
             }
         }

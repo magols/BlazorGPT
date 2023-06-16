@@ -1,0 +1,17 @@
+﻿@using Microsoft.SemanticKernel.Planning
+@if (Plan != null)
+{
+    <h3>SKPlan</h3>
+
+    <pre>
+
+@Plan
+    </pre>
+}
+
+@code {
+
+    [Parameter]
+    public string? Plan { get; set; }
+
+}

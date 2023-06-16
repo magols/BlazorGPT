@@ -22,7 +22,7 @@ namespace BlazorGPT.Pipeline
              _kernelSettings = KernelSettings.LoadSettings();
         }
 
-        public async Task<IKernel> CreateKernelAsync()
+        public async Task<IKernel> CreateKernelAsync(string? model = null)
         {
             bool useAzureOpenAI = _kernelSettings.ServiceType != "OpenAI";
 
@@ -30,18 +30,19 @@ namespace BlazorGPT.Pipeline
             if (useAzureOpenAI)
             {
                 builder
-                    .WithAzureChatCompletionService(_options.Model, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
+                    .WithAzureChatCompletionService(model ?? _options.Model, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
                     .WithAzureTextCompletionService(_options.ModelTextCompletions, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
                     .WithAzureTextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.Endpoint, _kernelSettings.ApiKey);
             }
             else
             {
                 builder
-                    .WithOpenAIChatCompletionService(_options.Model, _kernelSettings.ApiKey, _kernelSettings.OrgId)
+                    .WithOpenAIChatCompletionService(model ?? _options.Model, _kernelSettings.ApiKey, _kernelSettings.OrgId)
                     .WithOpenAITextCompletionService(_options.ModelTextCompletions, _kernelSettings.ApiKey, _kernelSettings.OrgId)
                     .WithOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.ApiKey, _kernelSettings.OrgId)
                     .WithOpenAIImageGenerationService(_kernelSettings.ApiKey, _kernelSettings.OrgId);
             }
+
 
 
             if (_options.Embeddings.UseRedis)
@@ -60,7 +61,13 @@ namespace BlazorGPT.Pipeline
         }
 
 
-        public Func<string, Task<string>> OnChatStreamCompletion = async (string s) => s;
+        public Func<string, Task<string>> OnStreamCompletion = async (string s) =>
+        {
+            //Console.WriteLine("KernelService: " + s);
+            return s;
+        };
+
+
         private readonly PipelineOptions _options;
 
         public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync(IKernel kernel, ChatHistory chatHistory)
@@ -68,18 +75,30 @@ namespace BlazorGPT.Pipeline
             var chatCompletion = kernel.GetService<IChatCompletion>();
             string fullMessage = string.Empty;
 
-            await foreach (string message in chatCompletion.GenerateMessageStreamAsync(chatHistory))
+            var chatRequestSettings = new ChatRequestSettings
+            {
+                MaxTokens = 2500,
+                Temperature = 0.9,
+                TopP = 1.0,
+                FrequencyPenalty = 0.0,
+                PresencePenalty = 0.0,
+                StopSequences = new[] { "Dragons be here" }
+            };
+
+
+
+
+            await foreach (string message in chatCompletion.GenerateMessageStreamAsync(chatHistory, chatRequestSettings))
             {
                 fullMessage += message;
-                if (OnChatStreamCompletion != null)
+                if (OnStreamCompletion != null)
                 {
-                    await OnChatStreamCompletion.Invoke(message);
+                    await OnStreamCompletion.Invoke(message);
                 }
-
+                //await Task.Delay(50);
                 yield return message;
             }
             chatHistory.AddMessage(AuthorRole.Assistant, fullMessage);
-            //chatHistory.AddMessage(authorRole, fullMessage);
         }
 
 

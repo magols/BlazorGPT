@@ -5,6 +5,7 @@
 @using Microsoft.SemanticKernel.CoreSkills
 @using Microsoft.SemanticKernel.TemplateEngine
 @using System.Globalization
+@using BlazorGPT.Skills
 @inject IOptions<PipelineOptions> PipelineOptions
 @layout EmptyLayout
 <h3>Semantic Kernel</h3>
@@ -53,6 +54,8 @@ Text selected:
 
             kernel.ImportSkill(new TimeSkill(), "time");
             kernel.ImportSkill(new HttpSkill(), "http");
+            kernel.ImportSkill(new TextMemorySkill(), "memory");
+
 
 
             // We need a kernel context to store some information to pass to the prompts and the list

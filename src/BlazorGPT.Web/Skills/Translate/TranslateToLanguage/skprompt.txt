@@ -1,0 +1,7 @@
+Translate this to {{$language}}
+MAKE SURE YOU ONLY USE {{$language}}
+
+ 
+[INPUT]
+{{$input}}
+[END INPUT]

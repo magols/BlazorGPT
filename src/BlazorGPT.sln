@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorGPT.Web", "BlazorGPT.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorGPT", "BlazorGPT\BlazorGPT.csproj", "{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel", "..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj", "{7999FABA-6B31-4900-BE3F-575C85271F29}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,12 +26,6 @@ Global
 		{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7999FABA-6B31-4900-BE3F-575C85271F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7999FABA-6B31-4900-BE3F-575C85271F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7999FABA-6B31-4900-BE3F-575C85271F29}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
-		{7999FABA-6B31-4900-BE3F-575C85271F29}.Publish|Any CPU.Build.0 = Publish|Any CPU
-		{7999FABA-6B31-4900-BE3F-575C85271F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7999FABA-6B31-4900-BE3F-575C85271F29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

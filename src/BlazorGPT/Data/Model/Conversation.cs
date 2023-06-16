@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.SemanticKernel.Planning;
 
 namespace BlazorGPT.Data.Model;
 
@@ -20,6 +21,7 @@ public class Conversation
 
     public string? Summary { get; set; }
 
+    public string? SKPlan { get; set; } = null!;
 
     public DateTime DateStarted { get; set; }
 
