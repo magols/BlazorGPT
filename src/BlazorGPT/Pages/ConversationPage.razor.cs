@@ -8,10 +8,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.CoreSkills;
 using Radzen;
 using Radzen.Blazor;
-using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 namespace BlazorGPT.Pages
 {

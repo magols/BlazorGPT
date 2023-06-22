@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planning;
 using System.Numerics;
-
+using Microsoft.SemanticKernel.CoreSkills;
 namespace BlazorGPT.Pipeline.Interceptors
 {
     public class SemanticKernelPlanInterceptor : InterceptorBase, IInterceptor
@@ -35,19 +35,21 @@ namespace BlazorGPT.Pipeline.Interceptors
 
             var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "skills");
 
-            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SummarizeSkill");
-            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "WriterSkill");
-            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");
+            kernel.ImportSkill(new TextMemorySkill("demo"), "memory");
+            //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SummarizeSkill");
+            //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "WriterSkill");
+            //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");
 
             var ask =  conversation.Messages.Last().Content;
             var planner = new SequentialPlanner(kernel);
             var originalPlan = await planner.CreatePlanAsync(ask);
-            
-            var result = await originalPlan.InvokeAsync();
             conversation.SKPlan = originalPlan.ToJson(true);
 
+
+            var result = await originalPlan.InvokeAsync();
+
             //conversation.Messages.Last().Content += $"{result.Result}";
-            conversation.AddMessage("assistant", result.Result);
+            //conversation.AddMessage("assistant", result.Result);
         }
 
 

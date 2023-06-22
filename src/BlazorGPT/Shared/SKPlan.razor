@@ -1,17 +1,31 @@
-﻿@using Microsoft.SemanticKernel.Planning
-@if (Plan != null)
+﻿@if (Plan != null)
 {
-    <h3>SKPlan</h3>
-
-    <pre>
-
+    <RadzenTree Expand=@OnExpand Collapse=@OnCollapse>
+        <RadzenTreeItem Text="">
+            <ChildContent>
+                <pre>
 @Plan
     </pre>
+            </ChildContent>
+            <Template>
+                <b>Plant</b> 
+                <RadzenIcon Icon="plan"></RadzenIcon>
+            </Template>
+        </RadzenTreeItem>
+    </RadzenTree>
 }
 
 @code {
 
     [Parameter]
     public string? Plan { get; set; }
+
+    private void OnExpand()
+    {
+    }
+
+    private void OnCollapse()
+    {
+    }
 
 }
