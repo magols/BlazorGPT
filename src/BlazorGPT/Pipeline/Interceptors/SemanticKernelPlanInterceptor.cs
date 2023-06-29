@@ -38,7 +38,7 @@ namespace BlazorGPT.Pipeline.Interceptors
             kernel.ImportSkill(new TextMemorySkill("demo"), "memory");
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SummarizeSkill");
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "WriterSkill");
-            //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");
+            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");
 
             var ask =  conversation.Messages.Last().Content;
             var planner = new SequentialPlanner(kernel);
