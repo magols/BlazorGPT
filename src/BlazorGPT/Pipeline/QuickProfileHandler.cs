@@ -56,7 +56,7 @@ public class QuickProfileHandler : IQuickProfileHandler
                 foreach (var profile in profiles)
                 {
                     conversation.AddMessage(new ConversationMessage("user", profile.Content));
-                    conversation = await chatWrapper.Send(kernel , conversation).ConfigureAwait(true);
+                    conversation = await chatWrapper.Send(kernel , conversation).ConfigureAwait(false);
                 }
             }
         }

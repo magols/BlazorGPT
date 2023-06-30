@@ -8,6 +8,8 @@ using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Memory.Redis;
 using Microsoft.SemanticKernel.Connectors.Memory.Sqlite;
 using StackExchange.Redis;
+using System.Globalization;
+using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 namespace BlazorGPT.Pipeline
 {
@@ -60,17 +62,34 @@ namespace BlazorGPT.Pipeline
             return builder.Build();
         }
 
-
-        public Func<string, Task<string>> OnStreamCompletion = async (string s) =>
-        {
-            //Console.WriteLine("KernelService: " + s);
-            return s;
-        };
-
-
         private readonly PipelineOptions _options;
 
-        public async IAsyncEnumerable<string> ChatCompletionAsStreamAsync(IKernel kernel, ChatHistory chatHistory)
+        public async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel,
+            Conversation conversation,
+            Func<string, Task<string>> OnStreamCompletion2)
+        {
+            ChatHistory chatHistory = new ChatHistory();
+            foreach (var message in conversation.Messages.Where(c => !string.IsNullOrEmpty(c.Content.Trim())))
+            {
+                var role =
+                    message.Role == "system"
+                        ?
+                        ChatHistory.AuthorRoles.System
+                        : // if the role is system, set the role to system
+                        message.Role == "user"
+                            ? ChatHistory.AuthorRoles.User
+                            : ChatHistory.AuthorRoles.Assistant;
+
+                chatHistory.AddMessage(role, message.Content);
+            }
+
+            return await ChatCompletionAsStreamAsync(kernel, chatHistory, conversation, OnStreamCompletion2);
+        }
+
+        public async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel, 
+            ChatHistory chatHistory,
+            Conversation conversation, 
+            Func<string, Task<string>> OnStreamCompletion2)
         {
             var chatCompletion = kernel.GetService<IChatCompletion>();
             string fullMessage = string.Empty;
@@ -86,19 +105,29 @@ namespace BlazorGPT.Pipeline
             };
 
 
+            List<IAsyncEnumerable<string>> resultTasks = new();
+            int currentResult = 0;
 
-
-            await foreach (string message in chatCompletion.GenerateMessageStreamAsync(chatHistory, chatRequestSettings))
+            await foreach (var completionResult in chatCompletion.GetStreamingChatCompletionsAsync(chatHistory, chatRequestSettings))
             {
-                fullMessage += message;
-                if (OnStreamCompletion != null)
+
+                string message = string.Empty;
+
+                await foreach (var chatMessage in completionResult.GetStreamingChatMessageAsync())
                 {
-                    await OnStreamCompletion.Invoke(message);
+                    string role = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(chatMessage.Role.Label);
+                    message += chatMessage.Content;
+                    fullMessage += chatMessage.Content;
+                    if (OnStreamCompletion2 != null)
+                    {
+                        await OnStreamCompletion2.Invoke(chatMessage.Content);
+                    }
                 }
-                //await Task.Delay(50);
-                yield return message;
             }
-            chatHistory.AddMessage(AuthorRole.Assistant, fullMessage);
+
+
+            conversation.Messages.Last().Content = fullMessage;
+            return conversation;
         }
 
 
@@ -116,8 +145,13 @@ namespace BlazorGPT.Pipeline
             var newId = await kernel.Memory.SaveReferenceAsync(collection, text, id, externalSourceName, description);
             return newId;
         }
+
+
+        }
     }
-}
+
+
+
 
 
 

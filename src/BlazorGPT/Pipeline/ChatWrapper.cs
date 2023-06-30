@@ -25,8 +25,9 @@ public class ChatWrapper
 
 
     public async Task<Conversation> SendWithPipeline(IKernel kernel,
-        Conversation conversation ,
-        IEnumerable<QuickProfile>? quickProfiles = null, 
+        Conversation conversation,
+        Func<string, Task<string>>? callback = null,
+        IEnumerable<QuickProfile>? quickProfiles = null,
         IEnumerable<IInterceptor>? enabledInterceptors = null)
     {
         var profiles = quickProfiles?.ToArray() ?? Array.Empty<QuickProfile>();
@@ -39,7 +40,7 @@ public class ChatWrapper
             conversation = await _interceptorHandler.Send(kernel, conversation, interceptors);
         }
         
-        conversation = await Send(kernel, conversation, profiles);
+        conversation = await Send(kernel, conversation, profiles, callback);
 
         conversation = await _quickProfileHandler.Receive(kernel, this, conversation, profiles.Where(p => p.InsertAt == InsertAt.After));
 
@@ -64,41 +65,32 @@ public class ChatWrapper
     private IOptions<PipelineOptions> _pipelineOptions;
     private KernelService _kernelService;
 
-    public async Task<Conversation> Send(IKernel kernel, 
-        Conversation conversation, 
-        IEnumerable<QuickProfile> profiles)
+    public async Task<Conversation> Send(IKernel kernel,
+        Conversation conversation,
+        IEnumerable<QuickProfile> profiles, Func<string, Task<string>>? callback = null)
     {
+ 
 
-        ChatHistory chatHistory = new ChatHistory();
-        foreach (var message in conversation.Messages)
-        {
-            var role =
-                message.Role == "system" ? AuthorRole.System: // if the role is system, set the role to system
-                message.Role == "user" ?  AuthorRole.User : AuthorRole.Assistant;
-
-            chatHistory.AddMessage(role, message.Content);
-        }
-
-
-        var kernelStream = _kernelService.ChatCompletionAsStreamAsync(kernel, chatHistory);
 
         var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
         conversation.AddMessage(conversationMessage);
-        await foreach (var completion in kernelStream)
-        {
-                  string? content ; // = completion.Choices.First()?.Message.Content;
-                content = completion;
-                if (content != null)
-                {
-                    conversationMessage.Content += content;
-                    if (OnStreamCompletion != null)
-                    {
-                        await OnStreamCompletion.Invoke(content);
-                    }
+        await  _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, callback);
+
+        //await foreach (var completion in kernelStream)
+        //{
+        //          string? content ; // = completion.Choices.First()?.Message.Content;
+        //        content = completion;
+        //        if (content != null)
+        //        {
+        //            conversationMessage.Content += content;
+        //            if (OnStreamCompletion != null)
+        //            {
+        //                await OnStreamCompletion.Invoke(content);
+        //            }
                     
-                    await Task.Delay(50); // adjust the delay time as needed
-                }
-        }
+        //            await Task.Delay(50); // adjust the delay time as needed
+        //        }
+        //}
 
 
         await using var ctx = await _contextFactory.CreateDbContextAsync();

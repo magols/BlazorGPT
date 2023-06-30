@@ -61,7 +61,8 @@ namespace BlazorGPT.Pages
 
         [Inject]
         public ConversationInterop? Interop { get; set; }
-        public Conversation Conversation = new();
+       
+        private Conversation Conversation = new();
 
         private GPTModelConfiguration? _modelConfiguration;
 
@@ -100,7 +101,7 @@ namespace BlazorGPT.Pages
 
 
                 _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
-                KernelService.OnStreamCompletion += OnStreamCompletion;
+              //  KernelService.OnStreamCompletion += OnStreamCompletion;
 
             }
 
@@ -195,7 +196,7 @@ namespace BlazorGPT.Pages
 
             }
 
-            await InterceptorHandler.Send(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>());
+            Conversation = await InterceptorHandler.Send(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>());
 
             await Send();
                 
@@ -208,8 +209,9 @@ namespace BlazorGPT.Pages
                     { 
                         Console.WriteLine("QP " + profile.Content);
                         Conversation.AddMessage(new ConversationMessage("user", profile.Content));
+                        
 
-                        await InvokeAsync(StateHasChanged);
+                        StateHasChanged();
                         await Send();
 
                     }
@@ -229,81 +231,50 @@ namespace BlazorGPT.Pages
         {
             promptIsReady = false;
 
-
-            var conv = Conversation;
-            
             try
             {
-
-                ChatHistory chatHistory = new ChatHistory();
-                foreach (var message in conv.Messages)
-                {
-                    var role =
-                        message.Role == "system"
-                            ?
-                            ChatHistory.AuthorRoles.System
-                            : // if the role is system, set the role to system
-                            message.Role == "user"
-                                ? ChatHistory.AuthorRoles.User
-                                : ChatHistory.AuthorRoles.Assistant;
-
-                    chatHistory.AddMessage(role, message.Content);
-                }
-
-
-                var kernelStream = KernelService.ChatCompletionAsStreamAsync(_kernel, chatHistory);
+                Conversation.AddMessage("assistant", "");
+            
+                StateHasChanged();
+                Conversation = await
+                    KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion);
                 
-
-                var conversationMessage = new ConversationMessage(new ChatMessage("assistant", "..."));
-                conv.AddMessage(conversationMessage);
-                StateHasChanged();
-                conv.Messages.Last().Content = "";
-                await foreach (var completion in kernelStream)
-                {
-                 //   conversationMessage.Content += completion;
-                    //Console.WriteLine("Completion: " + completion);
-                    StateHasChanged();
-                }
-
-                StateHasChanged();
-
-
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
 
                 bool isNew = false;
                 bool wasSummarized = false;
 
-                if (conv.Id == null || conv.Id == default(Guid))
+                if (Conversation.Id == null || Conversation.Id == default(Guid))
                 {
-                    conv.UserId = UserId;
-                    conv.Model = _modelConfiguration!.SelectedModel!;
+                    Conversation.UserId = UserId;
+                    Conversation.Model = _modelConfiguration!.SelectedModel!;
                     isNew = true;
 
                     foreach (var p in _profileSelectorStart.SelectedProfiles)
                     {
                         ctx.Attach(p);
-                        conv.QuickProfiles.Add(p);
+                        Conversation.QuickProfiles.Add(p);
                     }
 
-                    ctx.Conversations.Add(conv);
+                    ctx.Conversations.Add(Conversation);
                 }
                 else
                 {
-                    ctx.Attach(conv);
+                    ctx.Attach(Conversation);
                 }
 
 
-                if (conv.Summary == null)
+                if (Conversation.Summary == null)
                 {
-                    var last = conv.Messages.First(m => m.Role == ConversationRole.User).Content;
-                    conv.Summary =
+                    var last = Conversation.Messages.First(m => m.Role == ConversationRole.User).Content;
+                    Conversation.Summary =
                         Model.Prompt?.Substring(0, Model.Prompt.Length >= 75 ? 75 : Model.Prompt.Length);
                     wasSummarized = true;
                 }
 
                 await ctx.SaveChangesAsync();
 
-                conv = await InterceptorHandler.Receive(_kernel, conv, inteceptorSelector?.SelectedInterceptors);
+                Conversation = await InterceptorHandler.Receive(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors);
 
                 if (wasSummarized)
                 {
@@ -314,20 +285,17 @@ namespace BlazorGPT.Pages
 
                 if (isNew)
                 {
-                    NavigationManager.NavigateTo("/conversation/" + conv.Id, false);
+                    NavigationManager.NavigateTo("/conversation/" + Conversation.Id, false);
                 }
 
                 StateHasChanged();
-
-                
-
 
             }
             catch (TaskCanceledException)
             {
                 var res = await DialogService.Alert("The operation was cancelled");
                 //cancellationTokenSource = new CancellationTokenSource();
-                Conversation.Messages.RemoveAt(conv.Messages.Count - 1);
+                Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
                 StateHasChanged();
                 return;
             }
@@ -335,13 +303,13 @@ namespace BlazorGPT.Pages
             {
                 var res = await DialogService.Alert(e.StackTrace,
                     "An error occurred. Please try again/later. " + e.Message);
-                Conversation.Messages.RemoveAt(conv.Messages.Count - 1);
+                Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
                 Console.WriteLine(e.StackTrace);
                 StateHasChanged();
                 return;
             }
 
-            Conversation = conv;
+            //Conversation = conv;
             Model.Prompt = "";
         }
 

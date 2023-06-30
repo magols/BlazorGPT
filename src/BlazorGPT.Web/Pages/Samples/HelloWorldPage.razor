@@ -1,5 +1,6 @@
 ﻿@page "/helloworld"
 @using BlazorGPT.Pipeline
+@inherits SamplePage
 @inject IOptions<PipelineOptions> PipelineOptions
 @inject KernelService KernelService
 @layout EmptyLayout
@@ -13,7 +14,7 @@
     [Inject]
     public ChatWrapper Chat { get; set; }
 
-    public Conversation? Conversation { get; set; }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -21,14 +22,22 @@
         {
             var kernel = await KernelService.CreateKernelAsync();
 
-            Chat.OnStreamCompletion += async (s) =>
-            {
-                StateHasChanged();
-                return s;
-            };
+
             Conversation = Conversation.CreateConversation(PipelineOptions.Value.Model, "You are a helpful assistant", 
-                "Write a Hello World in C#. Answer in markdown");
-            Conversation = await Chat.SendWithPipeline(kernel, Conversation);
+                "You are a helpful assistant ", "Write a Hello World in C#. Answer in markdown.");
+            StateHasChanged();
+            List<QuickProfile> profiles = new List<QuickProfile>();
+
+            profiles.Add(new QuickProfile()
+            {
+                Content = "Create a tweet about this",
+                InsertAt = InsertAt.After,
+                
+            });
+
+            await Chat.SendWithPipeline(kernel, Conversation,
+                quickProfiles: profiles,
+                callback: OnStreamCompletion);
         }
     }
 }
