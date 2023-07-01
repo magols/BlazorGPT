@@ -1,7 +1,8 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planning;
 using System.Numerics;
-using Microsoft.SemanticKernel.CoreSkills;
+using Microsoft.SemanticKernel.Skills.Core;
+
 namespace BlazorGPT.Pipeline.Interceptors
 {
     public class SemanticKernelPlanInterceptor : InterceptorBase, IInterceptor
@@ -35,7 +36,7 @@ namespace BlazorGPT.Pipeline.Interceptors
 
             var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "skills");
 
-            kernel.ImportSkill(new TextMemorySkill("demo"), "memory");
+            kernel.ImportSkill(new TextMemorySkill());
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SummarizeSkill");
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "WriterSkill");
             kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");
