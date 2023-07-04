@@ -15,17 +15,17 @@ namespace BlazorGPT.Pipeline
 {
     public class KernelService
     {
-        //private readonly IKernel _kernel;
-        //private readonly IChatCompletion _chatGPT;
-        readonly KernelSettings _kernelSettings;
+        private KernelSettings? _kernelSettings;
+
         public KernelService(IOptions<PipelineOptions> options)
         {
             _options = options.Value;
-             _kernelSettings = KernelSettings.LoadSettings();
+             
         }
 
         public async Task<IKernel> CreateKernelAsync(string? model = null)
         {
+            _kernelSettings = KernelSettings.LoadSettings();
             bool useAzureOpenAI = _kernelSettings.ServiceType != "OpenAI";
 
             var builder = new KernelBuilder();
@@ -363,7 +363,7 @@ public class KernelSettings
                 return FromFile(DefaultConfigFile);
             }
 
-            Console.WriteLine($"Semantic kernel settings '{DefaultConfigFile}' not found, attempting to load configuration from user secrets.");
+//            Console.WriteLine($"Semantic kernel settings '{DefaultConfigFile}' not found, attempting to load configuration from user secrets.");
 
             return FromUserSecrets();
         }
