@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /src/BlazorGPT/wwwroot/state
 
+/src/.semantic-kernel/
