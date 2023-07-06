@@ -7,6 +7,8 @@ public abstract class InterceptorBase
     private IDbContextFactory<BlazorGptDBContext> _context;
     private ConversationsRepository _conversationsRepository;
 
+    public Func<Task>? OnUpdate;
+
     public InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
     {
         _conversationsRepository = conversationsRepository;

@@ -1,7 +1,7 @@
 {
     "schema": 1,
     "type": "completion",
-    "description": "Retrieves data yo",
+    "description": "Retrieves data from memory given an input.",
     "completion": {
         "max_tokens": 256,
         "temperature": 0,

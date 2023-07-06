@@ -8,4 +8,6 @@ public interface IInterceptor
     bool Internal { get; }
     Task<Conversation> Receive(IKernel kernel, Conversation conversation);
     Task<Conversation> Send(IKernel kernel, Conversation conversation);
+
+
 }

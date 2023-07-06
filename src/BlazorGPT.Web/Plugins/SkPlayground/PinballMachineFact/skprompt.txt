@@ -1,0 +1,8 @@
+
+Name a few facts about the pinball machine mentioned. Include manufacturer, year, designer, and any other interesting facts.
+Include some of the basic rules that are specific to this particular game.
+Review the facts amd make sure they are correct. If not, correct them If unable to correct them, delete them.
+Present tha information in a markdown table. Return ONLY the table. Do not return any other text.
+[INPUT]
+{{$input}}
+[END INPUT]

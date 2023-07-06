@@ -79,8 +79,13 @@ namespace BlazorGPT.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            InterceptorHandler.OnUpdate += UpdateAndRedraw;
 
+        }
 
+        private async Task  UpdateAndRedraw()
+        {
+            await InvokeAsync(StateHasChanged);
         }
 
         protected override async Task OnParametersSetAsync()
@@ -336,6 +341,9 @@ namespace BlazorGPT.Pages
         void IDisposable.Dispose()
         {
             ResizeListener.OnResized -= WindowResized;
+
+            if (InterceptorHandler != null)
+                InterceptorHandler.OnUpdate -= UpdateAndRedraw;
         }
 
         async void modelselectorResize()

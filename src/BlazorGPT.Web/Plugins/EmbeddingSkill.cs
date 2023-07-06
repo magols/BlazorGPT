@@ -1,8 +1,8 @@
-using Microsoft.SemanticKernel.SkillDefinition;
 using Microsoft.SemanticKernel.Orchestration;
+using Microsoft.SemanticKernel.SkillDefinition;
 using Microsoft.SemanticKernel.TemplateEngine;
 
-namespace BlazorGPT.Skills;
+namespace BlazorGPT.Web.Plugins;
 
 public class EmbeddingSkill
 {

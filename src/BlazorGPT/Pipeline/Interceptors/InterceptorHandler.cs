@@ -13,6 +13,9 @@ public class InterceptorHandler : IInterceptorHandler
     private PipelineOptions? pipelineOptions = null;
     private readonly PipelineOptions _options;
 
+    public Func<Task>? OnUpdate { get; set; }
+
+
     public InterceptorHandler(IServiceProvider serviceProvider, IConfiguration configuration, IOptions<PipelineOptions> options)
     {
         _options = options.Value;
@@ -31,7 +34,19 @@ public class InterceptorHandler : IInterceptorHandler
         IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
         foreach (var interceptor in enabled)
         {
+            // check if the interceptor iinherits the abstract class InterceptorBase
+            if (interceptor is InterceptorBase)
+            {
+                var interceptorBase = (InterceptorBase)interceptor;
+                interceptorBase.OnUpdate = OnUpdate;
+            }
+
             conversation = await interceptor.Send(kernel, conversation);
+
+            if (OnUpdate != null)
+            {
+                await OnUpdate();
+            }
         }
         return conversation;
 
@@ -53,8 +68,13 @@ public class InterceptorHandler : IInterceptorHandler
         foreach (var interceptor in enabled.Where(e => e.Name != "Save File"))
         {
             conversation = await interceptor.Receive(kernel, conversation);
+            if (OnUpdate != null)
+            {
+                await OnUpdate();
+            }
         }
 
         return conversation;
     }
+
 }
