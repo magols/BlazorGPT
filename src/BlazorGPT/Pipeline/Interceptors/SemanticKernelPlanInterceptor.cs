@@ -16,13 +16,13 @@ namespace BlazorGPT.Pipeline.Interceptors
             _kernelService = kernelService;
         }
 
-        public Task<Conversation> Receive(IKernel kernel, Conversation conversation)
+        public Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
         {
 
             return Task.FromResult(conversation);
         }
 
-        public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
+        public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
         {
             if (conversation.Messages.Count() == 2)
             {
@@ -34,12 +34,12 @@ namespace BlazorGPT.Pipeline.Interceptors
         private async Task AppendInstruction(IKernel kernel, Conversation conversation)
         {
 
-            var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "skills");
+            var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
 
-            kernel.ImportSkill(new TextMemorySkill());
+            //kernel.ImportSkill(new TextMemorySkill());
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SummarizeSkill");
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "WriterSkill");
-            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");
+            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Samples");
 
             var ask =  conversation.Messages.Last().Content;
             var planner = new SequentialPlanner(kernel);
@@ -47,10 +47,10 @@ namespace BlazorGPT.Pipeline.Interceptors
             conversation.SKPlan = originalPlan.ToJson(true);
 
 
-            var result = await originalPlan.InvokeAsync();
+            var result = await originalPlan.InvokeAsync(ask);
 
             //conversation.Messages.Last().Content += $"{result.Result}";
-            //conversation.AddMessage("assistant", result.Result);
+            conversation.AddMessage("assistant", result.Result);
         }
 
 

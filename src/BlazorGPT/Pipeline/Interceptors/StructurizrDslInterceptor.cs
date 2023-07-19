@@ -16,7 +16,7 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
     }
     
 
-    public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
+    public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
 
 
@@ -89,7 +89,7 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
 
     public bool Internal { get; } = false;
 
-    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation)
+    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         var lastMsg = conversation.Messages.Last();
         await ParseMessageAndSaveState(lastMsg, "StructurizrDslInterceptor");

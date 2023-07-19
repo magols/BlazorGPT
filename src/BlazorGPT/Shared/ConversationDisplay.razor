@@ -3,11 +3,7 @@
 {
     <div id="message-pane" class="scroll-pane" style="@Style">
         
-        @if (Conversation.SKPlan != null)
-        {
 
-            <SKPlan Plan="@Conversation.SKPlan"></SKPlan>
-        }
         
 
         <BranchedFrom Conversation="@Conversation"/>
@@ -27,6 +23,14 @@
                     Message="message">
                 </ConversationMessageDisplay>
             }
+        }
+        
+        @if (Conversation.SKPlan != null)
+        {
+            <div class="row">
+                <SKPlan Data="@Conversation.SKPlan"></SKPlan>
+
+            </div>
         }
     </div>
 }

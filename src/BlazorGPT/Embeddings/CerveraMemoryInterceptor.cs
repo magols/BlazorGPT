@@ -19,12 +19,12 @@ namespace BlazorGPT.Embeddings
             _options = options.Value;
         }
 
-        public async Task<Conversation> Receive(IKernel kernel, Conversation conversation)
+        public async Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
         {
             return conversation;
         }
 
-        public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
+        public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
         {
 
             if (conversation.Messages.Count == 2)

@@ -13,6 +13,8 @@ public class InterceptorHandler : IInterceptorHandler
     private PipelineOptions? pipelineOptions = null;
     private readonly PipelineOptions _options;
 
+
+
     public Func<Task>? OnUpdate { get; set; }
 
 
@@ -29,7 +31,7 @@ public class InterceptorHandler : IInterceptorHandler
     private IEnumerable<IInterceptor> EnabledInterceptors => Interceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
         
     public async Task<Conversation> Send(IKernel kernel, Conversation conversation,
-        IEnumerable<IInterceptor>? enabledInterceptors = null)
+        IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
     {
         IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
         foreach (var interceptor in enabled)
@@ -41,7 +43,7 @@ public class InterceptorHandler : IInterceptorHandler
                 interceptorBase.OnUpdate = OnUpdate;
             }
 
-            conversation = await interceptor.Send(kernel, conversation);
+            conversation = await interceptor.Send(kernel, conversation, cancellationToken);
 
             if (OnUpdate != null)
             {
@@ -53,7 +55,7 @@ public class InterceptorHandler : IInterceptorHandler
     }
 
     public async Task<Conversation> Receive(IKernel kernel, Conversation conversation,
-        IEnumerable<IInterceptor>? enabledInterceptors)
+        IEnumerable<IInterceptor>? enabledInterceptors, CancellationToken cancellationToken = default)
     {
         IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
 

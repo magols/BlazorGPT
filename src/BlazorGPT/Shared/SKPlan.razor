@@ -1,15 +1,71 @@
-﻿@if (Plan != null)
+﻿@using Newtonsoft.Json
+@if (Data != null)
 {
+    <div class="row">
+
+        <div class="progress col-sm-12">
+            <div class="progress-bar" role="progressbar" style="width: @(Progress)%;" aria-valuenow="@(Progress)" aria-valuemin="0" aria-valuemax="100"></div>
+
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12 border m-3 mb-0">
+            <RadzenProgressBar Unit="steps" Max="100" @bind-Value="Progress" ShowValue="true" Mode="ProgressBarMode.Determinate" Class="col-md-12">
+
+            </RadzenProgressBar>
+
+
+        </div>
+    </div>
     <RadzenTree Expand=@OnExpand Collapse=@OnCollapse>
-        <RadzenTreeItem Text="">
+        <RadzenTreeItem Text="" Expanded="true">
             <ChildContent>
+
+
+                <div class="row small">
+
+                    <div class=" col-md-12">
+                        @if (Plan != null && Plan?.steps != null)
+                        {
+@*                             <div>Steps: @Plan.steps.Count</div>
+                            <div>Next: @Plan.next_step_index</div> *@
+
+                            var stepLoop = 0;
+
+                            @foreach (var step in Plan.steps)
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card text-darkmb-1">
+                                            <div class="card-header  @GetColorForPlanState(step, stepLoop) ">@step.name, @step.skill_name</div>
+                                            <div class="card-body bg-dark">
+                                                <p class="card-title">@step.description</p>
+                                                @* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> *@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                stepLoop++;
+                            }
+                        }
+                    </div>
+
+                </div>
+
+
                 <pre>
-@Plan
+ @* @Data  *@
     </pre>
             </ChildContent>
             <Template>
-                <b>Plan</b> 
+      
+                <b>Plan</b>
                 <RadzenIcon Icon="plan"></RadzenIcon>
+
+     
             </Template>
         </RadzenTreeItem>
     </RadzenTree>
@@ -18,7 +74,7 @@
 @code {
 
     [Parameter]
-    public string? Plan { get; set; }
+    public string? Data { get; set; }
 
     private void OnExpand()
     {
@@ -26,6 +82,56 @@
 
     private void OnCollapse()
     {
+    }
+
+    protected override void OnParametersSet()
+    {
+        Plan = GetPlanFromData();
+        Progress = GetProgress();
+    }
+
+    private dynamic? Plan;
+
+    double Progress = 0;
+
+    private int GetProgress()
+    {
+        if (Plan?.steps != null)
+        {
+            return (int)(Plan.next_step_index / Plan.steps.Count) * 100;
+        }
+
+        return 0;
+    }
+
+    string GetColorForPlanState(dynamic step, int currentIndex)
+    {
+        if (currentIndex == (int)Plan?.next_step_index)
+        {
+            return "bg-primary";
+
+        }
+        if (currentIndex < (int)Plan?.next_step_index)
+        {
+                return "bg-success";
+
+        }
+        
+                return "bg-light";
+
+    }
+
+    private dynamic GetPlanFromData()
+    {
+        try
+        {
+            return JsonConvert.DeserializeObject<dynamic>(Data);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
 }

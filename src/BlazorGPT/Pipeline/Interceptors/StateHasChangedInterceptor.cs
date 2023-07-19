@@ -15,14 +15,14 @@ public class StateHasChangedInterceptor : InterceptorBase, IInterceptor
     public bool Internal { get; } = true;
 
     public string Name { get; } = "State has changed";
-    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation)
+    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         await ParseAndSendNotification(conversation.Messages.Last());
 
         return conversation;
     }
 
-    public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
+    public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         return conversation;
     }

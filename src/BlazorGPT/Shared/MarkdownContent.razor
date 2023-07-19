@@ -72,6 +72,10 @@
 
     private string RemoveEmbeddingsElement(string data)
     {
+        if (string.IsNullOrEmpty(data))
+        {
+            return "";
+        }
         string pattern = @"\[EMBEDDINGS\](.*?)\[/EMBEDDINGS\]";
         var matches = Regex.Matches(data, pattern, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 

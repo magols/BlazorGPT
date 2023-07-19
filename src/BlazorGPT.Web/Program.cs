@@ -77,6 +77,7 @@ builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
 builder.Services.AddScoped<IInterceptor, CerveraMemoryInterceptor>();
 builder.Services.AddScoped<IInterceptor, SemanticKernelPlanInterceptor>();
 builder.Services.AddScoped<IInterceptor, SkPlaygroundInterceptor>();
+builder.Services.AddScoped<IInterceptor, SKSequentialPlannerInterceptor>();
 
 
 

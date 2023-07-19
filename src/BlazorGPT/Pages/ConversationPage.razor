@@ -8,7 +8,7 @@
 
     private async Task CancelSend()
     {
-        cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Cancel();
     }
 
     [Inject]

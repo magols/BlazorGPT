@@ -1,7 +1,7 @@
 {
     "schema": 1,
     "type": "completion",
-    "description": "Tells some facts about a certain pinball pachine",
+    "description": "Tells some facts about a named specific  pinball machine",
     "completion": {
         "max_tokens": 256,
         "temperature": 0,

@@ -66,7 +66,8 @@ namespace BlazorGPT.Pipeline
 
         public async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel,
             Conversation conversation,
-            Func<string, Task<string>> OnStreamCompletion2)
+            Func<string, Task<string>> OnStreamCompletion, 
+            CancellationToken cancellationToken)
         {
             ChatHistory chatHistory = new ChatHistory();
             foreach (var message in conversation.Messages.Where(c => !string.IsNullOrEmpty(c.Content.Trim())))
@@ -83,13 +84,13 @@ namespace BlazorGPT.Pipeline
                 chatHistory.AddMessage(role, message.Content);
             }
 
-            return await ChatCompletionAsStreamAsync(kernel, chatHistory, conversation, OnStreamCompletion2);
+            return await ChatCompletionAsStreamAsync(kernel, chatHistory, conversation, OnStreamCompletion, cancellationToken);
         }
 
-        public async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel, 
+        private async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel, 
             ChatHistory chatHistory,
             Conversation conversation, 
-            Func<string, Task<string>> OnStreamCompletion2)
+            Func<string, Task<string>> onStreamCompletion, CancellationToken cancellationToken)
         {
             var chatCompletion = kernel.GetService<IChatCompletion>();
             string fullMessage = string.Empty;
@@ -108,23 +109,34 @@ namespace BlazorGPT.Pipeline
             List<IAsyncEnumerable<string>> resultTasks = new();
             int currentResult = 0;
 
-            await foreach (var completionResult in chatCompletion.GetStreamingChatCompletionsAsync(chatHistory, chatRequestSettings))
+            await foreach (var completionResult in chatCompletion.GetStreamingChatCompletionsAsync(chatHistory, chatRequestSettings, cancellationToken))
             {
+                
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return conversation;
+                    throw new TaskCanceledException();
+                }
 
                 string message = string.Empty;
 
-                await foreach (var chatMessage in completionResult.GetStreamingChatMessageAsync())
+                await foreach (var chatMessage in completionResult.GetStreamingChatMessageAsync(cancellationToken))
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return conversation;
+                        throw new TaskCanceledException();
+                    }
+
                     string role = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(chatMessage.Role.Label);
                     message += chatMessage.Content;
                     fullMessage += chatMessage.Content;
-                    if (OnStreamCompletion2 != null)
+                    if (onStreamCompletion != null)
                     {
-                        await OnStreamCompletion2.Invoke(chatMessage.Content);
+                        await onStreamCompletion.Invoke(chatMessage.Content);
                     }
                 }
             }
-
 
             conversation.Messages.Last().Content = fullMessage;
             return conversation;

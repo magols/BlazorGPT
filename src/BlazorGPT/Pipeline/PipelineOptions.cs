@@ -13,7 +13,11 @@ public class PipelineOptions
     public string StateFileSaveInterceptorPath { get; set; }
 
     public EmbeddingsSettings Embeddings { get; set; } = new EmbeddingsSettings();
-    
+
+    public string BING_API_KEY { get; set; }
+    public string GOOGLE_API_KEY { get; set; }
+    public string GOOGLE_SEARCH_ENGINE_ID { get; set; }
+
 }
 
 public class EmbeddingsSettings

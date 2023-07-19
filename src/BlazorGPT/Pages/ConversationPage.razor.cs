@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Radzen;
 using Radzen.Blazor;
 
@@ -75,9 +74,11 @@ namespace BlazorGPT.Pages
 
 
         private IKernel _kernel = null!;
+        private CancellationTokenSource _cancellationTokenSource;
+        SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
+        
 
-
-        protected override async Task OnInitializedAsync()
+            protected override async Task OnInitializedAsync()
         {
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
 
@@ -173,7 +174,6 @@ namespace BlazorGPT.Pages
 
         }
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         private async Task SendConversation()
         {
@@ -201,26 +201,49 @@ namespace BlazorGPT.Pages
 
             }
 
-            Conversation = await InterceptorHandler.Send(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>());
+            await semaphoreSlim.WaitAsync();
 
-            await Send();
-                
-            if (Conversation.InitStage())
+            _cancellationTokenSource = new CancellationTokenSource(5000);
+            try
             {
-                var selectedEnd = _profileSelectorEnd.SelectedProfiles;
-                if (selectedEnd.Any())
+                Conversation = await InterceptorHandler.Send(_kernel,
+                    Conversation,
+                    inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>(),
+                    _cancellationTokenSource.Token);
+
+                await Send();
+
+                if (Conversation.InitStage() && !_cancellationTokenSource.IsCancellationRequested)
                 {
-                    foreach (var profile in selectedEnd)
-                    { 
-                        Console.WriteLine("QP " + profile.Content);
-                        Conversation.AddMessage(new ConversationMessage("user", profile.Content));
-                        
+                    var selectedEnd = _profileSelectorEnd.SelectedProfiles;
+                    if (selectedEnd.Any())
+                    {
+                        foreach (var profile in selectedEnd)
+                        {
+                            Console.WriteLine("QP " + profile.Content);
+                            Conversation.AddMessage(new ConversationMessage("user", profile.Content));
 
-                        StateHasChanged();
-                        await Send();
+                            StateHasChanged();
+                            await Send();
 
+                        }
                     }
                 }
+            }
+            catch (InvalidOperationException ioe)
+            {
+         //       Console.WriteLine(ioe);
+            }
+            catch (Exception e)
+            {
+          //      Console.WriteLine(e);
+            }
+            finally
+            {
+                _cancellationTokenSource.TryReset();
+                semaphoreSlim.Release();
+                StateHasChanged();
+
             }
 
             IsBusy = false;
@@ -239,11 +262,12 @@ namespace BlazorGPT.Pages
             try
             {
                 Conversation.AddMessage("assistant", "");
-            
+
                 StateHasChanged();
                 Conversation = await
-                    KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion);
-                
+                    KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion,
+                        cancellationToken: _cancellationTokenSource.Token);
+
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
 
                 bool isNew = false;
@@ -279,7 +303,8 @@ namespace BlazorGPT.Pages
 
                 await ctx.SaveChangesAsync();
 
-                Conversation = await InterceptorHandler.Receive(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors);
+                Conversation =
+                    await InterceptorHandler.Receive(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors);
 
                 if (wasSummarized)
                 {
@@ -301,6 +326,9 @@ namespace BlazorGPT.Pages
                 var res = await DialogService.Alert("The operation was cancelled");
                 //cancellationTokenSource = new CancellationTokenSource();
                 Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
+
+                //_cancellationTokenSource?.TryReset();
+                semaphoreSlim.Release();
                 StateHasChanged();
                 return;
             }
@@ -312,6 +340,13 @@ namespace BlazorGPT.Pages
                 Console.WriteLine(e.StackTrace);
                 StateHasChanged();
                 return;
+            }
+            finally
+            {
+               
+                    _cancellationTokenSource?.TryReset();
+                    semaphoreSlim.Release();
+
             }
 
             //Conversation = conv;
