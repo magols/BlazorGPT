@@ -74,11 +74,11 @@ namespace BlazorGPT.Pipeline
                 var role =
                     message.Role == "system"
                         ?
-                        ChatHistory.AuthorRoles.System
+                        AuthorRole.System
                         : // if the role is system, set the role to system
                         message.Role == "user"
-                            ? ChatHistory.AuthorRoles.User
-                            : ChatHistory.AuthorRoles.Assistant;
+                            ? AuthorRole.User
+                            : AuthorRole.Assistant;
 
                 chatHistory.AddMessage(role, message.Content);
             }
@@ -94,6 +94,7 @@ namespace BlazorGPT.Pipeline
             var chatCompletion = kernel.GetService<IChatCompletion>();
             string fullMessage = string.Empty;
 
+            // todo: get chat request parameters from settings
             var chatRequestSettings = new ChatRequestSettings
             {
                 MaxTokens = 2500,

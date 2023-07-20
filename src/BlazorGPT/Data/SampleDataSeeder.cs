@@ -35,7 +35,7 @@ namespace BlazorGPT.Data
             // add the messages to the conversation
             foreach (var message in messages)
             {
-                conversation.AddMessage(new ConversationMessage(message.Role.Label, message.Content));
+                conversation.AddMessage(new ConversationMessage(message.Role.ToString(), message.Content));
             }
 
             // save the conversation via conversationrepository
