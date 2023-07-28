@@ -8,6 +8,9 @@ public class Conversation
 {
     public Guid? Id { get; set; }
 
+    [NotMapped]
+    public bool StopRequested { get; set; }
+
     [Required]
     public string Model { get; set; } = null!;
 

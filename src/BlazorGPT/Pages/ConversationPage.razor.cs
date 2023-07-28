@@ -204,7 +204,7 @@ namespace BlazorGPT.Pages
             Conversation = await InterceptorHandler.Send(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>());
 
             await Send();
-                
+
             if (Conversation.InitStage())
             {
                 var selectedEnd = _profileSelectorEnd.SelectedProfiles;
@@ -238,12 +238,17 @@ namespace BlazorGPT.Pages
 
             try
             {
-                Conversation.AddMessage("assistant", "");
-            
-                StateHasChanged();
-                Conversation = await
-                    KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion);
-                
+                if (!Conversation.StopRequested)
+                {
+                    Conversation.AddMessage("assistant", "");
+
+                    StateHasChanged();
+                    Conversation = await
+                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion);
+
+                }
+
+
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
 
                 bool isNew = false;
@@ -320,7 +325,7 @@ namespace BlazorGPT.Pages
 
         private async Task<string> OnStreamCompletion(string s)
         {
-            Console.WriteLine("stream" + s);
+        //    Console.WriteLine("stream" + s);
 
             Conversation.Messages.Last().Content += s;
 

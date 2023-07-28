@@ -36,7 +36,7 @@ namespace BlazorGPT.Pipeline.Interceptors
 
             var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "skills");
 
-            kernel.ImportSkill(new TextMemorySkill());
+            kernel.ImportSkill(new TextMemorySkill(kernel.Memory));
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SummarizeSkill");
             //kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "WriterSkill");
             kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Translate");

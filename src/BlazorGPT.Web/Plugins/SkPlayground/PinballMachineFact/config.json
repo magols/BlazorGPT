@@ -1,7 +1,7 @@
 {
     "schema": 1,
     "type": "completion",
-    "description": "Tells some facts about a certain pinball pachine",
+    "description": "Tells some facts about a named pinball pachine",
     "completion": {
         "max_tokens": 256,
         "temperature": 0,
@@ -11,11 +11,16 @@
     },
     "input": {
         "parameters": [
-            {
-                "name": "input",
-                "description": "Input for this semantic function.",
-                "defaultValue": ""
-            }
+          {
+            "name": "input",
+            "description": "The name of a pinball machine",
+            "defaultValue": ""
+          },
+          {
+            "name": "embeddings",
+            "description": "Supplied data about this pinball machine",
+            "defaultValue": ""
+          }
         ]
     },
     "default_backends": []

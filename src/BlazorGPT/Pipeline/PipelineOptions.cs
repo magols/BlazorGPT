@@ -13,7 +13,9 @@ public class PipelineOptions
     public string StateFileSaveInterceptorPath { get; set; }
 
     public EmbeddingsSettings Embeddings { get; set; } = new EmbeddingsSettings();
-    
+
+    public string BING_API_KEY { get; set; }
+
 }
 
 public class EmbeddingsSettings

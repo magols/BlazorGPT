@@ -1,31 +1,35 @@
-﻿@if (Plan != null)
+﻿@using Microsoft.SemanticKernel.Planning
+@if (Plan != null)
 {
-    <RadzenTree Expand=@OnExpand Collapse=@OnCollapse>
-        <RadzenTreeItem Text="">
+    <RadzenTree Class="col-12">
+        <RadzenTreeItem Text="" Expanded="false">
             <ChildContent>
-                <pre>
-@Plan
-    </pre>
+                Steps:
+                <SKPlanSteps Plan="@Plan"/>
+                JSON: <pre>
+                    @PlanAsString
+                </pre>
             </ChildContent>
             <Template>
-                <b>Plan</b> 
+                <b>Plan</b>
                 <RadzenIcon Icon="plan"></RadzenIcon>
             </Template>
         </RadzenTreeItem>
     </RadzenTree>
-}
 
+}
 @code {
 
     [Parameter]
-    public string? Plan { get; set; }
+    public string? PlanAsString { get; set; }
 
-    private void OnExpand()
+    public Plan? Plan { get; set; }
+
+    protected override void OnParametersSet()
     {
+        if (PlanAsString != null)
+        {
+            Plan = Plan.FromJson(PlanAsString);
+        }
     }
-
-    private void OnCollapse()
-    {
-    }
-
 }
