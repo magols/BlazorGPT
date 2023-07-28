@@ -48,7 +48,7 @@ Text selected:
 
             kernel.ImportSkill(new TimeSkill(), "time");
             kernel.ImportSkill(new HttpSkill(), "http");
-            kernel.ImportSkill(new TextMemorySkill(), "memory");
+            kernel.ImportSkill(new TextMemorySkill(kernel.Memory), "memory");
 
 
 

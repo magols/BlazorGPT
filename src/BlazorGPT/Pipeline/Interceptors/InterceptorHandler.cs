@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Collections;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
@@ -33,13 +34,14 @@ public class InterceptorHandler : IInterceptorHandler
     public async Task<Conversation> Send(IKernel kernel, Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
     {
-        IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
+
+        IEnumerable<IInterceptor> enabled = enabledInterceptors?.ToList() ?? EnabledInterceptors;
+
         foreach (var interceptor in enabled)
         {
-            // check if the interceptor iinherits the abstract class InterceptorBase
-            if (interceptor is InterceptorBase)
+            // check if the interceptor iinherits the abstract class InterceptorBase and if so set the OnUpdate function
+            if (interceptor is InterceptorBase interceptorBase)
             {
-                var interceptorBase = (InterceptorBase)interceptor;
                 interceptorBase.OnUpdate = OnUpdate;
             }
 

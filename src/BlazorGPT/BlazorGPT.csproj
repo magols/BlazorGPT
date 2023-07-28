@@ -26,22 +26,20 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0-preview.6.23329.4" />
 
-    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.5" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="0.17.230711.7-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="0.17.230711.7-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="0.17.230711.7-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="0.17.230711.7-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="0.18.230725.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="0.18.230725.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="0.18.230725.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="0.18.230725.3-preview" />
 
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="0.17.230711.7-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="0.18.230725.3-preview" />
 
-    <PackageReference Include="Microsoft.SemanticKernel.Core" Version="0.17.230711.7-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planning.StepwisePlanner" Version="0.17.230711.7-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.17.230711.7-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Core" Version="0.18.230725.3-preview" />
 
+    <PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.18.230725.3-preview" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.8.0" />
-    <PackageReference Include="Radzen.Blazor" Version="4.13.6" />
+    <PackageReference Include="Radzen.Blazor" Version="4.14.2" />
 
   </ItemGroup>
 
@@ -69,20 +67,22 @@
   </ItemGroup>
 
 
-  <ItemGroup>
+  <!--<ItemGroup>
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Web\Skills.Web.csproj" />
 
-    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.AI.OpenAI\Connectors.AI.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.AI.OpenAI\Connectors.AI.OpenAI.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Sqlite\Connectors.Memory.Sqlite.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Redis\Connectors.Memory.Redis.csproj" />
 
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.ActionPlanner\Planning.ActionPlanner.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.SequentialPlanner\Planning.SequentialPlanner.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.OpenAPI\Skills.OpenAPI.csproj" />
-    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Web\Skills.Web.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />
-    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Core\Skills.Core.csproj" />-->
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel.Abstractions\SemanticKernel.Abstractions.csproj" />
 
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Core\Skills.Core.csproj" />
 
-  </ItemGroup>
+  </ItemGroup>-->
+
 
 </Project>

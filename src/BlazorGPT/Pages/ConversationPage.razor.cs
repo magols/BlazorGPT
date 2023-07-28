@@ -211,20 +211,21 @@ namespace BlazorGPT.Pages
                     inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>(),
                     _cancellationTokenSource.Token);
 
-                await Send();
+            await Send();
 
-                if (Conversation.InitStage() && !_cancellationTokenSource.IsCancellationRequested)
+            if (Conversation.InitStage())
+            {
+                var selectedEnd = _profileSelectorEnd.SelectedProfiles;
+                if (selectedEnd.Any())
                 {
-                    var selectedEnd = _profileSelectorEnd.SelectedProfiles;
-                    if (selectedEnd.Any())
-                    {
-                        foreach (var profile in selectedEnd)
-                        {
-                            Console.WriteLine("QP " + profile.Content);
-                            Conversation.AddMessage(new ConversationMessage("user", profile.Content));
+                    foreach (var profile in selectedEnd)
+                    { 
+                        Console.WriteLine("QP " + profile.Content);
+                        Conversation.AddMessage(new ConversationMessage("user", profile.Content));
+                        
 
-                            StateHasChanged();
-                            await Send();
+                        StateHasChanged();
+                        await Send();
 
                         }
                     }
@@ -261,12 +262,16 @@ namespace BlazorGPT.Pages
 
             try
             {
-                Conversation.AddMessage("assistant", "");
+                if (!Conversation.StopRequested)
+                {
+                    Conversation.AddMessage("assistant", "");
 
-                StateHasChanged();
-                Conversation = await
-                    KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion,
-                        cancellationToken: _cancellationTokenSource.Token);
+                    StateHasChanged();
+                    Conversation = await
+                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion);
+
+                }
+
 
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
 
@@ -355,7 +360,7 @@ namespace BlazorGPT.Pages
 
         private async Task<string> OnStreamCompletion(string s)
         {
-            Console.WriteLine("stream" + s);
+        //    Console.WriteLine("stream" + s);
 
             Conversation.Messages.Last().Content += s;
 

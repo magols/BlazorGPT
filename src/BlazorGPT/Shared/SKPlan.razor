@@ -1,5 +1,5 @@
-﻿@using Newtonsoft.Json
-@if (Data != null)
+﻿@using Microsoft.SemanticKernel.Planning
+@if (Plan != null)
 {
     <div class="row">
 
@@ -61,7 +61,6 @@
     </pre>
             </ChildContent>
             <Template>
-      
                 <b>Plan</b>
                 <RadzenIcon Icon="plan"></RadzenIcon>
 
@@ -69,69 +68,20 @@
             </Template>
         </RadzenTreeItem>
     </RadzenTree>
-}
 
+}
 @code {
 
     [Parameter]
-    public string? Data { get; set; }
+    public string? PlanAsString { get; set; }
 
-    private void OnExpand()
-    {
-    }
-
-    private void OnCollapse()
-    {
-    }
+    public Plan? Plan { get; set; }
 
     protected override void OnParametersSet()
     {
-        Plan = GetPlanFromData();
-        Progress = GetProgress();
-    }
-
-    private dynamic? Plan;
-
-    double Progress = 0;
-
-    private int GetProgress()
-    {
-        if (Plan?.steps != null)
+        if (PlanAsString != null)
         {
-            return (int)(Plan.next_step_index / Plan.steps.Count) * 100;
-        }
-
-        return 0;
-    }
-
-    string GetColorForPlanState(dynamic step, int currentIndex)
-    {
-        if (currentIndex == (int)Plan?.next_step_index)
-        {
-            return "bg-primary";
-
-        }
-        if (currentIndex < (int)Plan?.next_step_index)
-        {
-                return "bg-success";
-
-        }
-        
-                return "bg-light";
-
-    }
-
-    private dynamic GetPlanFromData()
-    {
-        try
-        {
-            return JsonConvert.DeserializeObject<dynamic>(Data);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
+            Plan = Plan.FromJson(PlanAsString);
         }
     }
-
 }

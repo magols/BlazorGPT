@@ -1,5 +1,0 @@
-
-[INPUT]
-{{$input}}
-{{ memory.recall $input}}
-[END INPUT]

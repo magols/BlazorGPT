@@ -1,22 +1,25 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planning;
-using Microsoft.SemanticKernel.Orchestration;
-using Microsoft.SemanticKernel.Skills.Core;
-using System.Diagnostics;
+using BlazorGPT.Plugins;
 using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel.Skills.Web;
+using Microsoft.SemanticKernel.Orchestration;
+using Microsoft.SemanticKernel.Planning.Sequential;
 using Microsoft.SemanticKernel.Skills.Web.Bing;
+using Microsoft.SemanticKernel.Skills.Web;
 
 namespace BlazorGPT.Pipeline.Interceptors
 {
     public class SkPlaygroundInterceptor : InterceptorBase, IInterceptor
     {
         private KernelService _kernelService;
-        private PipelineOptions _options;
+        private readonly PipelineOptions _options;
         public string Name { get; } = "SkPlayground";
         public bool Internal { get; } = false;
 
-        public SkPlaygroundInterceptor(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository, KernelService kernelService, IOptions<PipelineOptions> options) : base(context, conversationsRepository)
+        public SkPlaygroundInterceptor(IDbContextFactory<BlazorGptDBContext> context, 
+            ConversationsRepository conversationsRepository,
+            KernelService kernelService
+            ,IOptions<PipelineOptions> options) : base(context, conversationsRepository)
         {
             _options = options.Value;
             _kernelService = kernelService;
@@ -30,183 +33,71 @@ namespace BlazorGPT.Pipeline.Interceptors
 
         public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
         {
-            //if (conversation.Messages.Count() == 2)
-            //{
-                await AppendInstruction(kernel, conversation);
-            //}
+            if (conversation.Messages.Count() == 2)
+            {
+                await Play(kernel, conversation);
+            }
             return conversation;
         }
 
-        private async Task AppendInstruction(IKernel kernel, Conversation conversation)
+        private async Task Play(IKernel kernel, Conversation conversation)
         {
+            var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
+            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SkPlayground");
+            kernel.ImportSkill(new EmbeddingSkill(kernel), "embeddings");
+            kernel.ImportSkill(new TranslateSkill(kernel), "summarize");
 
-            //var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
-            ////kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "Samples");
-
-            using var bingConnector = new BingConnector(_options.BING_API_KEY);
-            var webSearchEngineSkill = new WebSearchEngineSkill(bingConnector);
+            var bingConnector = new BingConnector(_options.BING_API_KEY);
+            var bing = new WebSearchEngineSkill(bingConnector);
+            var search = kernel.ImportSkill(bing, "bing");
 
             kernel.ImportSkill(webSearchEngineSkill, "WebSearch");
             kernel.ImportSkill(new TimeSkill(), "time");
 
             var ask =  conversation.Messages.Last().Content;
 
-
-            var config = new Microsoft.SemanticKernel.Planning.Stepwise.StepwisePlannerConfig();
-            config.MinIterationTimeMs = 1500;
-            config.MaxTokens = 2800;
-
-
-            var planner = new StepwisePlanner(kernel, config);
-            var plan =   planner.CreatePlan(ask);
-
-            conversation.SKPlan = plan.ToJson(true);
-            OnUpdate?.Invoke();
-
             SKContext ctx = kernel.CreateNewContext();
+            ctx["input"] = ask;
 
-            plan = await plan.InvokeNextStepAsync(ctx);
+            var planner = new SequentialPlanner(kernel, new SequentialPlannerConfig {  RelevancyThreshold = 0.8 });
 
-            var result = await plan.InvokeAsync(ctx);
-
-
-            Console.WriteLine("Result: " + result);
-            if (result.Variables.TryGetValue("stepCount", out string? stepCount))
-            {
-                Console.WriteLine("Steps Taken: " + stepCount);
-            }
-
-            if (result.Variables.TryGetValue("skillCount", out string? skillCount))
-            {
-                Console.WriteLine("Skills Used: " + skillCount);
-            }
-
-            // insert a new message with the result of the plan
-            conversation.Messages.Insert(conversation.Messages.Count-1, new ConversationMessage("assistant", "Plan result:\n\n" + plan.State.Input + "\n\n"));
-
-            conversation.Messages.Last().Content = $"hello";
-
+            var plan = await planner.CreatePlanAsync(ask);
+         
             conversation.SKPlan = plan.ToJson(true);
             OnUpdate?.Invoke();
-
 
             return;
 
-            int step = 1;
-            int maxSteps = 10;
-            try
+            Plan newPlan = plan;
+            while (newPlan.HasNextStep)
             {
-                while (plan.HasNextStep)
-                {
-                    if (string.IsNullOrEmpty(ask))
-                    {
-                        await plan.InvokeNextStepAsync(ctx);
-                        // or await kernel.StepAsync(plan);
-                    }
-                    else
-                    {
-                        // plan = await plan.InvokeNextStepAsync(ctx);
-                        await kernel.StepAsync(ask, plan);
-                        ask = string.Empty;
-
-
-                    }
-
-                    conversation.SKPlan = plan.ToJson(true);
-                    OnUpdate?.Invoke();
-
-                    if (!plan.HasNextStep)
-                    {
-                        Console.WriteLine($"Step {step} - COMPLETE!");
-                        Console.WriteLine(plan.State.ToString());
-                        break;
-                    }
-
-                    Console.WriteLine($"Step {step} - Results so far:");
-                    Console.WriteLine(plan.State.ToString());
-                }
-
-
-                //for (int step = 1; plan.HasNextStep && step < maxSteps; step++)
-                //{
-                //    if (string.IsNullOrEmpty(ask))
-                //    {
-                //        await plan.InvokeNextStepAsync(kernel.CreateNewContext());
-                //        // or await kernel.StepAsync(plan);
-                //    }
-                //    else
-                //    {
-                //        plan = await kernel.StepAsync(ask, plan);
-                //        ask = string.Empty;
-
-
-                //    }
-
-                //    conversation.SKPlan = plan.ToJson(true);
-                //    OnUpdate?.Invoke();
-
-                //    if (!plan.HasNextStep)
-                //    {
-                //        Console.WriteLine($"Step {step} - COMPLETE!");
-                //        Console.WriteLine(plan.State.ToString());
-                //        break;
-                //    }
-
-                //    Console.WriteLine($"Step {step} - Results so far:");
-                //    Console.WriteLine(plan.State.ToString());
-                //}
-            }
-            catch (KernelException e)
-            {
-                Console.WriteLine("Step - Execution failed:");
-                Console.WriteLine(e.Message);
+               newPlan = await newPlan.InvokeNextStepAsync(ctx);
+               conversation.SKPlan = newPlan.ToJson(true);
+               OnUpdate?.Invoke();
             }
 
+            ExtractEmbeddingsTag(conversation, newPlan);
 
-
-
+            newPlan.State.TryGetValue("RESULT__FINAL_ANSWER", out string? result);
+            if (result != null)
+            {
+                conversation.Messages.Add(new ConversationMessage("assistant", result));
+                conversation.StopRequested = true;
+            }
         }
 
-
-
-        public  async Task RunWithQuestion(IKernel kernel, string question)
+        private static void ExtractEmbeddingsTag(Conversation conversation, Plan newPlan)
         {
-            using var bingConnector = new BingConnector(_options.BING_API_KEY);
-            var webSearchEngineSkill = new WebSearchEngineSkill(bingConnector);
-
-            kernel.ImportSkill(webSearchEngineSkill, "WebSearch");
-            //kernel.ImportSkill(new LanguageCalculatorSkill(kernel), "advancedCalculator");
-            // kernel.ImportSkill(new SimpleCalculatorSkill(kernel), "basicCalculator");
-            kernel.ImportSkill(new TimeSkill(), "time");
-
-            Console.WriteLine("*****************************************************");
-            Stopwatch sw = new();
-            Console.WriteLine("Question: " + question);
-
-            var config = new Microsoft.SemanticKernel.Planning.Stepwise.StepwisePlannerConfig();
-            config.ExcludedFunctions.Add("TranslateMathProblem");
-            config.MinIterationTimeMs = 1500;
-            config.MaxTokens = 2500;
-
-            StepwisePlanner planner = new(kernel, config);
-            sw.Start();
-            var plan = planner.CreatePlan(question);
-
-            var result = await plan.InvokeAsync(kernel.CreateNewContext());
-            Console.WriteLine("Result: " + result);
-            if (result.Variables.TryGetValue("stepCount", out string? stepCount))
+            var embeddingOutputName =
+                newPlan.Steps.FirstOrDefault(s => s.Name == "IncludeEmbeddingsTag")?.Outputs.FirstOrDefault();
+            if (embeddingOutputName != null)
             {
-                Console.WriteLine("Steps Taken: " + stepCount);
+                newPlan.State.TryGetValue(embeddingOutputName, out string? embeddings);
+                if (embeddings != null)
+                {
+                    conversation.Messages.Last().Content = embeddings + "\n" + conversation.Messages.Last().Content;
+                }
             }
-
-            if (result.Variables.TryGetValue("skillCount", out string? skillCount))
-            {
-                Console.WriteLine("Skills Used: " + skillCount);
-            }
-
-            Console.WriteLine("Time Taken: " + sw.Elapsed);
-            Console.WriteLine("*****************************************************");
         }
-
     }
 }

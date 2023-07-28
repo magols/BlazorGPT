@@ -26,14 +26,35 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
+    <!--<PackageReference Include="Microsoft.SemanticKernel" Version="0.18.230725.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="0.18.230725.3-preview" />-->
+
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-preview.6.23360.4" />
-    <PackageReference Include="Radzen.Blazor" Version="4.13.6" />
+    <PackageReference Include="Radzen.Blazor" Version="4.14.2" />
     <PackageReference Include="Sendgrid" Version="9.28.1" />
 
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorGPT\BlazorGPT.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Web\Skills.Web.csproj" />
+
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.AI.OpenAI\Connectors.AI.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Sqlite\Connectors.Memory.Sqlite.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Redis\Connectors.Memory.Redis.csproj" />
+
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.ActionPlanner\Planning.ActionPlanner.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.SequentialPlanner\Planning.SequentialPlanner.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.OpenAPI\Skills.OpenAPI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel.Abstractions\SemanticKernel.Abstractions.csproj" />
+
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Core\Skills.Core.csproj" />-->
+
   </ItemGroup>
 
   <Target Name="CopyPlugins" AfterTargets="Build">
