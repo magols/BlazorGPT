@@ -116,7 +116,11 @@ namespace BlazorGPT.Pages
                 await Interop.FocusElement(_promptField2.Element);
             }
 
-            await Interop.ScrollToBottom("message-pane");
+            if (Conversation.SKPlan != null)
+            {
+                await Interop.ScrollToBottom("message-pane");
+
+            }
         }
         
         async Task SetupConversation()
@@ -211,9 +215,11 @@ namespace BlazorGPT.Pages
                     inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>(),
                     _cancellationTokenSource.Token);
 
-            await Send();
+              
+                    await Send();
+                
 
-            if (Conversation.InitStage())
+                if (Conversation.InitStage())
             {
                 var selectedEnd = _profileSelectorEnd.SelectedProfiles;
                 if (selectedEnd.Any())

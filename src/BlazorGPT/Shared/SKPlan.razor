@@ -1,76 +1,111 @@
 ﻿@using Microsoft.SemanticKernel.Planning
+@using BlazorGPT.Migrations
 @if (Plan != null)
 {
-    <div class="row">
-
-        <div class="progress col-sm-12">
-            <div class="progress-bar" role="progressbar" style="width: @(Progress)%;" aria-valuenow="@(Progress)" aria-valuemin="0" aria-valuemax="100"></div>
-
-        </div>
-
-
-    </div>
-    <div class="row">
-        <div class="col-sm-12 border m-3 mb-0">
-            <RadzenProgressBar Unit="steps" Max="100" @bind-Value="Progress" ShowValue="true" Mode="ProgressBarMode.Determinate" Class="col-md-12">
-
-            </RadzenProgressBar>
-
-
-        </div>
-    </div>
-    <RadzenTree>
-        <RadzenTreeItem Text="" Expanded="true">
-            <ChildContent>
-
-
-                <div class="row small">
-
-                    <div class=" col-md-12">
-                        @if (Plan != null && Plan?.Steps != null)
+    <RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3 mb-1">
+        <HeaderTemplate>
+            <div class="container-fluid mb-3">
+                <div class="row">
+                    <RadzenText TextStyle="TextStyle.Subtitle1">
+                        <b>Plan</b> &nbsp; (@(Plan.NextStepIndex >= StepsCount ? StepsCount :  Plan.NextStepIndex + 1)/@StepsCount)
+                        <RadzenIcon Icon="plan" />
+                    </RadzenText>
+                </div>
+                <div class="row">
+                    <div class="progress col-md-12">
+                        <div class="progress-bar" role="progressbar" style="width: @(Progress)%;" aria-valuenow="@(Progress)" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </HeaderTemplate>
+        <ChildContent>
+            <div class="row ">
+                <div class=" col-md-12">
+                    @if (Plan != null && Plan?.Steps != null)
+                    {
+                        var stepLoop = 0;
+                        @foreach (var step in Plan.Steps)
                         {
-@*                             <div>Steps: @Plan.steps.Count</div>
-                            <div>Next: @Plan.next_step_index</div> *@
-
-                            var stepLoop = 0;
-
-                            @foreach (var step in Plan.Steps)
-                            {
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card text-darkmb-1">
-                                            <div class="card-header"  >@step.Name, @step.SkillName</div>
-                                            <div class="card-body bg-dark">
-                                                <p class="card-title">@step.Description</p>
-                                                @* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> *@
-                                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card  bg-dark border">
+                                        <div class="card-header">
+                                            <RadzenIcon Icon="@GetStepStateIcon(stepLoop)"></RadzenIcon>
+                                            @step.SkillName . @step.Name - @step.Description
                                         </div>
+                                        @* <div class="card-body bg-dark"> *@
+                                            @* <p class="card-title"></p> *@
+                                            @* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> *@
+                                        @* </div> *@
+                                        
+                                        
+                                        <p class="m-0 p-0">
+                                            <ul>
+                                                @foreach (var o in step.Parameters)
+                                                {
+                                                    if (!string.IsNullOrEmpty(o.Value))
+                                                    {
+                                                        <li>@o.Key: @o.Value</li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </p>
+
+                                        <p class="m-0 p-0">
+                                            <ul>
+                                                @foreach (var o in step.Outputs)
+                                                {
+                                                    if (Plan.State.ContainsKey(o))
+                                                    {
+                                                        Plan.State.TryGetValue(o, out var value);
+                                                        <li>@o: @value</li>
+
+                                                    }
+                                                }
+                                            </ul>
+                                        </p>
 
                                     </div>
+
                                 </div>
-                                stepLoop++;
-                            }
+                            </div>
+                            stepLoop++;
                         }
-                    </div>
+                    }
+                </div> 
 
+            </div>
+    
+        </ChildContent>
+
+@*         <SummaryTemplate>
+            <RadzenCard class="rz-mt-4">
+                <b>3 Orders</b>
+            </RadzenCard>
+        </SummaryTemplate> *@
+    </RadzenPanel>
+
+    <RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3 mt-0 p-3">
+        <HeaderTemplate>
+            Plan JSON
+        </HeaderTemplate>
+        <ChildContent>
+            <div class="row ">
+                <div class=" col-md-12">
+                    <MarkdownContent Content="@FormatPlan()" />
                 </div>
-
-
-                <pre>
- @* @Data  *@
-    </pre>
-            </ChildContent>
-            <Template>
-                <b>Plan</b>
-                <RadzenIcon Icon="plan"></RadzenIcon>
-
-     
-            </Template>
-        </RadzenTreeItem>
-    </RadzenTree>
-
+            </div>
+        </ChildContent>
+    </RadzenPanel>
 }
 @code {
+
+
+    string FormatPlan()
+    {
+        return $"```json {PlanAsString}```";
+    }
+
 
     [Parameter]
     public string? PlanAsString { get; set; }
@@ -85,5 +120,60 @@
         }
     }
 
-    double Progress;
+    private int StepsCount
+    {
+        get
+        {
+            if (Plan != null && Plan?.Steps != null)
+            {
+                return Plan.Steps.Count;
+            }
+            else
+            {
+                return 0;
+            }    
+        }
+        set {}
+    }
+
+
+    int Progress
+    {
+        get
+        {
+            if (Plan != null)
+            {
+                if (!Plan.HasNextStep)
+                {
+                    return 100;
+                }
+
+                int currentStep = Plan.NextStepIndex;
+                var percentage = (int)Math.Ceiling(((double)currentStep / StepsCount) * 100);
+                return percentage;
+            }
+            return 0;
+        }
+        set
+        {
+        }
+        
+    }
+
+    private string GetStepStateIcon(int stepLoop)
+    {
+if (stepLoop < Plan.NextStepIndex)
+        {
+            return "done";
+        }
+
+        if (stepLoop == Plan.NextStepIndex)
+        {
+            return "rotate_right";
+        }
+
+
+        return "pending";
+    }
+
 }

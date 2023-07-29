@@ -15,12 +15,6 @@
             {
                 var isLastMessage = Conversation.Messages.IndexOf(message) + 1 == Conversation.Messages.Count();
 
-                @if (Conversation.Messages.IndexOf(message) == 2 && Conversation.SKPlan != null)
-                {
-
-                    <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
-                }
-
                 <ConversationMessageDisplay
                     ShowBranches="@ShowBranches"
                     ShowRestartButton="RestartConversation.HasDelegate && !isLastMessage"
@@ -29,6 +23,12 @@
                     OnCopyClicked="CopyConversation"
                     Message="message">
                 </ConversationMessageDisplay>
+
+                @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.SKPlan != null)
+                {
+
+                    <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
+                }
             }
         }
 

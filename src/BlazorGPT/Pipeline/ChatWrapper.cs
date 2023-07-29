@@ -64,6 +64,9 @@ public class ChatWrapper
         IEnumerable<QuickProfile> profiles, Func<string, Task<string>>? callback = null,
         CancellationToken cancellationToken = default)
     {
+        if (conversation.StopRequested) return conversation;
+
+        
         var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
         conversation.AddMessage(conversationMessage);
         await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, callback, cancellationToken);

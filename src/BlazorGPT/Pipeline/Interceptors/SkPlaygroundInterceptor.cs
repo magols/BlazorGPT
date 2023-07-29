@@ -56,6 +56,14 @@ namespace BlazorGPT.Pipeline.Interceptors
 
             var ask =  conversation.Messages.Last().Content;
 
+
+            var p = new Plan("Wait for instructions");
+            conversation.SKPlan = p.ToJson(true);
+            OnUpdate?.Invoke();
+
+
+ 
+
             SKContext ctx = kernel.CreateNewContext();
             ctx["input"] = ask;
 
@@ -66,7 +74,6 @@ namespace BlazorGPT.Pipeline.Interceptors
             conversation.SKPlan = plan.ToJson(true);
             OnUpdate?.Invoke();
 
-            return;
 
             Plan newPlan = plan;
             while (newPlan.HasNextStep)
@@ -77,13 +84,33 @@ namespace BlazorGPT.Pipeline.Interceptors
             }
 
             ExtractEmbeddingsTag(conversation, newPlan);
+            
+            ExtractResult(conversation, newPlan);
 
-            newPlan.State.TryGetValue("RESULT__FINAL_ANSWER", out string? result);
-            if (result != null)
+            conversation.StopRequested = true;
+
+        }
+
+        private static void ExtractResult(Conversation conversation, Plan newPlan)
+        {
+            string planResultKey = "PLAN.RESULT";
+            newPlan.State.TryGetValue(planResultKey, out string? planResult);
+            if (planResult != null)
             {
-                conversation.Messages.Add(new ConversationMessage("assistant", result));
-                conversation.StopRequested = true;
+                conversation.Messages.Add(new ConversationMessage("assistant", planResult));
             }
+            else
+            {
+                newPlan.State.TryGetValue("RESULT__FINAL_ANSWER", out string? result);
+                if (result != null)
+                {
+                    conversation.Messages.Add(new ConversationMessage("assistant", result));
+                }
+
+            }
+
+
+
         }
 
         private static void ExtractEmbeddingsTag(Conversation conversation, Plan newPlan)
