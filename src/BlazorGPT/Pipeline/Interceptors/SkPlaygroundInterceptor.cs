@@ -4,6 +4,7 @@ using BlazorGPT.Plugins;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.Planning.Sequential;
+using Microsoft.SemanticKernel.Skills.Core;
 using Microsoft.SemanticKernel.Skills.Web.Bing;
 using Microsoft.SemanticKernel.Skills.Web;
 
@@ -51,7 +52,6 @@ namespace BlazorGPT.Pipeline.Interceptors
             var bing = new WebSearchEngineSkill(bingConnector);
             var search = kernel.ImportSkill(bing, "bing");
 
-            kernel.ImportSkill(webSearchEngineSkill, "WebSearch");
             kernel.ImportSkill(new TimeSkill(), "time");
 
             var ask =  conversation.Messages.Last().Content;

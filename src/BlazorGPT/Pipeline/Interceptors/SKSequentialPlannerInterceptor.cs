@@ -48,8 +48,6 @@ namespace BlazorGPT.Pipeline.Interceptors
             kernel.ImportSemanticSkillFromDirectory(pluginsDirectory, "Samples");
 
 
-            // Add the math plugin
-            var mathPlugin = kernel.ImportSkill(new MathPlugin(), "MathPlugin");
 
             // Create a planner
             var planner = new SequentialPlanner(kernel);

@@ -19,7 +19,7 @@
 
         </div>
     </div>
-    <RadzenTree Expand=@OnExpand Collapse=@OnCollapse>
+    <RadzenTree>
         <RadzenTreeItem Text="" Expanded="true">
             <ChildContent>
 
@@ -27,21 +27,21 @@
                 <div class="row small">
 
                     <div class=" col-md-12">
-                        @if (Plan != null && Plan?.steps != null)
+                        @if (Plan != null && Plan?.Steps != null)
                         {
 @*                             <div>Steps: @Plan.steps.Count</div>
                             <div>Next: @Plan.next_step_index</div> *@
 
                             var stepLoop = 0;
 
-                            @foreach (var step in Plan.steps)
+                            @foreach (var step in Plan.Steps)
                             {
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="card text-darkmb-1">
-                                            <div class="card-header  @GetColorForPlanState(step, stepLoop) ">@step.name, @step.skill_name</div>
+                                            <div class="card-header"  >@step.Name, @step.SkillName</div>
                                             <div class="card-body bg-dark">
-                                                <p class="card-title">@step.description</p>
+                                                <p class="card-title">@step.Description</p>
                                                 @* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> *@
                                             </div>
                                         </div>
@@ -84,4 +84,6 @@
             Plan = Plan.FromJson(PlanAsString);
         }
     }
+
+    double Progress;
 }

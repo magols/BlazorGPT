@@ -203,7 +203,7 @@ namespace BlazorGPT.Pages
 
             await semaphoreSlim.WaitAsync();
 
-            _cancellationTokenSource = new CancellationTokenSource(5000);
+            _cancellationTokenSource = new CancellationTokenSource(2*60*1000);
             try
             {
                 Conversation = await InterceptorHandler.Send(_kernel,
@@ -268,7 +268,7 @@ namespace BlazorGPT.Pages
 
                     StateHasChanged();
                     Conversation = await
-                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion);
+                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
 
                 }
 
