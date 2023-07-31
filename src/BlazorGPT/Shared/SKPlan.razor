@@ -143,6 +143,10 @@
         {
             if (Plan != null)
             {
+                if (Plan.Steps.Count == 0)
+                {
+                    return 0;
+                }
                 if (!Plan.HasNextStep)
                 {
                     return 100;
