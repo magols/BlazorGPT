@@ -3,11 +3,17 @@
 @using BlazorGPT.Pipeline.Interceptors
 @using BlazorGPT.Pipeline
 
-<RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string" 
-                    Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)" 
-                    Change="OnListChanged"
-                    class="mb-3 mt-0">
-</RadzenCheckBoxList>
+
+<RadzenPanel AllowCollapse="true" Collapsed="true" Text="Interceptors">
+    <ChildContent>
+        <RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string"
+                            Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
+                            Change="OnListChanged"
+                            class="mb-3 mt-0">
+        </RadzenCheckBoxList>
+    </ChildContent>
+</RadzenPanel>
+
 
 @code {
 
