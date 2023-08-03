@@ -2,12 +2,12 @@
 @using BlazorGPT.Migrations
 @if (Plan != null)
 {
-    <RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3 mb-1">
+    <RadzenPanel AllowCollapse="true" Collapsed="false" Class="m-3 mb-1">
         <HeaderTemplate>
             <div class="container-fluid mb-3">
                 <div class="row">
-                    <RadzenText TextStyle="TextStyle.Subtitle1">
-                        <b>Plan</b> &nbsp; (@(Plan.NextStepIndex >= StepsCount ? StepsCount :  Plan.NextStepIndex + 1)/@StepsCount)
+                    <RadzenText TextStyle="TextStyle.Body2">
+                        <b>Plan</b> &nbsp; (@(Plan.NextStepIndex)/@StepsCount)
                         <RadzenIcon Icon="plan" />
                     </RadzenText>
                 </div>
@@ -26,47 +26,56 @@
                         var stepLoop = 0;
                         @foreach (var step in Plan.Steps)
                         {
+                            var stepIndex = stepLoop +1;
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="card  bg-dark border">
-                                        <div class="card-header">
-                                            <RadzenIcon Icon="@GetStepStateIcon(stepLoop)"></RadzenIcon>
+                                    <div class="card  bg-dark border rz-text-body2">
+                                        <div class="card-header skplan-step-@GetStepStateClass(stepIndex)">
+                                            @stepIndex
+                                            <RadzenIcon Icon="@GetStepStateIcon(stepIndex)" Class=""></RadzenIcon>
                                             @step.SkillName . @step.Name - @step.Description
                                         </div>
-                                        @* <div class="card-body bg-dark"> *@
-                                            @* <p class="card-title"></p> *@
-                                            @* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> *@
-                                        @* </div> *@
+                                        <div class="card-body bg-dark">
+                                            @if (step.Parameters.Any())
+                                            {
+
+                                                <p class="m-0 p-0">
+                                                    Param:
+                                                    <ul>
+                                                        @foreach (var o in step.Parameters)
+                                                        {
+                                                            if (!string.IsNullOrEmpty(o.Value))
+                                                            {
+                                                                var lookupValue = o.Key;
+                                                                var resolved = Plan.State.FirstOrDefault(p => p.Key == lookupValue).Value;
+                                                                <li>@o.Key: @o.Value @resolved</li>
+                                                            } 
+                                                        }
+                                                    </ul>
+                                                </p>
+                                            }
+
+                                            @if (step.Outputs.Any())
+                                            {
+                                                <p class="m-0 p-0">
+                                                    Out:
+                                                    <ul>
+                                                        @foreach (var o in step.Outputs)
+                                                        {
+                                                            if (Plan.State.ContainsKey(o))
+                                                            {
+                                                                Plan.State.TryGetValue(o, out var value);
+                                                                <li>@o: @value </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </p>
+                                            }
+                                        </div>
                                         
                                         
-                                        <p class="m-0 p-0">
-                                            <ul>
-                                                @foreach (var o in step.Parameters)
-                                                {
-                                                    if (!string.IsNullOrEmpty(o.Value))
-                                                    {
-                                                        <li>@o.Key: @o.Value</li>
-                                                    }
-                                                }
-                                            </ul>
-                                        </p>
-
-                                        <p class="m-0 p-0">
-                                            <ul>
-                                                @foreach (var o in step.Outputs)
-                                                {
-                                                    if (Plan.State.ContainsKey(o))
-                                                    {
-                                                        Plan.State.TryGetValue(o, out var value);
-                                                        <li>@o: @value</li>
-
-                                                    }
-                                                }
-                                            </ul>
-                                        </p>
 
                                     </div>
-
                                 </div>
                             </div>
                             stepLoop++;
@@ -78,14 +87,9 @@
     
         </ChildContent>
 
-@*         <SummaryTemplate>
-            <RadzenCard class="rz-mt-4">
-                <b>3 Orders</b>
-            </RadzenCard>
-        </SummaryTemplate> *@
     </RadzenPanel>
 
-    <RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3 mt-0 p-3">
+    <RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3 mt-0 p-3 rz-text-body2">
         <HeaderTemplate>
             Plan JSON
         </HeaderTemplate>
@@ -116,7 +120,10 @@
     {
         if (PlanAsString != null)
         {
+    //         PlanAsString = PlanAsString.Replace("next_step_index\": 1", "next_step_index\": 3");
             Plan = Plan.FromJson(PlanAsString);
+
+          
         }
     }
 
@@ -164,20 +171,38 @@
         
     }
 
-    private string GetStepStateIcon(int stepLoop)
+    private string GetStepStateClass(int stepLoop)
     {
-if (stepLoop < Plan.NextStepIndex)
+        if (Plan is {HasNextStep: false }) return "done";
+
+        var nextStepIndex = Plan?.NextStepIndex ?? 0;
+
+        switch (stepLoop.CompareTo(nextStepIndex))
         {
-            return "done";
+            case -1:
+                return "done";
+            case 0:
+                return "running";
+            default:
+                return "pending";
         }
-
-        if (stepLoop == Plan.NextStepIndex)
-        {
-            return "rotate_right";
-        }
-
-
-        return "pending";
     }
 
+
+    private string GetStepStateIcon(int stepLoop)
+    {
+        if (Plan is { HasNextStep: false }) return "done";
+
+        var nextStepIndex = Plan?.NextStepIndex ?? 0;
+
+        switch (stepLoop.CompareTo(nextStepIndex))
+        {
+            case -1:
+                return "done";
+            case 0:
+                return "rotate_right";
+            default:
+                return "pending";
+        }
+    }
 }
