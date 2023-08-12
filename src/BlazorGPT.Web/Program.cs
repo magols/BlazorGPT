@@ -77,6 +77,7 @@ builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
 builder.Services.AddScoped<IInterceptor, CerveraMemoryInterceptor>();
 builder.Services.AddScoped<IInterceptor, SkPlaygroundInterceptor>();
 
+builder.WebHost.UseWebRoot("wwwroot");
 
 // register the GPT context
 builder.Services.AddDbContextFactory<BlazorGptDBContext>(options =>
