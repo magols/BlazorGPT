@@ -71,12 +71,11 @@
     <Copy SourceFiles="@(DocFiles)" DestinationFolder="wwwroot\docs\%(RecursiveDir)" />
   </Target>
 
+
   <Target Name="CopyReadme" BeforeTargets="Build">
-      <ItemGroup>
-        <ReadMe Include="..\..\README.md" />
-      </ItemGroup>
-      <Copy  SourceFiles="@(ReadMe)" DestinationFolder="wwwroot\" />
+    <ItemGroup>
+      <ReadMe Include="..\..\README.md" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" />
   </Target>
-
-
 </Project>
