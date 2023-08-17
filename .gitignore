@@ -361,5 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/src/BlazorGPT/wwwroot/state
 
+/src/BlazorGPT/wwwroot/state
+/src/.semantic-kernel/
+src/BlazorGPT.Web/wwwroot/docs
+src/BlazorGPT.Web/wwwroot/README.md

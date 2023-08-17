@@ -8,7 +8,7 @@
 
     private async Task CancelSend()
     {
-        cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Cancel();
     }
 
     [Inject]
@@ -155,7 +155,7 @@
                                 </div>
 
                                 <span class="float-end mt-2 mb-0">
-                                    <InterceptorSelector @ref="inteceptorSelector" PreSelected="@(new[] { Conversation.TreeStateList.FirstOrDefault()?.Type, "" })"/>
+                                    <InterceptorSelector @ref="inteceptorSelector"/>
 
                                     <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state"/>
 

@@ -1,0 +1,208 @@
+﻿@using Microsoft.SemanticKernel.Planning
+@using BlazorGPT.Migrations
+@if (Plan != null)
+{
+    <RadzenPanel AllowCollapse="true" Collapsed="false" Class="m-3 mb-1">
+        <HeaderTemplate>
+            <div class="container-fluid mb-3">
+                <div class="row">
+                    <RadzenText TextStyle="TextStyle.Body2">
+                        <b>Plan</b> &nbsp; (@(Plan.NextStepIndex)/@StepsCount)
+                        <RadzenIcon Icon="plan" />
+                    </RadzenText>
+                </div>
+                <div class="row">
+                    <div class="progress col-md-12">
+                        <div class="progress-bar" role="progressbar" style="width: @(Progress)%;" aria-valuenow="@(Progress)" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </HeaderTemplate>
+        <ChildContent>
+            <div class="row ">
+                <div class=" col-md-12">
+                    @if (Plan != null && Plan?.Steps != null)
+                    {
+                        var stepLoop = 0;
+                        @foreach (var step in Plan.Steps)
+                        {
+                            var stepIndex = stepLoop +1;
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card  bg-dark border rz-text-body2">
+                                        <div class="card-header skplan-step-@GetStepStateClass(stepIndex)">
+                                            @stepIndex
+                                            <RadzenIcon Icon="@GetStepStateIcon(stepIndex)" Class=""></RadzenIcon>
+                                            @step.SkillName . @step.Name - @step.Description
+                                        </div>
+                                        <div class="card-body bg-dark">
+                                            @if (step.Parameters.Any())
+                                            {
+
+                                                <p class="m-0 p-0">
+                                                    Param:
+                                                    <ul>
+                                                        @foreach (var o in step.Parameters)
+                                                        {
+                                                            if (!string.IsNullOrEmpty(o.Value))
+                                                            {
+                                                                var lookupValue = o.Key;
+                                                                var resolved = Plan.State.FirstOrDefault(p => p.Key == lookupValue).Value;
+                                                                <li>@o.Key: @o.Value @resolved</li>
+                                                            } 
+                                                        }
+                                                    </ul>
+                                                </p>
+                                            }
+
+                                            @if (step.Outputs.Any())
+                                            {
+                                                <p class="m-0 p-0">
+                                                    Out:
+                                                    <ul>
+                                                        @foreach (var o in step.Outputs)
+                                                        {
+                                                            if (Plan.State.ContainsKey(o))
+                                                            {
+                                                                Plan.State.TryGetValue(o, out var value);
+                                                                <li>@o: @value </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </p>
+                                            }
+                                        </div>
+                                        
+                                        
+
+                                    </div>
+                                </div>
+                            </div>
+                            stepLoop++;
+                        }
+                    }
+                </div> 
+
+            </div>
+    
+        </ChildContent>
+
+    </RadzenPanel>
+
+    <RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3 mt-0 p-3 rz-text-body2">
+        <HeaderTemplate>
+            Plan JSON
+        </HeaderTemplate>
+        <ChildContent>
+            <div class="row ">
+                <div class=" col-md-12">
+                    <MarkdownContent Content="@FormatPlan()" />
+                </div>
+            </div>
+        </ChildContent>
+    </RadzenPanel>
+}
+@code {
+
+
+    string FormatPlan()
+    {
+        return $"```json {PlanAsString}```";
+    }
+
+
+    [Parameter]
+    public string? PlanAsString { get; set; }
+
+    public Plan? Plan { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (PlanAsString != null)
+        {
+    //         PlanAsString = PlanAsString.Replace("next_step_index\": 1", "next_step_index\": 3");
+            Plan = Plan.FromJson(PlanAsString);
+
+          
+        }
+    }
+
+    private int StepsCount
+    {
+        get
+        {
+            if (Plan != null && Plan?.Steps != null)
+            {
+                return Plan.Steps.Count;
+            }
+            else
+            {
+                return 0;
+            }    
+        }
+        set {}
+    }
+
+
+    int Progress
+    {
+        get
+        {
+            if (Plan != null)
+            {
+                if (Plan.Steps.Count == 0)
+                {
+                    return 0;
+                }
+                if (!Plan.HasNextStep)
+                {
+                    return 100;
+                }
+
+                int currentStep = Plan.NextStepIndex;
+                var percentage = (int)Math.Ceiling(((double)currentStep / StepsCount) * 100);
+                return percentage;
+            }
+            return 0;
+        }
+        set
+        {
+        }
+        
+    }
+
+    private string GetStepStateClass(int stepLoop)
+    {
+        if (Plan is {HasNextStep: false }) return "done";
+
+        var nextStepIndex = Plan?.NextStepIndex ?? 0;
+
+        switch (stepLoop.CompareTo(nextStepIndex))
+        {
+            case -1:
+                return "done";
+            case 0:
+                return "running";
+            default:
+                return "pending";
+        }
+    }
+
+
+    private string GetStepStateIcon(int stepLoop)
+    {
+        if (Plan is { HasNextStep: false }) return "done";
+
+        var nextStepIndex = Plan?.NextStepIndex ?? 0;
+
+        switch (stepLoop.CompareTo(nextStepIndex))
+        {
+            case -1:
+                return "done";
+            case 0:
+                return "rotate_right";
+            default:
+                return "pending";
+        }
+    }
+}

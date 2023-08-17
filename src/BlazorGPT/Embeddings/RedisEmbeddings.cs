@@ -4,26 +4,24 @@ using Microsoft.Extensions.Options;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
 using NRedisStack.Search.Literals.Enums;
-using OpenAI.GPT3.Interfaces;
-using OpenAI.GPT3.ObjectModels;
-using OpenAI.GPT3.ObjectModels.RequestModels;
 using IDatabase = StackExchange.Redis.IDatabase;
 
 namespace BlazorGPT.Embeddings
 {
- 
+
 
     public class RedisEmbeddings
     {
         private IDatabase? _db;
         private readonly PipelineOptions _options;
-        private readonly IOpenAIService ai;
+        private KernelService _kernelService;
 
-        public RedisEmbeddings(IOptions<PipelineOptions> options, IOpenAIService openAiService)
+
+        public RedisEmbeddings(IOptions<PipelineOptions> options, KernelService kernelService)
         {
-            ai = openAiService;
+            _kernelService = kernelService;
             _options = options.Value;
-            
+
         }
 
         private void Connect()
@@ -44,7 +42,7 @@ namespace BlazorGPT.Embeddings
             }
             catch (Exception)
             {
-                // ignored
+                
             }
         }
 
@@ -56,9 +54,9 @@ namespace BlazorGPT.Embeddings
             EmbeddingEntry e = new EmbeddingEntry();
             e.Id = dataKey;
 
-            //float[] vector = new float[1536];
-            //Buffer.BlockCopy(hash.First(h => h.Name== "embedding").Value, 0, vector, 0, 1536 * sizeof(float));
-            //e.Embedding = vector;
+            float[] vector = new float[1536];
+            Buffer.BlockCopy(hash.First(h => h.Name == "embedding").Value, 0, vector, 0, 1536 * sizeof(float));
+            e.Embedding = vector;
 
             e.Data = hash.First(h => h.Name == "data").Value.ToString().Replace("\\n", " ");
             return e;
@@ -70,7 +68,7 @@ namespace BlazorGPT.Embeddings
             Connect();
             var res = await _db.FT().SearchAsync(indexName,
                 new Query($"*=>[KNN {limit} @embedding $query_vec]")
-                    
+
                     .AddParam("query_vec", vec.SelectMany(BitConverter.GetBytes).ToArray())
                     .ReturnFields("__embedding_score")
                     .SetSortBy("__embedding_score")
@@ -92,37 +90,27 @@ namespace BlazorGPT.Embeddings
                 "Magnus is a male"
             };
 
-            var embeddingResult = await ai.Embeddings.CreateEmbedding(new EmbeddingCreateRequest()
-            {
-                Model = Models.TextEmbeddingAdaV2,
-                InputAsList = input
-            });
+          var kernel = await _kernelService.CreateKernelAsync();
 
-            if (embeddingResult.Successful)
+
+            string prefix = "blazor-gpt:";
+            int docId = 0;
+            foreach (var item in input)
             {
-                string prefix = "blazor-gpt:";
-                int docId = 0;
-                foreach (var item in embeddingResult.Data)
-                {
-                    await SaveEmbedding(prefix + docId, item.Embedding.Select(o => (float)o).ToArray(),
-                        input.ElementAt(docId));
-                    docId++;
-                }
+                await kernel.Memory.SaveInformationAsync("test", 
+                    item,
+                    prefix + docId,
+                    "desc", 
+                    "metmeta");
+                docId++;
             }
-            else
-            {
-                if (embeddingResult.Error == null)
-                {
-                    throw new Exception("Unknown Error");
-                }
-                Console.WriteLine($"{embeddingResult.Error.Code}: {embeddingResult.Error.Message}");
-            }
+   
         }
 
         public async Task SaveEmbedding(string id, float[] vector, string data)
         {
             Connect();
-         
+
             await _db.HashSetAsync(id, "data", data);
             await _db.HashSetAsync(id, "embedding", vector.SelectMany(BitConverter.GetBytes).ToArray());
         }
@@ -131,9 +119,9 @@ namespace BlazorGPT.Embeddings
         {
             Connect();
 
-            _db.FT().Create(indexName, 
+            _db.FT().Create(indexName,
                 new FTCreateParams().On(IndexDataType.HASH)
-                    //.Prefix("auto-gpt:", "blazor-gpt:", "c:")
+                    .Prefix("auto-gpt:", "blazor-gpt:", "c:")
                     ,
                 new Schema()
                     .AddVectorField("embedding", Schema.VectorField.VectorAlgo.FLAT,

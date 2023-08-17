@@ -33,8 +33,6 @@ public class BlazorGptDBContext : DbContext
             .HasPrincipalKey(p => p.Id)
             .OnDelete(DeleteBehavior.ClientNoAction);
 
-        
-
         modelBuilder.Entity<Conversation>()
             .HasMany(p => p.Messages)
             .WithOne(b => b.Conversation)

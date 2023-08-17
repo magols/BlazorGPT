@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.SemanticKernel;
+using System.Text;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
@@ -15,7 +16,7 @@ public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWriting
     public string Name { get; }  
 
 
-    public async Task<Conversation> Send(Conversation conversation)
+    public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
 
         if (conversation.Messages.Count() == 2)
@@ -54,7 +55,7 @@ public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWriting
 
     private string path = @"C:\source\BlazorGPT\BlazorGPT\wwwroot\state\";
 
-    public async Task<Conversation> Receive(Conversation conversation)
+    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         var newMessage = conversation.Messages.Last();
         await ParseMessageAndSaveState(newMessage, "JsonStateInterceptor");

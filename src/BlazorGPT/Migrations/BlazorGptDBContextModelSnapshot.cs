@@ -38,6 +38,9 @@ namespace BlazorGPT.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SKPlan")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
@@ -63,8 +66,7 @@ namespace BlazorGPT.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "content");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ConversationId")
                         .HasColumnType("uniqueidentifier");
@@ -72,17 +74,12 @@ namespace BlazorGPT.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "name");
-
                     b.Property<int?>("PromptTokens")
                         .HasColumnType("int");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "role");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

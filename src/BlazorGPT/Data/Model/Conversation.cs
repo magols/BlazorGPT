@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.SemanticKernel.Planning;
 
 namespace BlazorGPT.Data.Model;
 
 public class Conversation
 {
     public Guid? Id { get; set; }
+
+    [NotMapped]
+    public bool StopRequested { get; set; }
 
     [Required]
     public string Model { get; set; } = null!;
@@ -20,6 +24,7 @@ public class Conversation
 
     public string? Summary { get; set; }
 
+    public string? SKPlan { get; set; } = null!;
 
     public DateTime DateStarted { get; set; }
 
@@ -40,6 +45,10 @@ public class Conversation
         Messages.Add(message);
     }
 
+    public void AddMessage(string role, string content)
+    {
+        AddMessage(new ConversationMessage(role, content));
+    }   
 
     public static Conversation CreateConversation(string model, string userId, string systemMessage, string? message = null)
     {

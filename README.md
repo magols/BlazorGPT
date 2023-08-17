@@ -1,6 +1,30 @@
-# BlazorGPT
 
-BlazorGPT is a Blazor Server application that uses the ChatGPT 3.5 or ChatGPT-4 API.
+<div style="border: 1px solid red; padding: 10px; margin: 10px">
+Update: BlazorGPT now uses the <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview">Semantic Kernel</a>
+project. It replaces the Betalgo OpenAI package and adds support for the Semantic Kernel API with concepts such as planners and support for Microsoft Copilot and OpenAI plugins.
+</div>
+
+
+### Why is this?
+
+When you are using ChatGPT, you might find yourself having to repeatedly prepare your questions with different sets of contexts. Over and over again.
+- If you are working with a specific technology, you might want to add a context such as "I am a C# developer using Azure Durable Functions in Isolated Mode".
+- When asking for travel advice, you might want to add location and scheduling context.
+- If you want articles in a preferred structure and formatted output, you might have to give very specific instructions, and if you do many of these, it can be tedious.
+
+- Or you might find yourself repeatedly asking the same follow-up questions to get the information you need.
+- You want the output in a specific format, such as CSV or Markdown.
+
+It is also very fin to build web apps.
+# BlazorGPT (what is it?)
+
+That's where BlazorGPT comes in. It is a Blazor Server application that uses the ChatGPT 3.5 or ChatGPT-4 API. It allows you to create and manage multiple chat sessions with history. You can create QuickProfiles for quick access to your favorite text snippet shortcuts. You can create Scripts with mutiple steps for automating a conversation. You can branch conversations into side conversations with the same context. You can restart a conversation from a previous step. And you can customize the chat experience with middlewares and filters.
+
+As a developer it's extensible and you can write your own plugins in the form of IInterceptors that intercepts the chat messages and modify them before they are sent to the API. 
+
+
+[Installation instructions](docs/setup.md)
+
 
 ## Features
 - Chat with GPT-3.5 or GPT-4
@@ -20,62 +44,5 @@ BlazorGPT is a Blazor Server application that uses the ChatGPT 3.5 or ChatGPT-4 
   ![](docs/images/branched.png)
 
 - Restart a conversation from a previous step
-- (Developer) Chat pipeline for customizing the chat experience with middlewares and filters
 
-
-For ChatGPT support it uses the Betalgo OpenAI package available at https://github.com/betalgo/openai This package supports both the OpenAI API and the Azure OpenAI API.
-
-For UI components it uses the Radzen Blazor components available at https://blazor.radzen.com/
-
-## Prerequisites
-.NET 7 SDK
-SQL Server 
-OpenAI API Key (or Azure OpenAI endpoint, resource name and key)
-
-## Setup
-1. Create a database in SQL Server. There are two EF contexts in the app that will share this db.
-2. Update the connection strings in appsettings.json (secrets.json) in the **BlazorGPT.Web** directory
-   ```json
-    "ConnectionStrings:BlazorGptDB": "[your connection string]",
-    "ConnectionStrings:UserDB": "[your connection string]",
-   ```
-
-
-
-3. Run the following commands from the **BlazorGPT** directory:
-
-   ```bash 
-    dotnet ef database update -s '..\BlazorGPT.Web\' --context BlazorGptDBContext
-   ```
-   
-4. Run the following commands from the **BlazorGPT.Web** directory:
-   ```bash
-    dotnet ef database update --context ApplicationDbContext
-   ```
-   
-
-5. Update the OpenAI API Key and primary model in appsettings.json (secrets.json) in the **BlazorGPT.Web** directory
-    For OpenAI:
-    ```json
-    "PipelineOptions:Model": "gpt-3.5-turbo", // or gpt-4
-    "OpenAIServiceOptions:ApiKey": "[your api key]]"
-
-    ```
-    For Azure OpenAI:
-    ```json
-    "PipelineOptions:Model": "gpt-4",
-    "OpenAIServiceOptions": {
-        "ApiKey": "[your api key]",
-        "DeploymentId": "[your deployment id]", // model deployment id
-        "ResourceName": "[your resource name]]",
-        "ProviderType": "Azure",
-        "ApiVersion": "2023-03-15-preview"
-    }
-    ```
-
-6. Run the application from the **BlazorGPT.Web** directory:
-   ```bash
-    dotnet run
-   ```
-
-7. Create a user account and login to the application
+[Installation instructions](docs/setup.md)

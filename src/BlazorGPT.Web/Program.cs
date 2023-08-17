@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using OpenAI.GPT3.Extensions;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,7 +43,6 @@ builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
 
-builder.Services.AddOpenAIService();
 
 
 builder.Services.AddScoped<ConversationInterop>();
@@ -70,11 +68,16 @@ builder.Services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
 
 builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
 
+builder.Services.AddScoped<KernelService>();
+
+
 builder.Services.AddScoped<RedisEmbeddings>();
 
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
+builder.Services.AddScoped<IInterceptor, CerveraMemoryInterceptor>();
+builder.Services.AddScoped<IInterceptor, SkPlaygroundInterceptor>();
 
-
+builder.WebHost.UseWebRoot("wwwroot");
 
 // register the GPT context
 builder.Services.AddDbContextFactory<BlazorGptDBContext>(options =>

@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BlazorGPT.Web-c48be10f-d69c-4f07-a429-1e1b836ce01d</UserSecretsId>
@@ -10,24 +10,27 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-preview.7.23375.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0-preview.7.23375.9" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0-preview.7.23375.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0-preview.7.23375.9" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0-preview.7.23375.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0-preview.7.23375.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0-preview.7.23375.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6" />
-    <PackageReference Include="Radzen.Blazor" Version="4.10.4" />
+    <!--<PackageReference Include="Microsoft.SemanticKernel" Version="0.18.230725.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="0.18.230725.3-preview" />-->
+
+    <!--<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-preview.6.23360.4" />-->
+    <PackageReference Include="Radzen.Blazor" Version="4.15.0" />
     <PackageReference Include="Sendgrid" Version="9.28.1" />
 
   </ItemGroup>
@@ -36,4 +39,43 @@
     <ProjectReference Include="..\BlazorGPT\BlazorGPT.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Web\Skills.Web.csproj" />
+
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.AI.OpenAI\Connectors.AI.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Sqlite\Connectors.Memory.Sqlite.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Redis\Connectors.Memory.Redis.csproj" />
+
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.ActionPlanner\Planning.ActionPlanner.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.SequentialPlanner\Planning.SequentialPlanner.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.OpenAPI\Skills.OpenAPI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel.Abstractions\SemanticKernel.Abstractions.csproj" />
+
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Core\Skills.Core.csproj" />-->
+
+  </ItemGroup>
+
+  <Target Name="CopyPlugins" AfterTargets="Build">
+    <ItemGroup>
+      <PluginFiles Include="Plugins\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)\Plugins\%(RecursiveDir)" />
+  </Target>
+
+  <Target Name="CopyDocs" BeforeTargets="Build">
+    <ItemGroup>
+      <DocFiles Include="..\..\Docs\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFiles)" DestinationFolder="wwwroot\docs\%(RecursiveDir)" />
+  </Target>
+
+
+  <Target Name="CopyReadme" BeforeTargets="Build">
+    <ItemGroup>
+      <ReadMe Include="..\..\README.md" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" />
+  </Target>
 </Project>

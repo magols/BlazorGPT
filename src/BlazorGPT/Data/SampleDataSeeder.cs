@@ -2,7 +2,6 @@
 using BlazorGPT.Pipeline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using OpenAI.GPT3.ObjectModels.RequestModels;
 
 namespace BlazorGPT.Data
 {
@@ -31,12 +30,12 @@ namespace BlazorGPT.Data
         public async Task<Conversation> CreateConversation(IList<ChatMessage> messages, string summary)
         {
             // create a conversation and save to db
-            var conversation = await CreateConversation(summary);
+              var conversation = await CreateConversation(summary);
 
             // add the messages to the conversation
             foreach (var message in messages)
             {
-                conversation.AddMessage(new ConversationMessage(message.Role, message.Content));
+                conversation.AddMessage(new ConversationMessage(message.Role.ToString(), message.Content));
             }
 
             // save the conversation via conversationrepository

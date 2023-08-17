@@ -3,11 +3,17 @@
 @using BlazorGPT.Pipeline.Interceptors
 @using BlazorGPT.Pipeline
 
-<RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string" 
-                    Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)" 
-                    Change="OnListChanged"
-                    class="mb-3 mt-0">
-</RadzenCheckBoxList>
+
+<RadzenPanel AllowCollapse="true" Collapsed="true" Text="Interceptors">
+    <ChildContent>
+        <RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string"
+                            Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
+                            Change="OnListChanged"
+                            class="mb-3 mt-0">
+        </RadzenCheckBoxList>
+    </ChildContent>
+</RadzenPanel>
+
 
 @code {
 
@@ -20,8 +26,8 @@
     [Inject]
     public DialogService DialogService { get; set; } = null!;
 
-    [Parameter]
-    public IEnumerable<string> PreSelected { get; set; }
+    
+    public IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
 
 
     IEnumerable<IInterceptor> Interceptors => ServiceProvider.GetServices<IInterceptor>();
@@ -31,7 +37,7 @@
 
     protected override void OnInitialized()
     {
-        Selected = EnabledInterceptors.Where(i => PreSelected.Contains(i.Name)).Select(i => i.Name);
+        Selected = EnabledInterceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
     }
 
     private void OnListChanged()

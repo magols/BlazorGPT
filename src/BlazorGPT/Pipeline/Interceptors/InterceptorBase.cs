@@ -1,11 +1,14 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
-public abstract class InterceptorBase
+public abstract class InterceptorBase: IInterceptor
 {
     private IDbContextFactory<BlazorGptDBContext> _context;
     private ConversationsRepository _conversationsRepository;
+    protected CancellationToken Cts;
+    public Func<Task>? OnUpdate;
 
     public InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
     {
@@ -85,5 +88,28 @@ public abstract class InterceptorBase
                 throw;
             }
         }
+    }
+
+
+    public virtual string Name { get; }
+    public virtual bool Internal { get; }
+    public virtual Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async virtual Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    {
+        if (cancellationToken != default)
+        {
+            Cts = cancellationToken;
+        }
+
+        return conversation;
+    }
+
+    protected void Cancel()
+    {
+
     }
 }
