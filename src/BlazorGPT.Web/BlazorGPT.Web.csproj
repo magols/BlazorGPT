@@ -63,4 +63,20 @@
     </ItemGroup>
     <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)\Plugins\%(RecursiveDir)" />
   </Target>
+
+  <Target Name="CopyDocs" BeforeTargets="Build">
+    <ItemGroup>
+      <DocFiles Include="..\..\Docs\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFiles)" DestinationFolder="wwwroot\docs\%(RecursiveDir)" />
+  </Target>
+
+  <Target Name="CopyReadme" BeforeTargets="Build">
+      <ItemGroup>
+        <ReadMe Include="..\..\README.md" />
+      </ItemGroup>
+      <Copy  SourceFiles="@(ReadMe)" DestinationFolder="wwwroot\" />
+  </Target>
+
+
 </Project>

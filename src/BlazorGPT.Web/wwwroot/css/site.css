@@ -1,3 +1,14 @@
+
+
+.md-img {
+    width: 650px;
+
+    display: block;
+   
+}
+
+
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

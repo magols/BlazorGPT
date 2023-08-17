@@ -1,0 +1,88 @@
+﻿@page "/readme"
+@using Markdig
+@using Markdown.ColorCode
+@using ColorCode.Styling
+@using System.Text.RegularExpressions
+<div class="container readme">
+    <div class="row">
+        <div class="col-12">
+            @((MarkupString)readme)
+        </div>
+    </div>
+</div>
+@code {
+
+    private static string readme = "";
+    private MarkdownPipeline markdownPipeline;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(readme))
+        {
+            await ReadReadme();
+        }
+    }
+
+    private async Task ReadReadme()
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "docs", "Readme.md");
+
+        using var reader = new StreamReader(path);
+        var content = await reader.ReadToEndAsync();
+        readme = GetMarkdown(content);
+    }
+
+
+    private string GetMarkdown(string toHtml)
+    {
+        markdownPipeline = new MarkdownPipelineBuilder()
+            .UsePipeTables()
+            .UseAdvancedExtensions()
+            .UseColorCode(StyleDictionary.DefaultDark)
+            .UseAutoLinks()
+            .UseEmojiAndSmiley()
+            .UseMediaLinks()
+            .UseCitations()
+            .Build();
+
+        try
+        {
+            var html = Markdown.ToHtml(toHtml, markdownPipeline);
+
+
+            // for each img tag in the html add the class md-img
+            var pattern = "(<img(.*?)>)";
+
+
+            var matches = Regex.Matches(html, pattern, RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            for (var i = matches.Count - 1; i >= 0; i--)
+            {
+                var match = matches[i].ToString();
+
+            // in the img tag insert width attribute
+            // var replacement = match.Replace("<img", "<img class=\"md-img\"");
+                var classReplace = match.Replace("<img", "<img class=\"md-img\"");
+                html = html.Remove(matches[i].Index, matches[i].Length).Insert(matches[i].Index, classReplace);
+            }
+
+            matches = Regex.Matches(html, pattern, RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            for (var i = matches.Count - 1; i >= 0; i--)
+            {
+                var match = matches[i].ToString();
+
+
+                var src = Regex.Match(match, "src=\"(.*?)\"").Groups[1].Value;
+
+                var linkReplacement = $"<a href=\"{src}\" target=\"_blank\">{match}</a>";
+
+
+                html = html.Remove(matches[i].Index, matches[i].Length).Insert(matches[i].Index, linkReplacement);
+            }
+            return html;
+        }
+        catch (Exception e)
+        {
+            return "";
+        }
+    }
+}
