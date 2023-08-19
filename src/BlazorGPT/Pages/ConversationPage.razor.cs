@@ -107,19 +107,14 @@ namespace BlazorGPT.Pages
 
 
                 _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
-              //  KernelService.OnStreamCompletion += OnStreamCompletion;
+                //  KernelService.OnStreamCompletion += OnStreamCompletion;
+                await Interop.ScrollToBottom("message-pane");
 
             }
 
             if (selectedTabIndex == 0)
             {
                 await Interop.FocusElement(_promptField2.Element);
-            }
-
-            if (Conversation.SKPlan != null)
-            {
-                await Interop.ScrollToBottom("message-pane");
-
             }
         }
         
@@ -368,7 +363,8 @@ namespace BlazorGPT.Pages
         {
         //    Console.WriteLine("stream" + s);
 
-            Conversation.Messages.Last().Content += s;
+            Conversation.Messages.Last().Content += s; 
+            await Interop.ScrollToBottom("message-pane");
 
             StateHasChanged();
             return s;
