@@ -1,9 +1,12 @@
 
 
 .md-img {
+    margin: 5px;
+    padding: 5px;
     width: 650px;
 
     display: block;
+    border: 1px solid lightblue;
    
 }
 
