@@ -1,13 +1,16 @@
-﻿@using BlazorGPT.Data
-<div class="row m-0 mt-2 p-0" style="@Style">
-    <div class="col-1 col-md-1 ps-1 pe-3 mt-2 mb-4">
+﻿<div class="row m-0 mb-2 p-0" style="@Style">
+    <div class="col-1 col-md-1 ps-1 pe-3 mt-2 mb-2 p-0">
         <ConversationRoleDisplay Role="@Message.Role"/>
     </div>
-
     <div class="col-11 col-md-11 ps-0 pe-0 mt-2 mb-0" id="@Message.Id">
         @if (Message.Role == ConversationRole.System)
         {
-            <RadzenTextBox Class="system-prompt" Style="font-size: 0.8rem; width: 80%;" @bind-Value="@Message.Content" Disabled="MessagesCount > 1"></RadzenTextBox>
+            <RadzenTextArea
+                @ref="SystemPrompt"
+                Style="font-size: 0.9rem; width: 95%;"
+                @bind-Value="@Message.Content"
+                Disabled="MessagesCount > 1"
+                Rows="@CalculatePromptHeight()"/>
         }
         else
         {
@@ -41,15 +44,12 @@
                 <MarkdownContent Content="@Message.Content"/>
             </div>
         }
-
     </div>
 </div>
-
-
 @code {
 
     [Parameter]
-    public ConversationMessage Message { get; set; }
+    public ConversationMessage? Message { get; set; }
 
     [Parameter]
     public int MessagesCount { get; set; }
@@ -110,12 +110,22 @@
         }
     }
 
+    private int CalculatePromptHeight()
+    {
+        if (Message == null || Message?.Content == null) return 1;
+        var lineBreaks = Message?.Content.Count(c => c == '\n') ?? 0;
+        var rows = Message?.Content.Length / 40 + lineBreaks ?? 1;
+        if (rows > 10) rows = 10;
+        return rows >= 1 ? rows : 1;
+    }
+
+
     public string Style =>
         GetBorder() +
         Background() +
         Color()
-
         ;
+
 
     private string Color()
     {
@@ -144,7 +154,6 @@
         if (color != "")
         {
             return @$"border-radius:6px; border: {BorderColor()} {BorderWidth()}px solid;";
-            
         }
         return "";
     }
@@ -207,5 +216,7 @@
 
         return c != "" ? $" background-color:{c};" : "";
     }
+
+    private RadzenTextArea? SystemPrompt { get; set; }
 
 }
