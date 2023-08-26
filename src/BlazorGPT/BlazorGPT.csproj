@@ -14,7 +14,7 @@
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.1" />
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.113" />
     <PackageReference Include="Markdig" Version="0.32.0" />
-    <PackageReference Include="Markdown.ColorCode" Version="1.1.1" />
+    <PackageReference Include="Markdown.ColorCode" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-preview.7.23375.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0-preview.7.23375.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0-preview.7.23375.9" />
@@ -38,8 +38,8 @@
 
     <PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.19.230804.2-preview" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NRedisStack" Version="0.8.0" />
-    <PackageReference Include="Radzen.Blazor" Version="4.15.0" />
+    <PackageReference Include="NRedisStack" Version="0.8.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.15.7" />
 
   </ItemGroup>
 
