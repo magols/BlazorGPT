@@ -78,35 +78,7 @@ namespace BlazorGPT.Embeddings
 
             return res.Documents;
         }
-
-
-
-        public async Task CreateTestEmbeddings()
-        {
-            List<string> input = new List<string>() {
-                "Todays date is " + DateTime.Now.ToShortDateString(),
-                "Magnus was born October 28th 1972",
-                "Magnus is cool",
-                "Magnus is a male"
-            };
-
-          var kernel = await _kernelService.CreateKernelAsync();
-
-
-            string prefix = "blazor-gpt:";
-            int docId = 0;
-            foreach (var item in input)
-            {
-                await kernel.Memory.SaveInformationAsync("test", 
-                    item,
-                    prefix + docId,
-                    "desc", 
-                    "metmeta");
-                docId++;
-            }
-   
-        }
-
+        
         public async Task SaveEmbedding(string id, float[] vector, string data)
         {
             Connect();
