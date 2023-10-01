@@ -5,12 +5,22 @@
     <div class="col-11 col-md-11 ps-0 pe-0 mt-2 mb-0" id="@Message.Id">
         @if (Message.Role == ConversationRole.System)
         {
+
+
             <RadzenTextArea
                 @ref="SystemPrompt"
                 Style="font-size: 0.9rem; width: 95%;"
                 @bind-Value="@Message.Content"
-                Disabled="MessagesCount > 1"
+                Disabled="!EditMode && MessagesCount > 1"
                 Rows="@CalculatePromptHeight()"/>
+            if (EditMode)
+            {
+                <button class="btn btn-sm btn-primary" @onclick="@(args => SaveMessage())">Save</button>
+                <button class="btn btn-sm btn-secondary" @onclick="@(args => SaveMessage())">Cancel</button>
+            }
+
+            <RadzenButton Visible="true" Class="float-end" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))" />
+
         }
         else
         {
@@ -35,18 +45,38 @@
                             </div>
                         }
                         <br/>
-                        <RadzenButton Visible="ShowCopyButton" class="float-end" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here", new TooltipOptions()))"/>
+                        <RadzenButton Visible="ShowCopyButton" class="float-end" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))"/>
                     }
-                    <RadzenButton Visible="ShowRestartButton" Class="float-end" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here", new TooltipOptions()))"/>
-                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))"/>
+                    <RadzenButton Visible="ShowRestartButton" Class="float-end" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))"/>
+                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))"/>
+                    <RadzenButton Visible="true" Class="float-end" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))"/>
+
                 </div>
 
-                <MarkdownContent Content="@Message.Content"/>
+ 
+                @if (EditMode)
+                {
+                    <RadzenTextArea
+                        Style="font-size: 0.9rem; width: 95%;"
+                        @bind-Value="@Message.Content"
+                        Rows="@CalculatePromptHeight()"/>
+
+                    <button class="btn btn-sm btn-primary" @onclick="@(args => SaveMessage())">Save</button>
+                    <button class="btn btn-sm btn-secondary" @onclick="@(args => CancelEdit())">Cancel</button>
+
+
+
+                } else
+                {
+                    <MarkdownContent Content="@Message.Content"/>
+                }
             </div>
         }
     </div>
 </div>
 @code {
+
+    bool EditMode { get; set; }
 
     [Parameter]
     public ConversationMessage? Message { get; set; }
@@ -218,5 +248,34 @@
     }
 
     private RadzenTextArea? SystemPrompt { get; set; }
+
+    [Inject]
+    public ConversationsRepository? ConversationRepository { get; set; }
+    
+    string? _messageToEdit;
+
+    private async Task SaveMessage()
+    {
+        await  ConversationRepository!.UpdateMessageContent((Guid)Message!.Id!, Message.Content);
+        EditMode = false;
+    }
+
+    private async Task CancelEdit()
+    {
+        EditMode = false;
+        Message!.Content = _messageToEdit!;
+        StateHasChanged();
+        _messageToEdit = null;
+    }
+
+
+    private async Task EditClicked()
+    {
+
+        _messageToEdit = Message!.Content;
+
+        EditMode = true;
+    }
+
 
 }

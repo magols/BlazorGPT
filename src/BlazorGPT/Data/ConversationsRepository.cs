@@ -191,6 +191,16 @@ public class ConversationsRepository
     }
 
 
+    public async Task UpdateMessageContent(Guid id, string content)
+    {
+        var ctx = await _dbContextFactory.CreateDbContextAsync();
+        var msg = ctx.Messages.FirstOrDefault(x => x.Id == id);
+        if (msg != null)
+        {
+            msg.Content = content;
+            await ctx.SaveChangesAsync();
+        }
+    }
 
     public async Task UpdateMessage(ConversationMessage msg)
     {
