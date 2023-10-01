@@ -2,7 +2,7 @@
 
 @if (Conversation?.BranchedFromMessage != null)
 {
-    string text = "Branched from " + Conversation!.BranchedFromMessageId;
+    string text = $"Branched from {Conversation!.BranchedFromMessage!.Conversation!.Summary}";
     string link = "/conversation/" + Conversation!.BranchedFromMessage!.ConversationId + "/" + Conversation!.BranchedFromMessageId;
     <div>
         <RadzenLink Text="@text" Path="@link"></RadzenLink>
@@ -11,5 +11,5 @@
 
 @code {
     [Parameter]
-public Conversation? Conversation { get; set; }
+    public Conversation? Conversation { get; set; }
 }
