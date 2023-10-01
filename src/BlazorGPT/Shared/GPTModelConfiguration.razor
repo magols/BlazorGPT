@@ -1,10 +1,10 @@
 @using BlazorGPT.Pipeline
 @using Microsoft.Extensions.Options
 @inject IOptions<PipelineOptions> PipelineOptions
-<RadzenButton Icon="menu_open" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Model settings" Click="Toggle" Class="ms-3"/>
+<RadzenButton Icon="menu_open" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Model settings" Click="Toggle" Class="@Class"/>
 @if (Toggled)
 {
-    <div class="@Class border border-secondary m-2 p-2">
+    <div class="border border-secondary">
         <div class="row">
             <div class="col-3">
                 <RadzenText Class="mt-3">Model</RadzenText>

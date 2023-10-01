@@ -146,15 +146,17 @@
 
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-                                    <GPTModelConfiguration Class="m-0" @ref="_modelConfiguration"
+                                    <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
                                                            ModelSelectEnabled="@(Conversation.Id == null)"
                                                            PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
                                                            OnResize="@ModelConfigResized" />
-                                    <a class="float-end mt-2" href="#" @onclick="GoToNew">New conversation</a>
+                                    
+                                    <button class="btn btn-sm btn-outline-secondary">New</button>
+                                    <InterceptorSelector @ref="inteceptorSelector"  Class="m-1 me-3 p-1 float-end"/>
+
                                 </div>
 
                                 <span class="float-end mt-2 mb-0">
-                                    <InterceptorSelector @ref="inteceptorSelector" />
 
                                     <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
 
