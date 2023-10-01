@@ -4,7 +4,7 @@
 @using BlazorGPT.Pipeline
 
 
-<RadzenPanel AllowCollapse="true" Collapsed="true" Text="Interceptors">
+<RadzenPanel AllowCollapse="true" Collapsed="true" Text="Interceptors" class="@Class">
     <ChildContent>
         <RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string"
                             Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
@@ -16,6 +16,9 @@
 
 
 @code {
+
+    [Parameter]
+    public string? Class { get; set; }
 
     [Inject]
     public IServiceProvider ServiceProvider { get; set; } = null!;
