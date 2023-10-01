@@ -97,6 +97,9 @@
 
 }
 
+<SectionContent SectionName="heading">
+     @Conversation.Summary 
+</SectionContent>
 
 <div class="container-fluid">
 
@@ -119,7 +122,7 @@
             <div id="control" class="sticky-bottom mt-0 mb-3 pb-0 pt-0 ">
 
                 <div>
-                    @Conversation.Summary
+                   
                     <RadzenButton class="float-end" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize and save to title</RadzenButton>
                 </div>
                 <RadzenTabs class="col-12 " @bind-SelectedIndex=@selectedTabIndex>
