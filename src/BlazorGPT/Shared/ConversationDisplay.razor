@@ -22,7 +22,7 @@
                 <ConversationMessageDisplay
                     ShowBranches="@ShowBranches"
                     ShowEditButton="Conversation.IsStarted()"
-                    ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && Conversation.IsAssistantTurn()"
+                    ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
                     ShowCopyButton="CopyConversation.HasDelegate && Conversation.Id != null"
                     OnRestartClicked="RestartConversation"
                     OnCopyClicked="CopyConversation"
