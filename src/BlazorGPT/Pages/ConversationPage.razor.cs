@@ -69,9 +69,8 @@ namespace BlazorGPT.Pages
         string scriptInput;
         bool showTokens = false;
 
-        private int baserControlHeight => _browserIsSmall ? 400 : 350;
         private int controlHeight { get; set; }
-
+        private int initialControlHeight = 310;
 
         private IKernel _kernel = null!;
         private CancellationTokenSource _cancellationTokenSource;
@@ -91,7 +90,6 @@ namespace BlazorGPT.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            controlHeight = baserControlHeight;
             await SetupConversation();
         }
 
@@ -103,11 +101,20 @@ namespace BlazorGPT.Pages
             {
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
-                await Interop.SetupCopyButtons();
+
+
+          initialControlHeight = _browserIsSmall ? 250 : 250;
+          controlHeight = initialControlHeight;
+
+
+            await Interop.SetupCopyButtons();
 
 
                 _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
                 //  KernelService.OnStreamCompletion += OnStreamCompletion;
+
+              
+
                 await Interop.ScrollToBottom("message-pane");
 
             }
@@ -388,13 +395,10 @@ namespace BlazorGPT.Pages
                 InterceptorHandler.OnUpdate -= UpdateAndRedraw;
         }
 
-        async void modelselectorResize()
-        {
-
-        }
         async void WindowResized(object _, BrowserWindowSize window)
         {
             browser = window;
+            Console.WriteLine(window.Height);
             StateHasChanged();
         }
 
@@ -518,14 +522,17 @@ namespace BlazorGPT.Pages
 
         private async Task ModelConfigResized()
         {
+            
             if (_modelConfiguration!.Toggled)
             {
-                controlHeight = controlHeight + 100;
+              //  controlHeight = controlHeight + 100;
             }
             else
             {
-                controlHeight = baserControlHeight;
+                controlHeight = initialControlHeight;
             }
+            await Interop.ScrollToBottom("message-pane");
+
         }
 
     }

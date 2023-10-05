@@ -14,17 +14,13 @@
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="~/" />
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css" type="text/css" />
-    <link href="BlazorGPT.Web.styles.css" rel="stylesheet" />
-
-    <link href="_content/BlazorGPT/BlazorGPT.bundle.scp.css" rel="stylesheet" />
-    
     <link href="/lib/font-awesome/css/fontawesome.css" rel="stylesheet">
 
     <link href="/lib/font-awesome/css/solid.css" rel="stylesheet">
@@ -32,6 +28,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
     <link rel="stylesheet" href="/css/material-dark-base.css">
+    <link href="BlazorGPT.Web.styles.css" rel="stylesheet" />
+
+    <link href="_content/BlazorGPT/BlazorGPT.bundle.scp.css" rel="stylesheet" />
+    
+
     <link rel="stylesheet" href="/css/radzen-custom.css">
     <link href="css/site.css" rel="stylesheet" />
 
@@ -39,7 +40,7 @@
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
     <component type="typeof(App)" param-InitialState="tokens" render-mode="ServerPrerendered" />
 
     <div id="blazor-error-ui">

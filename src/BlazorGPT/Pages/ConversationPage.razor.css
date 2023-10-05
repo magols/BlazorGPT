@@ -8,6 +8,13 @@
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
+@media screen and (min-width: 769px) {
+    #message-box {
+        max-width: 85%;
+
+    }
+}
+
 #message-pane {
     font-size: 13px;
 }

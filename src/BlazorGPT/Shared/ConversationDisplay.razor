@@ -10,15 +10,20 @@
         @if (Conversation.Messages.Any())
         {
             <!-- system prompt -->
-            <ConversationMessageDisplay Message="Conversation.Messages.FirstOrDefault()" MessagesCount="Conversation.Messages.Count()"></ConversationMessageDisplay>
+            <ConversationMessageDisplay
+                Message="Conversation.Messages.FirstOrDefault()"
+                MessagesCount="Conversation.Messages.Count()" 
+                ShowEditButton="Conversation.IsStarted()"
+                />
             @foreach (var message in Conversation.Messages.Skip(1))
             {
                 var isLastMessage = Conversation.Messages.IndexOf(message) + 1 == Conversation.Messages.Count();
 
                 <ConversationMessageDisplay
                     ShowBranches="@ShowBranches"
-                    ShowRestartButton="RestartConversation.HasDelegate && !isLastMessage"
-                    ShowCopyButton="CopyConversation.HasDelegate"
+                    ShowEditButton="Conversation.IsStarted()"
+                    ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && Conversation.IsAssistantTurn()"
+                    ShowCopyButton="CopyConversation.HasDelegate && Conversation.Id != null"
                     OnRestartClicked="RestartConversation"
                     OnCopyClicked="CopyConversation"
                     Message="message">

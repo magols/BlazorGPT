@@ -68,3 +68,29 @@ public class Conversation
     }
  
 }
+
+public static class ConversationExtensions
+{
+    public static bool IsStarted(this Conversation conversation)
+    {
+        return conversation.Messages.Count > 1;
+    }
+
+    // last message was from assistant
+    public static bool IsAssistantTurn(this Conversation conversation)
+    {
+        return conversation.Messages.Count > 0 && conversation.Messages.Last().Role == ConversationRole.Assistant;
+    }
+
+    // last message was from user
+    public static bool IsUserTurn(this Conversation conversation)
+    {
+        return conversation.Messages.Count > 0 && conversation.Messages.Last().Role == ConversationRole.User;
+    }
+
+    // last message was from system
+    public static bool IsSystemTurn(this Conversation conversation)
+    {
+        return conversation.Messages.Count > 0 && conversation.Messages.Last().Role == ConversationRole.System;
+    }
+}

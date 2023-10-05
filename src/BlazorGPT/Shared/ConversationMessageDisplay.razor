@@ -1,8 +1,44 @@
 ﻿<div class="row m-0 mb-2 p-0" style="@Style">
-    <div class="col-1 col-md-1 ps-1 pe-3 mt-2 mb-2 p-0">
+    <div class="col-1 col-md-1 p-1 mt-2 mb-2 p-0 bg-gradient">
         <ConversationRoleDisplay Role="@Message.Role"/>
+      
+        <ul id="message-buttons" style="list-style-type: none" class="p-0 m-0">
+            @if (ShowRestartButton)
+            {
+                <li class="m-1">
+                    <RadzenButton Visible="ShowRestartButton" Class="" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))"/>
+
+                </li>
+            }
+            @if (ShowShouldDisplayStateButton)
+            {
+                <li class="m-1">
+                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))"/>
+
+                </li>
+            }
+      
+            @if (ShowEditButton)
+            {
+                <li class="m-1" >
+                    <RadzenButton Visible="true" Class="" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))"/>
+
+                </li>
+
+            }
+           
+
+
+            @if (Message.Role == ConversationRole.Assistant && ShowCopyButton) 
+            {
+                <li class="m-1">
+
+                    <RadzenButton Visible="ShowCopyButton" class="" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))"/>
+                </li>
+            }
+        </ul>
     </div>
-    <div class="col-11 col-md-11 ps-0 pe-0 mt-2 mb-0" id="@Message.Id">
+    <div class="col-11 col-md-11 p-1 mt-2 mb-0" id="@Message.Id">
         @if (Message.Role == ConversationRole.System)
         {
 
@@ -19,7 +55,6 @@
                 <button class="btn btn-sm btn-secondary" @onclick="@(args => SaveMessage())">Cancel</button>
             }
 
-            <RadzenButton Visible="true" Class="float-end" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))" />
 
         }
         else
@@ -45,12 +80,8 @@
                             </div>
                         }
                         <br/>
-                        <RadzenButton Visible="ShowCopyButton" class="float-end" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))"/>
                     }
-                    <RadzenButton Visible="ShowRestartButton" Class="float-end" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))"/>
-                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))"/>
-                    <RadzenButton Visible="true" Class="float-end" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))"/>
-
+                 
                 </div>
 
  
@@ -100,10 +131,10 @@
     }
 
     [Parameter]
-    public bool ShowBranches { get; set; } = true;
+    public bool ShowBranches { get; set; }
 
     [Parameter]
-    public bool ShowRestartButton { get; set; } = true;
+    public bool ShowRestartButton { get; set; }
 
     [Parameter]
     public EventCallback<ConversationMessage>? OnRestartClicked { get; set; }
@@ -276,6 +307,10 @@
 
         EditMode = true;
     }
+
+
+    [Parameter]
+    public bool ShowEditButton { get; set; }
 
 
 }
