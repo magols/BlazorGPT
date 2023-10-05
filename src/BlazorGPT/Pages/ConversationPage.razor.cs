@@ -398,7 +398,6 @@ namespace BlazorGPT.Pages
         async void WindowResized(object _, BrowserWindowSize window)
         {
             browser = window;
-            Console.WriteLine(window.Height);
             StateHasChanged();
         }
 
