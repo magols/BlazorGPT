@@ -98,22 +98,15 @@
 }
 
 <SectionContent SectionName="heading">
-    
-    
-    <div class="w-100 me-4">
-        
-        @Conversation.Summary
 
-        <a href="#" class="rz-link float-end" @onclick="GoToNew">
+    <div class="m-0 p-0">
+        <a href="#" class="rz-link" @onclick="GoToNew">
             <span class="material-symbols-outlined">
                 add_circle
             </span>
         </a>
-        <RadzenButton class="float-end me-4" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
-
-
+            @Conversation.Summary
     </div>
-    
 
 </SectionContent>
 
@@ -138,15 +131,13 @@
         </div>
     </div>
     
-        
-
-
+ 
     <div class="row sticky-bottom mt-auto mb-0 pb-0 pt-0">
 
         <div id="control" class="col mt-0 mb-0 pb-0 pt-0 me-3">
           
             
-            <RadzenTabs class="w-100" @bind-SelectedIndex=@selectedTabIndex>
+            <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
                 <Tabs>
                     <RadzenTabsItem Text="Conversation" class="m-0 p-0">
 
@@ -217,6 +208,10 @@
                             <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
                             <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
                         }
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Tools">
+                        <RadzenButton class="" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
+
                     </RadzenTabsItem>
                 </Tabs>
             </RadzenTabs>

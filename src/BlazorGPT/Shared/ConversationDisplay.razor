@@ -2,10 +2,6 @@
 @if (Conversation != null)
 {
     <div id="message-pane" class="scroll-pane" style="@Style">
-        
-
-        
-
         <BranchedFrom Conversation="@Conversation"/>
         @if (Conversation.Messages.Any())
         {

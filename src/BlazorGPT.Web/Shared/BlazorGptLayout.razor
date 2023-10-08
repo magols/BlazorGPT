@@ -1,9 +1,6 @@
 ﻿@using BlazorPro.BlazorSize
 @inherits LayoutComponentBase
-
 <MediaQueryList>
-
-
 <RadzenDialog/>
 <RadzenNotification/>
 <RadzenTooltip/>
@@ -13,14 +10,19 @@
     <RadzenHeader>
         <div class="container-fluid">
 
-            <div class="row justify-content-start align-items-center bg-dark">
+            <div class="row me-0 pe-0  justify-content-start align-items-center bg-dark">
 
-                <div class="col-1 d-flex align-items-center ps-0 pl-0">
-                    <RadzenSidebarToggle Click="@SidebarToggleClick"></RadzenSidebarToggle>
+                <div class="col-9 p-0 m-0">
 
-                </div>
-                <div class="col-8 d-flex align-content-start align-items-start ">
-                    <SectionOutlet SectionName="heading" />
+
+                    <div class="p-2">
+                        <RadzenIcon @onclick="@SidebarToggleClick"
+                                    Icon="menu"
+                                    IconStyle="IconStyle.Info"
+                                    class="float-start m-2 mt-0  p-0" />
+                        <SectionOutlet SectionName="heading" />
+                    </div>
+
                 </div>
                 <div class="col-3 d-flex align-items-center justify-content-end">
                     <LoginDisplay/>
@@ -29,7 +31,7 @@
         </div>
     </RadzenHeader>
     <RadzenBody Expanded="@sidebarExpanded">
-        <div class="container-fluid pt-2 pt-md-2 pt-lg-2 pt-xl-2 pb-2 pb-lg-5" style="max-width: 1440px;">
+        <div class="container-fluid ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
             <div class="row">
                 <div class="col">
                     @Body
@@ -38,11 +40,6 @@
         </div>
     </RadzenBody>
     <RadzenSidebar Expanded="@sidebarExpanded" style="z-index: 2">
-        @*        <div class="py-3 py-lg-4" style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border); display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-            <RadzenImage Path="/images/logo.png"  style="width: 48px; height: 48px;"></RadzenImage>
-            <RadzenText Text="DarkRadzen" TextStyle="Radzen.Blazor.TextStyle.Subtitle1" class="mb-0" style="color: var(--rz-primary-light);" />
-        </div>*@
-        
         <RadzenPanelMenu Click="SidebarToggleClickMenu">
             <RadzenPanelMenuItem Text="Home" Path="/"/>
             <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true"/>
@@ -50,7 +47,6 @@
             <RadzenPanelMenuItem Icon="people" Text="Quick profiles" Path="quickprofiles"/>
             <RadzenPanelMenuItem Icon="format_list_numbered" Text="Scripts" Path="scripts"/>
         </RadzenPanelMenu>
- 
 
         <div class="py-3 py-md-4" style="padding: var(--rz-panel-menu-item-padding);">
             <RadzenText Text="BlazorGPT v1.0" TextStyle="TextStyle.Caption" style="color: var(--rz-text-disabled-color);" TagName="TagName.P" TextAlign="TextAlign.Center"/>

@@ -1,30 +1,32 @@
-
-@switch (Role)
-{
-    case "system":
-    <span class="material-symbols-outlined">
-            settings_suggest
-        </span>
-        break;
-case "assistant":
-<span class="material-symbols-outlined">
-            smart_toy
-        </span>
-        break;
-case "user":
-<span class="material-symbols-outlined">
-            person
-        </span>
-        break;
-default:
-<span class="material-symbols-outlined">
-            help_outline
-        </span>
-        break;
-}
-
+<span class="@Class material-symbols-outlined">@Icon</span>
 @code {
 
     [Parameter]
-    public string Role { get; set; }
+    public string? Role { get; set; }
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    public string? Icon { get; set; }
+
+    protected override void OnInitialized()
+    {
+        switch (Role)
+        {
+            case "system":
+                Icon = "settings_suggest";
+                break;
+            case "assistant":
+                Icon = "smart_toy";
+                break;
+            case "user":
+                Icon = "person";
+                break;
+
+            default:
+                Icon = "help_outline";
+                break;
+        }
+    }
+
 }

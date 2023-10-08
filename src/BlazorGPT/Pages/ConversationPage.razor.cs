@@ -70,7 +70,7 @@ namespace BlazorGPT.Pages
         bool showTokens = false;
 
         private int controlHeight { get; set; }
-        private int initialControlHeight = 310;
+        private int initialControlHeight = 0;
 
         private IKernel _kernel = null!;
         private CancellationTokenSource _cancellationTokenSource;
@@ -103,7 +103,7 @@ namespace BlazorGPT.Pages
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
 
 
-          initialControlHeight = _browserIsSmall ? 250 : 250;
+          initialControlHeight = _browserIsSmall ? 290 : 290;
           controlHeight = initialControlHeight;
 
 

@@ -9,12 +9,7 @@
     }
 
 .scroll-pane {
-    /*background-color: #363636;*/
     overflow-y: auto;
     overflow-x: hidden;
-    /*border: 1px solid gray;*/
-    /*padding: 10px;*/
-    /*height: auto;*/
-    padding-right: 20px;
 }
 
