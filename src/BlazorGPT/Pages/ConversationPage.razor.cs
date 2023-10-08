@@ -80,7 +80,6 @@ namespace BlazorGPT.Pages
             protected override async Task OnInitializedAsync()
         {
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
-
         }
 
         private async Task  UpdateAndRedraw()
@@ -109,13 +108,10 @@ namespace BlazorGPT.Pages
 
             await Interop.SetupCopyButtons();
 
+                await Interop.ScrollToBottom("message-pane");
 
                 _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
-                //  KernelService.OnStreamCompletion += OnStreamCompletion;
 
-              
-
-                await Interop.ScrollToBottom("message-pane");
 
             }
 

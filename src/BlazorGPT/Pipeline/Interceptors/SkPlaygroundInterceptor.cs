@@ -65,7 +65,7 @@ namespace BlazorGPT.Pipeline.Interceptors
  
 
             SKContext ctx = kernel.CreateNewContext();
-            ctx["input"] = ask;
+            ctx.Variables["input"] = ask;
 
             var planner = new SequentialPlanner(kernel, new SequentialPlannerConfig {  RelevancyThreshold = 0.8 });
 

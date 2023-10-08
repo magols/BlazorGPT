@@ -1,5 +1,4 @@
-﻿@using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers
-@if (Value != null)
+﻿@if (Value != null)
 {
     <RadzenTree Expand=@OnExpand Collapse=@OnCollapse >
         <RadzenTreeItem Text="">
@@ -24,11 +23,6 @@
     public string? Value { get; set; }
 
     IEnumerable<int>? tokens;
-
-    protected override void OnParametersSet()
-    {
-        if (Value != null) tokens = GPT3Tokenizer.Encode(Value);
-    }
 
     private void OnExpand(TreeExpandEventArgs arg)
     {

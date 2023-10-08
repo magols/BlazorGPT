@@ -74,7 +74,6 @@ builder.Services.AddScoped<KernelService>();
 builder.Services.AddScoped<RedisEmbeddings>();
 
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
-builder.Services.AddScoped<IInterceptor, CerveraMemoryInterceptor>();
 builder.Services.AddScoped<IInterceptor, SkPlaygroundInterceptor>();
 
 builder.WebHost.UseWebRoot("wwwroot");

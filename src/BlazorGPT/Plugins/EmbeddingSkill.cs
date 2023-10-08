@@ -4,6 +4,7 @@ using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.SkillDefinition;
 using Microsoft.SemanticKernel.Skills.Core;
 using Microsoft.SemanticKernel.TemplateEngine;
+using Microsoft.SemanticKernel.TemplateEngine.Prompt;
 
 namespace BlazorGPT.Plugins;
 
@@ -25,10 +26,10 @@ public class EmbeddingSkill
     public async Task<string> IncludeEmbeddingsTagAsync(SKContext ctx)
     {
         var ts = new TextMemorySkill(memory: _kernel.Memory);
-        double.TryParse(ctx["relevance"], out var relevance);
-        int.TryParse(ctx["limit"], out var limit);
+        double.TryParse(ctx.Variables["relevance"], out var relevance);
+        int.TryParse(ctx.Variables["limit"], out var limit);
 
-        var res = _kernel.Memory.SearchAsync(ctx["collection"], ctx["input"], limit, relevance);
+        var res = _kernel.Memory.SearchAsync(ctx.Variables["collection"], ctx.Variables["input"], limit, relevance);
 
         var fullText = "";
         await foreach (var r in res) fullText += r.Metadata.Text + " ";

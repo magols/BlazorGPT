@@ -9,10 +9,7 @@ namespace BlazorGPT.Web.Pages.Samples
 
         protected  async Task<string> OnStreamCompletion(string s)
         {
-            Console.WriteLine("stream" + s);
-
-            Conversation.Messages.Last().Content += s;
-
+            Conversation!.Messages.Last().Content += s;
             StateHasChanged();
             return s;
         }

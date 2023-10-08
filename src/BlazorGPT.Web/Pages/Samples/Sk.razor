@@ -5,6 +5,7 @@
 @using Microsoft.SemanticKernel.TemplateEngine
 @using System.Globalization
 @using Microsoft.SemanticKernel.Skills.Core
+@using Microsoft.SemanticKernel.TemplateEngine.Prompt
 @inject IOptions<PipelineOptions> PipelineOptions
 @layout EmptyLayout
 <h3>Semantic Kernel</h3>
@@ -57,15 +58,15 @@ Text selected:
             var context = kernel.CreateNewContext();
 
             // Put the selected document into the variable used by the system prompt (see 28-system-prompt.txt).
-            context["selectedText"] = selectedText;
+            context.Variables["selectedText"] = selectedText;
 
             // Demo another variable, e.g. when the chat started, used by the system prompt (see 28-system-prompt.txt).
-            context["startTime"] = DateTimeOffset.Now.ToString("hh:mm:ss tt zz", CultureInfo.CurrentCulture);
+            context.Variables["startTime"] = DateTimeOffset.Now.ToString("hh:mm:ss tt zz", CultureInfo.CurrentCulture);
 
             // This is the user message, store it in the variable used by 28-user-prompt.txt
 
-            context["url"] = "https://www.bing.com";
-            context["userMessage"] = "extract locations as a bullet point list.";
+            context.Variables["url"] = "https://www.bing.com";
+            context.Variables["userMessage"] = "extract locations as a bullet point list.";
 
             // Instantiate the prompt renderer, which we will use to turn prompt templates
             // into strings, that we will store into a Chat history object, which is then sent

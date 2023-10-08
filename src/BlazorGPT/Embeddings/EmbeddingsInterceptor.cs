@@ -4,7 +4,8 @@ using BlazorGPT.Pipeline.Interceptors;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.Embeddings;
-using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers;
+using SharpToken;
+
 
 namespace BlazorGPT.Embeddings;
 
@@ -57,7 +58,9 @@ public class EmbeddingsInterceptor : IInterceptor
             foreach (var doc in docs)
             {
                 var embeddingDoc = await _redisEmbeddings.GetEmbedding(doc.Id);
-                currentEmbeddingsTokens += GPT3Tokenizer.Encode(embeddingDoc.Data).Count;
+
+                var encoding = GptEncoding.GetEncodingForModel("gpt-3.5");
+                currentEmbeddingsTokens += encoding.Encode(embeddingDoc.Data).Count;
                 if (currentEmbeddingsTokens > maxEmbeddingsTokens)
                     break;
                 contextBuilder.Append(embeddingDoc.Data + " ");
