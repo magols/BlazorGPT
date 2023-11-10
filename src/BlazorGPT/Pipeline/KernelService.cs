@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
@@ -9,7 +8,11 @@ using Microsoft.SemanticKernel.Connectors.Memory.Redis;
 using Microsoft.SemanticKernel.Connectors.Memory.Sqlite;
 using StackExchange.Redis;
 using System.Globalization;
-using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
+using Microsoft.SemanticKernel.AI;
+using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
+using Microsoft.SemanticKernel.Memory;
+using Microsoft.SemanticKernel.Plugins.Memory;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace BlazorGPT.Pipeline
 {
@@ -32,9 +35,9 @@ namespace BlazorGPT.Pipeline
             if (useAzureOpenAI)
             {
                 builder
-                    .WithAzureChatCompletionService(model ?? _options.Model, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
+                    .WithAzureOpenAIChatCompletionService(model ?? _options.Model, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
                     .WithAzureTextCompletionService(_options.ModelTextCompletions, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
-                    .WithAzureTextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.Endpoint, _kernelSettings.ApiKey);
+                    .WithAzureOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.Endpoint, _kernelSettings.ApiKey);
             }
             else
             {
@@ -45,21 +48,45 @@ namespace BlazorGPT.Pipeline
                     .WithOpenAIImageGenerationService(_kernelSettings.ApiKey, _kernelSettings.OrgId);
             }
 
+            return builder.Build();
+        }
 
 
+        public async Task<ISemanticTextMemory> GetMemoryStore()
+        {
+            _kernelSettings = KernelSettings.LoadSettings();
+
+            IMemoryStore memoryStore = null!;
+            if (_options.Embeddings.UseSqlite)
+            {
+                memoryStore = await SqliteMemoryStore.ConnectAsync(_options.Embeddings.SqliteConnectionString);
+            }
             if (_options.Embeddings.UseRedis)
             {
                 ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_options.Embeddings.RedisConfigurationString);
                 var _db = redis.GetDatabase();
-                builder.WithMemoryStorage(new RedisMemoryStore(_db, 1536));
+                memoryStore = new RedisMemoryStore(_db, 1536);
             }
 
-            if (_options.Embeddings.UseSqlite)
+            bool useAzureOpenAI = _kernelSettings.ServiceType != "OpenAI";
+            if (useAzureOpenAI)
             {
-                builder.WithMemoryStorage(await SqliteMemoryStore.ConnectAsync(_options.Embeddings.SqliteConnectionString));
+
+                var mem = new MemoryBuilder()
+                    .WithAzureOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
+                    .WithMemoryStore(memoryStore)
+                    .Build();
+                return mem;
+            }
+            else
+            {
+                var mem = new MemoryBuilder()
+                    .WithOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.ApiKey)
+                    .WithMemoryStore(memoryStore)
+                    .Build();
+                return mem;
             }
 
-            return builder.Build();
         }
 
         private readonly PipelineOptions _options;
@@ -96,14 +123,17 @@ namespace BlazorGPT.Pipeline
             string fullMessage = string.Empty;
 
             // todo: get chat request parameters from settings
-            var chatRequestSettings = new ChatRequestSettings
+            var chatRequestSettings = new AIRequestSettings
             {
-                MaxTokens = 2500,
-                Temperature = 0.9,
-                TopP = 1.0,
-                FrequencyPenalty = 0.0,
-                PresencePenalty = 0.0,
-                StopSequences = new[] { "Dragons be here" }
+                ExtensionData = new Dictionary<string, object>()
+                {
+                    { "MaxTokens", 2500 },
+                    { "Temperature", 0.0 },
+                    { "TopP", 1 },
+                    { "FrequencyPenalty", 0.0 },
+                    { "PresencePenalty", 0.0 },
+                    { "StopSequences", new[] { "Dragons be here" } }    
+                }
             };
 
 
@@ -142,26 +172,8 @@ namespace BlazorGPT.Pipeline
             conversation.Messages.Last().Content = fullMessage;
             return conversation;
         }
-
-
-        public async Task<string> SaveInformationAsync(string collection, string text, string id, string? description = null)
-        {
-            var kernel = await CreateKernelAsync();
-         
-            var newId = await kernel.Memory.SaveInformationAsync(collection, text, id, description);
-            return newId;
-        }
-
-        public async Task<string> SaveReferenceAsync(string collection, string text, string id, string externalSourceName, string? description = null)
-        {
-            var kernel = await CreateKernelAsync();
-            var newId = await kernel.Memory.SaveReferenceAsync(collection, text, id, externalSourceName, description);
-            return newId;
-        }
-
-
-        }
     }
+}
 
 
 
@@ -303,33 +315,6 @@ public static class Settings
     }
 }
 
-
-//
-//internal static class KernelConfigExtensions
-//{
-//	/// <summary>
-//	/// Adds a text completion service to the list. It can be either an OpenAI or Azure OpenAI backend service.
-//	/// </summary>
-//	/// <param name="kernelConfig"></param>
-//	/// <param name="kernelSettings"></param>
-//	/// <exception cref="ArgumentException"></exception>
-//	internal static void AddCompletionBackend(this KernelConfig kernelConfig, KernelSettings kernelSettings)
-//	{
-//		switch (kernelSettings.ServiceType.ToUpperInvariant())
-//		{
-//			case KernelSettings.AzureOpenAI:
-//				kernelConfig.AddAzureTextCompletionService(deploymentName: kernelSettings.DeploymentOrModelId, endpoint: kernelSettings.Endpoint, apiKey: kernelSettings.ApiKey, serviceId: kernelSettings.ServiceId);
-//				break;
-//
-//			case KernelSettings.OpenAI:
-//				kernelConfig.AddOpenAITextCompletionService(modelId: kernelSettings.DeploymentOrModelId, apiKey: kernelSettings.ApiKey, orgId: kernelSettings.OrgId, serviceId: kernelSettings.ServiceId);
-//				break;
-//
-//			default:
-//				throw new ArgumentException($"Invalid service type value: {kernelSettings.ServiceType}");
-//		}
-//	}
-//}
 
 
 public class KernelSettings

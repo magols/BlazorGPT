@@ -1,8 +1,7 @@
 using System.ComponentModel;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
-using Microsoft.SemanticKernel.SkillDefinition;
-using Microsoft.SemanticKernel.TemplateEngine;
-using Microsoft.SemanticKernel.TemplateEngine.Prompt;
+using Microsoft.SemanticKernel.TemplateEngine.Basic;
 
 namespace BlazorGPT.Plugins;
 
@@ -10,8 +9,10 @@ public class IntentSkill
 {
     [SKFunction, SKName("DetectIntent")]
     [Description("Given a query and a list of possible intents, detect which intent the input matches")]
-    [SKParameter("input", "Input to detect intent of")]
-    public async Task<string> DetectIntentAsync(SKContext ctx)
+    public async Task<string> DetectIntentAsync(
+        [Description("Input to detect intent of")]
+        string input,
+        SKContext ctx)
     {
         var funcDesc = """
             These are available intents that one might query:
@@ -27,7 +28,7 @@ public class IntentSkill
             Intent:
             """;
 
-        var promptRenderer = new PromptTemplateEngine();
+        var promptRenderer = new BasicPromptTemplateEngine();
         var prompt = await promptRenderer.RenderAsync(funcDesc, ctx);
         return prompt;
     }

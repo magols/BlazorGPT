@@ -25,12 +25,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.1" />
     <!--<PackageReference Include="Microsoft.SemanticKernel" Version="0.18.230725.3-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="0.18.230725.3-preview" />-->
 
     <!--<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-preview.6.23360.4" />-->
-    <PackageReference Include="Radzen.Blazor" Version="4.17.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.20.4" />
     <PackageReference Include="Sendgrid" Version="9.28.1" />
 
   </ItemGroup>

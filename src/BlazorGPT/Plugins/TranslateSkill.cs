@@ -1,9 +1,8 @@
 using System.ComponentModel;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
-using Microsoft.SemanticKernel.SkillDefinition;
-using Microsoft.SemanticKernel.TemplateEngine;
-using Microsoft.SemanticKernel.TemplateEngine.Prompt;
+using Microsoft.SemanticKernel.TemplateEngine.Basic;
+
 
 namespace BlazorGPT.Plugins;
 
@@ -18,10 +17,12 @@ public class TranslateSkill
 
     [SKFunction]
     [SKName("Translate")]
-    [Description("Translates a text into a named langague")]
-    [SKParameter("input", "Text to translate")]
-    [SKParameter("language", "Language to translate text into")]
-    public async Task<string> TranslateAsync(SKContext ctx)
+    public async Task<string> TranslateAsync(
+        [Description("Text to translate")]
+        string input,
+        [Description("Language to translate text into")]
+        string language,
+        SKContext ctx)
     {
 
 
@@ -34,11 +35,11 @@ public class TranslateSkill
 
 
 
-        var promptRenderer = new PromptTemplateEngine();
+        var promptRenderer = new BasicPromptTemplateEngine();
         var prompt = await promptRenderer.RenderAsync(funcDesc, ctx);
 
         var func = _kernel.CreateSemanticFunction(funcDesc);
         var res = await func.InvokeAsync(ctx);
-        return res.Result;
+        return res.ToString();
     }
 }

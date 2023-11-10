@@ -3,10 +3,11 @@ using Microsoft.SemanticKernel.Planning;
 using BlazorGPT.Plugins;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.Orchestration;
-using Microsoft.SemanticKernel.Planning.Sequential;
-using Microsoft.SemanticKernel.Skills.Core;
+using Microsoft.SemanticKernel.Planners;
+ 
 using Microsoft.SemanticKernel.Skills.Web.Bing;
 using Microsoft.SemanticKernel.Skills.Web;
+using Microsoft.SemanticKernel.Plugins.Core;
 
 namespace BlazorGPT.Pipeline.Interceptors
 {
@@ -14,8 +15,8 @@ namespace BlazorGPT.Pipeline.Interceptors
     {
         private KernelService _kernelService;
         private readonly PipelineOptions _options;
-        public string Name { get; } = "SkPlayground";
-        public bool Internal { get; } = false;
+        public override string Name { get; } = "SkPlayground";
+        public override bool Internal { get; } = false;
 
         public SkPlaygroundInterceptor(IDbContextFactory<BlazorGptDBContext> context, 
             ConversationsRepository conversationsRepository,
@@ -44,15 +45,16 @@ namespace BlazorGPT.Pipeline.Interceptors
         private async Task Play(IKernel kernel, Conversation conversation)
         {
             var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
-            kernel.ImportSemanticSkillFromDirectory(skillsDirectory, "SkPlayground");
-            kernel.ImportSkill(new EmbeddingSkill(kernel), "embeddings");
-            kernel.ImportSkill(new TranslateSkill(kernel), "summarize");
-
+            kernel.ImportSemanticFunctionsFromDirectory(skillsDirectory, "SkPlayground");
+            kernel.ImportFunctions(new EmbeddingSkill(kernel, await _kernelService.GetMemoryStore()), "embeddings");
+            kernel.ImportFunctions(new TranslateSkill(kernel), "summarize");
+            
             var bingConnector = new BingConnector(_options.BING_API_KEY);
             var bing = new WebSearchEngineSkill(bingConnector);
-            var search = kernel.ImportSkill(bing, "bing");
+            // todo: broken plugin
+            //var search = kernel.ImportFunctions(bing, "bing");
 
-            kernel.ImportSkill(new TimeSkill(), "time");
+            kernel.ImportFunctions(new TimePlugin(), "time");
 
             var ask =  conversation.Messages.Last().Content;
 
@@ -67,7 +69,7 @@ namespace BlazorGPT.Pipeline.Interceptors
             SKContext ctx = kernel.CreateNewContext();
             ctx.Variables["input"] = ask;
 
-            var planner = new SequentialPlanner(kernel, new SequentialPlannerConfig {  RelevancyThreshold = 0.8 });
+            var planner = new SequentialPlanner(kernel, new SequentialPlannerConfig { });
 
             var plan = await planner.CreatePlanAsync(ask);
          
