@@ -41,7 +41,7 @@ public class EmbeddingsInterceptor : IInterceptor
             var prompt = conversation.Messages.First(m => m.Role == "user");
 
             var memStore = await _kernelService.GetMemoryStore();
-            var searchResult = memStore.SearchAsync(IndexName, prompt.Content, 10, cancellationToken: cancellationToken);
+            var searchResult = memStore.SearchAsync(IndexName, prompt.Content, 10, 0.75d, cancellationToken: cancellationToken);
             var maxTokens = _options.Embeddings.MaxTokensToIncludeAsContext;
             var tokens = 0;
 
