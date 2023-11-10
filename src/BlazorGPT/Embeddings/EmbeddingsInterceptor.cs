@@ -11,7 +11,7 @@ namespace BlazorGPT.Embeddings;
 public class EmbeddingsInterceptor : IInterceptor
 {
     private readonly PipelineOptions _options;
-    private readonly string IndexName = "trackgpt";
+    private readonly string IndexName = "blazorgpt";
     private readonly KernelService _kernelService;
 
 
