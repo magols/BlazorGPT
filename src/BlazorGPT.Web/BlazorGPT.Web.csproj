@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="0.18.230725.3-preview" />-->
 
     <!--<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-preview.6.23360.4" />-->
-    <PackageReference Include="Radzen.Blazor" Version="4.20.4" />
+    <PackageReference Include="Radzen.Blazor" Version="4.21.1" />
     <PackageReference Include="Sendgrid" Version="9.28.1" />
 
   </ItemGroup>

@@ -40,7 +40,7 @@
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.10.1" />
-    <PackageReference Include="Radzen.Blazor" Version="4.20.4" />
+    <PackageReference Include="Radzen.Blazor" Version="4.21.1" />
     <PackageReference Include="SharpToken" Version="1.2.12" />
 
   </ItemGroup>
