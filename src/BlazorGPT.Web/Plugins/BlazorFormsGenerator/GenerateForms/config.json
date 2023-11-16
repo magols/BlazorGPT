@@ -1,0 +1,22 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Generates the code for a Blazor EditForm",
+    "completion": {
+        "max_tokens": 256,
+        "temperature": 0,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "dataAnnotatedModel",
+                "description": "The data annotated class file represtenting the form model",
+            "defaultValue": "public class UserModel \t{ \t    [Required(ErrorMessage = \"Name is required.\")] \t    [StringLength(100, ErrorMessage = \"Name cannot be longer than 100 characters.\")] \t    public string Name { get; set; } \t \t    [StringLength(10, ErrorMessage = \"Salutation cannot be longer than 10 characters.\")] \t    public string Salutation { get; set; } \t \t    [Required(ErrorMessage = \"Email is required.\")] \t    [EmailAddress(ErrorMessage = \"Invalid email address.\")] \t    [StringLength(100, ErrorMessage = \"Email cannot be longer than 100 characters.\")] \t    public string Email { get; set; } \t \t    [Required(ErrorMessage = \"Password is required.\")] \t    [DataType(DataType.Password)] \t    [StringLength(100, MinimumLength = 6, ErrorMessage = \"Password must be between 6 and 100 characters.\")] \t    public string Password { get; set; } \t \t    [Required(ErrorMessage = \"Confirm password is required.\")] \t    [DataType(DataType.Password)] \t    [Compare(\"Password\", ErrorMessage = \"Passwords do not match.\")] \t    public string ConfirmPassword { get; set; } \t}"
+            }
+        ]
+    },
+    "default_backends": []
+}

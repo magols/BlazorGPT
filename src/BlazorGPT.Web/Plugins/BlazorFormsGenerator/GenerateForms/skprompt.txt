@@ -1,0 +1,51 @@
+We will create the code for a Blazor page with an EditForm based on the provided model class
+{{$dataAnnotatedModel}}
+
+The main input component to use is the InputModule.razor:
+
+@if (!string.IsNullOrEmpty(Label))
+{
+    <div class="input-item">
+        <label for="@Name">@Label</label>
+        @ChildContent
+    </div>
+
+} else
+{
+    @ChildContent
+}
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string Label { get; set; }
+    [Parameter]
+    public string? Name{ get; set; }
+}
+
+The InputTextOnInput.razor module has the following code:
+@inherits InputText
+<input @attributes="AdditionalAttributes"
+       class="@CssClass"
+       value="@CurrentValue"
+@oninput="EventCallback.Factory.CreateBinder<string>(this, value => CurrentValueAsString = value, CurrentValueAsString)" />
+
+
+Example of a generated form:
+ <EditForm Model="@Form" FormName="MyForm" OnValidSubmit="Submit">
+     <DataAnnotationsValidator/>
+
+     <InputModule Name="name" Label="Name">
+         <InputTextOnInput name="name" @bind-Value="Form.Name" placeholder="Name"/>
+         <ValidationMessage For="@(() => Form.Name)"/>
+     </InputModule>
+</EditForm>
+
+All generated code MUST use English language names for properties, variables and other code! No other language is allowed. Translate property names if necessary.
+The code MUST be COMPLETE. Do not skip or abbreviate anything! All input fields must be included in the final component
+………………..
+Be as brief as possible in the response and only return the generated code. Do not include any other text in the response.
+----------
+Only generate the code. Use markdown in the response.
+
+Generate the Razor component with the form, binding to the created model

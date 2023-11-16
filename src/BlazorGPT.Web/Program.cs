@@ -72,6 +72,8 @@ builder.Services.AddScoped<KernelService>();
 
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
 builder.Services.AddScoped<IInterceptor, SkPlaygroundInterceptor>();
+builder.Services.AddScoped<IInterceptor, BlazorFormGenerator>();
+
 
 builder.WebHost.UseWebRoot("wwwroot");
 

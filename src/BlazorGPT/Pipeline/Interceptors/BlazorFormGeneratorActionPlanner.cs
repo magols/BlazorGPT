@@ -1,23 +1,19 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planning;
-using BlazorGPT.Plugins;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.Planners;
-using Microsoft.SemanticKernel.Skills.Web.Bing;
-using Microsoft.SemanticKernel.Skills.Web;
-using Microsoft.SemanticKernel.Plugins.Core;
 
 namespace BlazorGPT.Pipeline.Interceptors
 {
-    public class SkPlaygroundInterceptor : InterceptorBase, IInterceptor
+    public class BlazorFormGenerator : InterceptorBase, IInterceptor
     {
         private KernelService _kernelService;
         private readonly PipelineOptions _options;
-        public override string Name { get; } = "SkPlayground";
-        public override bool Internal { get; } = false;
+        public override string Name { get; } = "BlazorFormGenerator";
+ 
 
-        public SkPlaygroundInterceptor(IDbContextFactory<BlazorGptDBContext> context, 
+        public BlazorFormGenerator(IDbContextFactory<BlazorGptDBContext> context, 
             ConversationsRepository conversationsRepository,
             KernelService kernelService
             ,IOptions<PipelineOptions> options) : base(context, conversationsRepository)
@@ -44,37 +40,27 @@ namespace BlazorGPT.Pipeline.Interceptors
         private async Task Play(IKernel kernel, Conversation conversation)
         {
             var skillsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
-            kernel.ImportSemanticFunctionsFromDirectory(skillsDirectory, "SkPlayground");
-            kernel.ImportFunctions(new EmbeddingSkill(kernel, await _kernelService.GetMemoryStore()), "embeddings");
-            kernel.ImportFunctions(new TranslateSkill(kernel), "summarize");
-            
-            var bingConnector = new BingConnector(_options.BING_API_KEY);
-            var bing = new WebSearchEngineSkill(bingConnector);
-            // todo: broken plugin
-            //var search = kernel.ImportFunctions(bing, "bing");
-
-            kernel.ImportFunctions(new TimePlugin(), "time");
+            kernel.ImportSemanticFunctionsFromDirectory(skillsDirectory, "BlazorFormsGenerator");
 
             var ask =  conversation.Messages.Last().Content;
-
 
             var p = new Plan("Wait for instructions");
             conversation.SKPlan = p.ToJson(true);
             OnUpdate?.Invoke();
 
-
- 
-
             SKContext ctx = kernel.CreateNewContext();
             ctx.Variables["input"] = ask;
 
-            var planner = new SequentialPlanner(kernel, new SequentialPlannerConfig { });
+            ActionPlanner actionPlanner = new ActionPlanner(kernel, new ActionPlannerConfig()
+            {
+                
+            });
+          //  var actionPlan = await actionPlanner.CreatePlanAsync(ask);
 
+            var planner = new SequentialPlanner(kernel, new SequentialPlannerConfig { });
             var plan = await planner.CreatePlanAsync(ask);
-         
             conversation.SKPlan = plan.ToJson(true);
             OnUpdate?.Invoke();
-
 
             Plan newPlan = plan;
             while (newPlan.HasNextStep)
