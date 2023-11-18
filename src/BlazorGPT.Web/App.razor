@@ -1,38 +1,96 @@
-﻿@using System.Security.Claims
-@using BlazorGPT.Web.Areas.Identity
-@using Microsoft.AspNetCore.Components
+﻿@using BlazorGPT.Web.Areas.Identity
+@using Microsoft.AspNetCore.Antiforgery
 @inject TokenProvider TokenProvider
 @inject NavigationManager Navigation
+@inject IAntiforgery Antiforgery
 
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css" type="text/css" />
+    <link href="/lib/font-awesome/css/fontawesome.css" rel="stylesheet">
+
+    <link href="/lib/font-awesome/css/solid.css" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/css/material-dark-base.css">
+    <link href="BlazorGPT.Web.styles.css" rel="stylesheet" />
+
+    <link href="_content/BlazorGPT/BlazorGPT.bundle.scp.css" rel="stylesheet" />
+    
+
+    <link rel="stylesheet" href="/css/radzen-custom.css">
+    <link href="css/site.css" rel="stylesheet" />
+
+    
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+
+<body class="d-flex flex-column h-100">
 <CascadingAuthenticationState>
     <AppState>
-            <Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(ConversationPage).Assembly }" PreferExactMatches="@true">
-                <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(BlazorGptLayout)" />
-
-                </Found>
-                <NotFound>
-                <LayoutView Layout="@typeof(BlazorGptLayout)">
-                        <p>Sorry, there's nothing at this address.</p>
-                    </LayoutView>
-                </NotFound>
-            </Router>
+        <Routes />
     </AppState>
 </CascadingAuthenticationState>
+
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+
+<script src="_framework/blazor.web.js"></script>
+<script src="/lib/bootstrap/js/bootstrap.js"></script>
+
+<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+
+
+</body>
+
+</html>
 
 @code
 {
     [Parameter]
     public TokenProvider InitialState { get; set; }
 
-  
+    [Inject]
+    public IHttpContextAccessor HttpContextAccessor { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        var httpContext = HttpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            InitialState = new TokenProvider
+            {
+                XsrfToken = Antiforgery!.GetAndStoreTokens(httpContext)!.RequestToken!
+            };
+        }
+        else
+        {
+    //     throw new BadHttpRequestException("BlazorGPT not initalized properly fron the outside world"); 
+        }
+
         TokenProvider.XsrfToken = InitialState.XsrfToken;
 
         await base.OnInitializedAsync();
+
     }
 }

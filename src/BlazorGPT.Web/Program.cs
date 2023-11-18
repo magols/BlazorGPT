@@ -1,17 +1,22 @@
 using BlazorGPT;
 using BlazorGPT.Data;
 using BlazorGPT.Embeddings;
+using BlazorGPT.Pages;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
+using BlazorGPT.Web;
 using BlazorGPT.Web.Areas.Identity;
 using BlazorGPT.Web.Data;
 using BlazorGPT.Web.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using System.Diagnostics.Metrics;
+using BlazorGPT.Data.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +30,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 builder.Services.Configure<PipelineOptions>(
     builder.Configuration.GetSection("PipelineOptions")); ;
@@ -41,7 +47,6 @@ builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
-
 
 
 
@@ -96,11 +101,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapRazorPages();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(Conversation).Assembly);
+//app.MapBlazorHub();
+//app.MapFallbackToPage("/_Host");
 app.Run();
