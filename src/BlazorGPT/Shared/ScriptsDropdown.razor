@@ -1,4 +1,5 @@
 @using BlazorGPT.Data
+@using System.Security.Claims
 @if (Scripts != null)
 {
         <div class="mt-3">
@@ -17,15 +18,26 @@
 }
 @code {
 
-    [CascadingParameter(Name = "UserId")]
-    public string UserId { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    public string? UserId { get; set; } = null!;
 
     [Inject]
     public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
         await LoadScripts();
     }
 

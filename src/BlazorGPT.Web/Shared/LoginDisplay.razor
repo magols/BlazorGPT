@@ -1,22 +1,48 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using BlazorGPT.Web.Areas.Identity
 @inject NavigationManager Navigation
-@inject TokenProvider TokenProvider
+@inject NavigationManager NavigationManager
 
 <AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage/Index">
+        <NavLink href="Account/Manage">
             <RadzenIcon Icon="person" />
-        </a>
-        <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
+        </NavLink>
+
+        <form action="Account/Logout" method="post">
             <RadzenButton Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" class="m-3" type="submit">Logout</RadzenButton>
-            <input name="__RequestVerificationToken" type="hidden"
-                   value="@TokenProvider.XsrfToken">
+            <AntiforgeryToken />
+            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
         </form>
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a> 
-        <span class="me-5"></span>
-        <a href="Identity/Account/Login">Login</a>
+        
+        <NavLink class="pe-3" href="Account/Register">
+            Register
+        </NavLink>
+        <NavLink  href="Account/Login">
+             Login
+        </NavLink>
     </NotAuthorized>
 </AuthorizeView>
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

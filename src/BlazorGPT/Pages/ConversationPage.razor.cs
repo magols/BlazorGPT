@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
@@ -20,8 +22,10 @@ namespace BlazorGPT.Pages
             public string? Prompt { get; set; }
         }
 
-        [CascadingParameter(Name = "UserId")]
-        public string UserId { get; set; } = null!;
+        [CascadingParameter]
+        private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+        public string? UserId { get; set; } = null!;
 
         [Parameter]
         public Guid? ConversationId { get; set; }
@@ -79,6 +83,16 @@ namespace BlazorGPT.Pages
 
             protected override async Task OnInitializedAsync()
         {
+            if (AuthenticationState != null)
+            {
+                var authState = await AuthenticationState;
+                var user = authState?.User;
+                if (user?.Identity is not null && user.Identity.IsAuthenticated)
+                {
+                    UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                }
+            }
+
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
         }
 

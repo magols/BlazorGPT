@@ -1,11 +1,15 @@
 ﻿<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(ConversationPage).Assembly }" PreferExactMatches="@true">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(BlazorGptLayout)" />
+        
+
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(BlazorGptLayout)">
+            <NotAuthorized>
+                <RedirectToLogin/>
+            </NotAuthorized>
+             
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+
+   
     </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(BlazorGptLayout)">
-            <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
 </Router>

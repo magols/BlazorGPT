@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Security.Claims
 
 
 @inject NavigationManager NavigationManager
@@ -6,8 +7,10 @@
 
 @code {
 
-    [CascadingParameter(Name = "UserId")]
-    public string UserId { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    public string? UserId { get; set; } = null!;
 
     [Inject]
     public SampleDataSeeder SampleDataSeeder { get; set; }
@@ -24,6 +27,19 @@
         var alert = await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
     }
 
+    public async Task OnInitializedAsync()
+    {
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
+
+    }
 }
 
 <div>

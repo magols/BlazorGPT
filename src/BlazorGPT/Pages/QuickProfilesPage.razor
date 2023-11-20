@@ -1,5 +1,6 @@
 ﻿@page "/quickprofiles"
 @using BlazorGPT.Data
+@using System.Security.Claims
 @attribute [Authorize]
 
 <h3>Quick Profiles</h3>
@@ -72,6 +73,11 @@ EmptyText="No profiles yet :("
 
 @code {
 
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    public string? UserId { get; set; } = null!;
+
     [Inject]
     public QuickProfileRepository QuickProfileRepository { get; set; }
 
@@ -80,9 +86,6 @@ EmptyText="No profiles yet :("
 
 [Inject]
 public NotificationService NotificationService { get; set; }
-
-    [CascadingParameter(Name = "UserId")]
-    public string? UserId { get; set; }
 
     List<QuickProfile> _quickProfiles;
     private RadzenDataGrid<QuickProfile>? _grid;
@@ -93,6 +96,15 @@ public NotificationService NotificationService { get; set; }
 
     protected override async Task OnInitializedAsync() {
 
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
         await LoadProfiles();
     }
 

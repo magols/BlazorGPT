@@ -1,8 +1,5 @@
-﻿@using BlazorGPT.Web.Areas.Identity
-@using Microsoft.AspNetCore.Antiforgery
-@inject TokenProvider TokenProvider
+﻿@using System.Security.Claims
 @inject NavigationManager Navigation
-@inject IAntiforgery Antiforgery
 
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -27,16 +24,20 @@
     <link rel="stylesheet" href="/css/radzen-custom.css">
     <link href="css/site.css" rel="stylesheet" />
 
-    
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    <HeadOutlet @rendermode="@RenderModeForPage" />
+
 </head>
 
 <body class="d-flex flex-column h-100">
-<CascadingAuthenticationState>
-    <AppState>
-        <Routes />
-    </AppState>
-</CascadingAuthenticationState>
+@* <CascadingAuthenticationState> *@
+    
+    <CascadingValue Name="UserId" Value="UserId">
+
+    <Routes @rendermode="@RenderModeForPage"/>
+    </CascadingValue>
+
+
+@* </CascadingAuthenticationState> *@
 
 <div id="blazor-error-ui">
     <environment include="Staging,Production">
@@ -64,33 +65,36 @@
 
 @code
 {
-    [Parameter]
-    public TokenProvider InitialState { get; set; }
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
+        ? null
+        : RenderMode.InteractiveServer;
+
 
     [Inject]
     public IHttpContextAccessor HttpContextAccessor { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    public string? UserId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var httpContext = HttpContextAccessor.HttpContext;
-        if (httpContext != null)
+      
+        if (AuthenticationState != null)
         {
-            InitialState = new TokenProvider
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
             {
-                XsrfToken = Antiforgery!.GetAndStoreTokens(httpContext)!.RequestToken!
-            };
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
         }
-        else
-        {
-    //     throw new BadHttpRequestException("BlazorGPT not initalized properly fron the outside world"); 
-        }
-
-        TokenProvider.XsrfToken = InitialState.XsrfToken;
 
         await base.OnInitializedAsync();
-
     }
 }

@@ -1,7 +1,7 @@
 using BlazorGPT;
+using BlazorGPT.Components.Account;
 using BlazorGPT.Data;
 using BlazorGPT.Embeddings;
-using BlazorGPT.Pages;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web;
@@ -10,12 +10,10 @@ using BlazorGPT.Web.Data;
 using BlazorGPT.Web.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
-using System.Diagnostics.Metrics;
 using BlazorGPT.Data.Model;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,10 +22,27 @@ var connectionString = builder.Configuration.GetConnectionString("UserDB") ?? th
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddDefaultUI()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<IdentityUserAccessor>();
+builder.Services.AddScoped<IdentityRedirectManager>();
+builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = IdentityConstants.ApplicationScheme;
+        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+    })
+    .AddIdentityCookies();
+
+builder.Services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddSingleton<IEmailSender<IdentityUser>, IdentityNoOpEmailSender>();
+
 
 builder.Services.AddRazorPages();
 builder.Services.AddRazorComponents()
@@ -36,13 +51,11 @@ builder.Services.AddRazorComponents()
 builder.Services.Configure<PipelineOptions>(
     builder.Configuration.GetSection("PipelineOptions")); ;
 
-builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
+builder.Services.AddSingleton<IEmailSender, SendGridEmailSender>();
+builder.Services.AddSingleton<IEmailSender<IdentityUser>, IdentityNoOpEmailSender>();
+//builder.Services.AddSingleton<IEmailSender<IdentityUser>, SendGridIdentityEmailSender> ();
 
-
-builder.Services.AddScoped<UserState>();
-builder.Services.AddScoped<TokenProvider>();
-
+ 
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
@@ -101,8 +114,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAntiforgery();
 app.UseAuthentication();
+app.UseAntiforgery();
+
 app.UseAuthorization();
 app.MapControllers();
 app.MapRazorPages();
@@ -110,6 +124,7 @@ app.MapRazorPages();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(typeof(Conversation).Assembly);
-//app.MapBlazorHub();
-//app.MapFallbackToPage("/_Host");
+
+app.MapAdditionalIdentityEndpoints();
+
 app.Run();

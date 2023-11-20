@@ -1,4 +1,10 @@
-﻿@using System.Security.Claims
+﻿@* @using System.Security.Claims
+@using BlazorGPT.Components.Account
+@using Microsoft.AspNetCore.Identity
+@inject IdentityUserAccessor UserAccessor
+@inject UserManager<IdentityUser> UserManager
+
+
 @inject UserState UserState
 <CascadingValue Value="this" Name="AuthState">
     <CascadingValue Value="UserState" Name="UserState">
@@ -12,6 +18,8 @@
 
     //[Inject]
     //public AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    private IdentityUser user = default!;
+
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
@@ -21,9 +29,13 @@
 
     string? _userId;
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+       // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        _userId = user.Id;
         await GetClaimsPrincipalData();
         StateHasChanged();
     }
@@ -40,20 +52,15 @@
             if (user?.Identity is not null && user.Identity.IsAuthenticated)
             {
                 User = user;
-                await UserState.SetUser(User);
                 _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await UserState.SetUser(User);
             }
         }
 
     }
 
-    public bool IsAdmin => User.IsInRole("Admin");
-    public bool IsSalesAdmin => User.IsInRole("Sales");
-
-
-
     public ClaimsPrincipal User { get; set; } = new();
 
     private AuthenticationState? AuthState { get; set; }
 
-}
+} *@
