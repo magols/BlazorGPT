@@ -1,5 +1,6 @@
 ﻿using Azure.AI.OpenAI;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using ChatMessage = Azure.AI.OpenAI.ChatMessage;
 
 
 namespace BlazorGPT.Data.Model;
