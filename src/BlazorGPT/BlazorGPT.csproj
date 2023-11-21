@@ -68,6 +68,984 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Remove="Pipeline\wwwroot\css\material-dark-base.css" />
+    <None Remove="Pipeline\wwwroot\css\mdb.dark.min.css" />
+    <None Remove="Pipeline\wwwroot\css\radzen-custom.css" />
+    <None Remove="Pipeline\wwwroot\css\site.css" />
+    <None Remove="Pipeline\wwwroot\docs\images\applyscript.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\branched.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\chat.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\chat2.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\editscript.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\hasbranch.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\history.png" />
+    <None Remove="Pipeline\wwwroot\docs\images\QP.png" />
+    <None Remove="Pipeline\wwwroot\docs\README.md" />
+    <None Remove="Pipeline\wwwroot\docs\setup.md" />
+    <None Remove="Pipeline\wwwroot\fonts\MaterialIcons-Regular.woff" />
+    <None Remove="Pipeline\wwwroot\fonts\roboto-v20-latin-700.woff" />
+    <None Remove="Pipeline\wwwroot\fonts\roboto-v30-latin-300.woff" />
+    <None Remove="Pipeline\wwwroot\fonts\roboto-v30-latin-500.woff" />
+    <None Remove="Pipeline\wwwroot\fonts\roboto-v30-latin-regular.woff" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.min.css.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.js" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.js" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.js.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.min.js.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.js" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.js.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.min.js.map" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap-grid.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap-reboot.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap-utilities.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_floating-labels.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-check.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-control.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-range.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-select.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-text.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_input-group.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_labels.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\forms\_validation.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_clearfix.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_color-bg.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_colored-links.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_position.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_ratio.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_stacks.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_stretched-link.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_text-truncation.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_visually-hidden.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_vr.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_alert.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_backdrop.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_banner.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_border-radius.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_box-shadow.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_breakpoints.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_buttons.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_caret.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_clearfix.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_color-scheme.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_container.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_deprecate.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_forms.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_gradients.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_grid.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_image.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_list-group.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_lists.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_pagination.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_reset-text.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_resize.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_table-variants.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_text-truncate.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_transition.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_utilities.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_visually-hidden.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\utilities\_api.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\vendor\_rfs.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_accordion.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_alert.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_badge.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_breadcrumb.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_button-group.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_buttons.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_card.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_carousel.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_close.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_containers.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_dropdown.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_forms.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_functions.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_grid.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_helpers.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_images.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_list-group.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_maps.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_mixins.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_modal.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_nav.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_navbar.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_offcanvas.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_pagination.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_placeholders.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_popover.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_progress.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_reboot.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_root.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_spinners.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_tables.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_toasts.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_tooltip.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_transitions.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_type.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_utilities.scss" />
+    <None Remove="Pipeline\wwwroot\lib\bootstrap\scss\_variables.scss" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\all.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\all.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\brands.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\brands.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\fontawesome.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\fontawesome.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\regular.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\regular.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\solid.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\solid.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\svg-with-js.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\svg-with-js.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\v4-font-face.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\v4-font-face.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\v4-shims.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\v4-shims.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\v5-font-face.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\css\v5-font-face.min.css" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\all.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\all.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\brands.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\brands.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\conflict-detection.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\conflict-detection.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\fontawesome.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\fontawesome.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\regular.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\regular.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\solid.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\solid.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\v4-shims.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\js\v4-shims.min.js" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\sprites\brands.svg" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\sprites\regular.svg" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\sprites\solid.svg" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-brands-400.ttf" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-brands-400.woff2" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-regular-400.ttf" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-regular-400.woff2" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-solid-900.ttf" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-solid-900.woff2" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-v4compatibility.ttf" />
+    <None Remove="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-v4compatibility.woff2" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Include="Pipeline\wwwroot\css\material-dark-base.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\css\mdb.dark.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\css\radzen-custom.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\css\site.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\applyscript.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\branched.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\chat.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\chat2.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\editscript.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\hasbranch.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\history.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\images\QP.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\README.md">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\docs\setup.md">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\fonts\MaterialIcons-Regular.woff">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\fonts\roboto-v20-latin-700.woff">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\fonts\roboto-v30-latin-300.woff">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\fonts\roboto-v30-latin-500.woff">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\fonts\roboto-v30-latin-regular.woff">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-grid.rtl.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-reboot.rtl.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap-utilities.rtl.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\css\bootstrap.rtl.min.css.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.esm.min.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\js\bootstrap.min.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap-grid.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap-reboot.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap-utilities.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\bootstrap.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_floating-labels.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-check.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-control.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-range.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-select.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_form-text.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_input-group.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_labels.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\forms\_validation.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_clearfix.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_color-bg.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_colored-links.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_position.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_ratio.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_stacks.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_stretched-link.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_text-truncation.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_visually-hidden.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\helpers\_vr.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_alert.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_backdrop.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_banner.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_border-radius.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_box-shadow.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_breakpoints.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_buttons.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_caret.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_clearfix.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_color-scheme.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_container.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_deprecate.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_forms.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_gradients.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_grid.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_image.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_list-group.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_lists.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_pagination.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_reset-text.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_resize.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_table-variants.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_text-truncate.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_transition.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_utilities.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\mixins\_visually-hidden.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\utilities\_api.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\vendor\_rfs.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_accordion.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_alert.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_badge.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_breadcrumb.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_button-group.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_buttons.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_card.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_carousel.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_close.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_containers.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_dropdown.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_forms.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_functions.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_grid.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_helpers.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_images.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_list-group.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_maps.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_mixins.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_modal.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_nav.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_navbar.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_offcanvas.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_pagination.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_placeholders.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_popover.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_progress.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_reboot.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_root.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_spinners.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_tables.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_toasts.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_tooltip.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_transitions.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_type.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_utilities.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\bootstrap\scss\_variables.scss">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\all.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\all.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\brands.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\brands.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\fontawesome.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\fontawesome.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\regular.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\regular.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\solid.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\solid.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\svg-with-js.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\svg-with-js.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\v4-font-face.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\v4-font-face.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\v4-shims.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\v4-shims.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\v5-font-face.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\css\v5-font-face.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\all.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\all.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\brands.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\brands.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\conflict-detection.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\conflict-detection.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\fontawesome.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\fontawesome.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\regular.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\regular.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\solid.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\solid.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\v4-shims.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\js\v4-shims.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\sprites\brands.svg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\sprites\regular.svg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\sprites\solid.svg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-brands-400.ttf">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-brands-400.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-regular-400.ttf">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-regular-400.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-solid-900.ttf">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-solid-900.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-v4compatibility.ttf">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Pipeline\wwwroot\lib\font-awesome\webfonts\fa-v4compatibility.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
   <!--<ItemGroup>
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Web\Skills.Web.csproj" />
 

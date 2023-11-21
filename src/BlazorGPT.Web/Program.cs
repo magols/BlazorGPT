@@ -5,9 +5,7 @@ using BlazorGPT.Embeddings;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web;
-using BlazorGPT.Web.Areas.Identity;
 using BlazorGPT.Web.Data;
-using BlazorGPT.Web.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -51,10 +49,7 @@ builder.Services.AddRazorComponents()
 builder.Services.Configure<PipelineOptions>(
     builder.Configuration.GetSection("PipelineOptions")); ;
 
-builder.Services.AddSingleton<IEmailSender, SendGridEmailSender>();
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, IdentityNoOpEmailSender>();
-//builder.Services.AddSingleton<IEmailSender<IdentityUser>, SendGridIdentityEmailSender> ();
-
  
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();

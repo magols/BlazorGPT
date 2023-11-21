@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Radzen;
 
-namespace BlazorGPT.Web.Shared;
+namespace BlazorGPT.Components;
 
-public partial class EmptyLayout
+public partial class BlazorGptLayout
 {
     [Inject]
     protected IJSRuntime JSRuntime { get; set; }
@@ -28,16 +28,16 @@ public partial class EmptyLayout
     [Inject]
     public IResizeListener ResizeListener { get; set; }
 
-    private bool sidebarExpanded = false;
+    private bool sidebarExpanded = true;
 
     private bool _browserIsSmall = false;
 
-    void SidebarToggleClick()
-    {
+    async Task SidebarToggleClick() {
         sidebarExpanded = !sidebarExpanded;
     }
     void SidebarToggleClickMenu()
     {
+        Console.WriteLine("sidelick");
         if (_browserIsSmall)
         {
             sidebarExpanded = !sidebarExpanded;
@@ -49,8 +49,15 @@ public partial class EmptyLayout
         if (firstRender)
         {
             _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
+
+
         }
 
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task Cliekc()
+    {
+        Console.WriteLine("asasas");
     }
 }
