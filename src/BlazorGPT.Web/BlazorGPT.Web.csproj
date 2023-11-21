@@ -28,6 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.1" />
     <PackageReference Include="Radzen.Blazor" Version="4.21.3" />
     <PackageReference Include="Sendgrid" Version="9.28.1" />
+    <PackageReference Include="Toolbelt.Blazor.ViewTransition" Version="1.0.3" />
 
   </ItemGroup>
 
