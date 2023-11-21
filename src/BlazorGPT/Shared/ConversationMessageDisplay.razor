@@ -62,10 +62,17 @@
         else
         {
             <div class="m-0">
-                <div class="float-end align-bottom align-text-bottom">
-
-                    @if (Message.Role == ConversationRole.Assistant)
+                    
+                @if (string.IsNullOrEmpty(Message.Content))
+                {
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                }
+                @if (Message.Role == ConversationRole.Assistant)
                     {
+                        <div class="float-end align-bottom align-text-bottom">
+                        
                         @if (ShowBranches && Message.BranchedConversations.Any())
                         {
                             <div class="float-end">
@@ -81,10 +88,11 @@
 
                             </div>
                         }
-                        <br/>
+                        
+                        </div>
+
                     }
 
-                </div>
 
 
                 @if (EditMode)

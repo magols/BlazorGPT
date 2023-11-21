@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.2" />
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.113" />
     <PackageReference Include="Markdig" Version="0.33.0" />

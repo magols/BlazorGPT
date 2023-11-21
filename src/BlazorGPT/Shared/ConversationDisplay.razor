@@ -10,26 +10,34 @@
                 Message="Conversation.Messages.FirstOrDefault()"
                 MessagesCount="Conversation.Messages.Count()" 
                 ShowEditButton="Conversation.IsStarted()"
-                />
+            />
+                
+            int msgCount = 1;
             @foreach (var message in Conversation.Messages.Skip(1))
             {
                 var isLastMessage = Conversation.Messages.IndexOf(message) + 1 == Conversation.Messages.Count();
+                
+                IAnimation? animation = msgCount > 2 ? new FadeUpLeftAnimation() : null;
+                var delay = TimeSpan.FromSeconds(0.5 * (msgCount-2));
+                <Animate Animation="@animation" Duration="TimeSpan.FromSeconds(0.5)" Delay="delay">
 
-                <ConversationMessageDisplay
-                    ShowBranches="@ShowBranches"
-                    ShowEditButton="Conversation.IsStarted()"
-                    ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
-                    ShowCopyButton="CopyConversation.HasDelegate && Conversation.Id != null"
-                    OnRestartClicked="RestartConversation"
-                    OnCopyClicked="CopyConversation"
-                    Message="message">
-                </ConversationMessageDisplay>
+                    <ConversationMessageDisplay
+                        ShowBranches="@ShowBranches"
+                        ShowEditButton="Conversation.IsStarted()"
+                        ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
+                        ShowCopyButton="CopyConversation.HasDelegate && Conversation.Id != null"
+                        OnRestartClicked="RestartConversation"
+                        OnCopyClicked="CopyConversation"
+                        Message="message">
+                    </ConversationMessageDisplay>
+                    @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.SKPlan != null)
+                    {
 
-                @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.SKPlan != null)
-                {
+                        <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
+                    }
+                </Animate>
 
-                    <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
-                }
+                msgCount++;
             }
         }
 
