@@ -36,7 +36,6 @@ namespace BlazorGPT.Pipeline
             {
                 builder
                     .WithAzureOpenAIChatCompletionService(model ?? _options.Model, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
-                    .WithAzureTextCompletionService(_options.ModelTextCompletions, _kernelSettings.Endpoint, _kernelSettings.ApiKey)
                     .WithAzureOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.Endpoint, _kernelSettings.ApiKey);
             }
             else
@@ -44,7 +43,6 @@ namespace BlazorGPT.Pipeline
                 builder
                     .WithOpenAIChatCompletionService(model ?? _options.Model, _kernelSettings.ApiKey, _kernelSettings.OrgId)
                     .WithOpenAITextCompletionService(_options.ModelTextCompletions, _kernelSettings.ApiKey, _kernelSettings.OrgId)
-                    .WithOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _kernelSettings.ApiKey, _kernelSettings.OrgId)
                     .WithOpenAIImageGenerationService(_kernelSettings.ApiKey, _kernelSettings.OrgId);
             }
 

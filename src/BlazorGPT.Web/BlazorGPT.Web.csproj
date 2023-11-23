@@ -37,6 +37,10 @@
     <ProjectReference Include="..\BlazorGPT\BlazorGPT.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\state\" />
+  </ItemGroup>
+
   <Target Name="CopyPlugins" AfterTargets="Build">
     <ItemGroup>
       <PluginFiles Include="Plugins\**\*.*" />
