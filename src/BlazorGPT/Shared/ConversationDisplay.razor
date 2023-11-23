@@ -15,13 +15,7 @@
             int msgCount = 1;
             @foreach (var message in Conversation.Messages.Skip(1))
             {
-                var isLastMessage = Conversation.Messages.IndexOf(message) + 1 == Conversation.Messages.Count();
-                
-                IAnimation? animation = msgCount > 2 ? new FadeUpLeftAnimation() : null;
-                var delay = TimeSpan.FromSeconds(0.5 * (msgCount-2));
-                <Animate Animation="@animation" Duration="TimeSpan.FromSeconds(0.5)" Delay="delay">
-
-                    <ConversationMessageDisplay
+                       <ConversationMessageDisplay
                         ShowBranches="@ShowBranches"
                         ShowEditButton="Conversation.IsStarted()"
                         ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
@@ -35,7 +29,7 @@
 
                         <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
                     }
-                </Animate>
+               
 
                 msgCount++;
             }
