@@ -24,6 +24,9 @@ namespace BlazorGPT.Pages
         }
 
         [Parameter]
+        public string? NewDestinationPrefix { get; set; }
+
+        [Parameter]
         public string? Class { get; set; }
 
         [Parameter]
@@ -370,8 +373,9 @@ namespace BlazorGPT.Pages
 
                 if (isNew)
                 {
+                   
                     NavigationManager.NavigateTo(
-                        BotMode ? "/bot/" + Conversation.Id
+                        BotMode ? NewDestinationPrefix + "/" + Conversation.Id
                                 : "/conversation/" + Conversation.Id, 
                         false);
                 }
