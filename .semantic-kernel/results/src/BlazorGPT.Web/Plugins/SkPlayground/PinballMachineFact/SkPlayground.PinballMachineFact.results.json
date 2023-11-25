@@ -1,8 +1,0 @@
-{
-    "version": "1.0",
-    "skillName": "SkPlayground",
-    "functionName": "PinballMachineFact",
-    "description": "Tells some facts about a named pinball pachine",
-    "filePath": "src\\BlazorGPT.Web\\Plugins\\SkPlayground\\PinballMachineFact\\skprompt.txt",
-    "results": []
-}
