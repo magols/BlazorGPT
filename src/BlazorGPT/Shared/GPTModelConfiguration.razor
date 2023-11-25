@@ -1,42 +1,50 @@
 @using BlazorGPT.Pipeline
 @using Microsoft.Extensions.Options
 @inject IOptions<PipelineOptions> PipelineOptions
-<RadzenButton Icon="menu_open" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Model settings" Click="Toggle" Class="@Class"/>
-@if (Toggled)
-{
-    <div class="border border-secondary">
-        <div class="row">
-            <div class="col-3">
-                <RadzenText Class="mt-3">Model</RadzenText>
-            </div>
-            <div class="col-9">
-                <RadzenDropDown TValue="string" Style="font-size: small;" Disabled="!ModelSelectEnabled!.Value" 
-                                TValue="string" Data=@models @bind-Value=@SelectedModel/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-3">
-                <RadzenText>Max tokens</RadzenText>
 
+@if (Visible)
+{
+    <RadzenButton Icon="menu_open" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Model settings" Click="Toggle" Class="@Class" />
+    @if (Toggled)
+    {
+        <div class="border border-secondary">
+            <div class="row">
+                <div class="col-3">
+                    <RadzenText Class="mt-3">Model</RadzenText>
+                </div>
+                <div class="col-9">
+                    <RadzenDropDown TValue="string" Style="font-size: small;" Disabled="!ModelSelectEnabled!.Value"
+                                    TValue="string" Data=@models @bind-Value=@SelectedModel />
+                </div>
             </div>
-            <div class="col-9">
-                <RadzenNumeric TValue="int"  @bind-Value="@MaxTokens" Max="10000" Step="1"></RadzenNumeric>
+            <div class="row">
+                <div class="col-3">
+                    <RadzenText>Max tokens</RadzenText>
+
+                </div>
+                <div class="col-9">
+                    <RadzenNumeric TValue="int" @bind-Value="@MaxTokens" Max="10000" Step="1"></RadzenNumeric>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <RadzenText>Temperature</RadzenText>
+                </div>
+                <div class="col-1">
+                    <RadzenText>@Temperature</RadzenText>
+                </div>
+                <div class="col-8">
+                    <RadzenSlider TValue="float" @bind-Value="@Temperature" Min="0" Max="1" Step="0.1" Class="me-3" />
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-3">
-                <RadzenText>Temperature</RadzenText>
-            </div>
-            <div class="col-1">
-                <RadzenText>@Temperature</RadzenText>
-            </div>
-            <div class="col-8">
-                <RadzenSlider TValue="float" @bind-Value="@Temperature" Min="0" Max="1" Step="0.1" Class="me-3"/>
-            </div>
-        </div>
-    </div>
+    }
 }
+
 @code {
+
+    [Parameter]
+    public bool Visible { get; set; } = true;
 
     [Parameter]
     public bool? ModelSelectEnabled { get; set; } = true;

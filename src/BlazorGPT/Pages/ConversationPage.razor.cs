@@ -23,9 +23,22 @@ namespace BlazorGPT.Pages
             public string? Prompt { get; set; }
         }
 
+        [Parameter]
+        public string? Class { get; set; }
+
+        [Parameter]
+        public string? Style { get; set; }
+        [Parameter]
+        public RenderFragment? ChildContent{ get; set; }
+
         [CascadingParameter]
         private Task<AuthenticationState>? AuthenticationState { get; set; }
 
+        [Parameter]
+        [SupplyParameterFromQuery]
+        public bool BotMode { get; set; }
+
+        [Parameter]
         public string? UserId { get; set; } = null!;
 
         [Parameter]
@@ -33,6 +46,7 @@ namespace BlazorGPT.Pages
 
         [Parameter]
         public Guid? MessageId { get; set; }
+
         PromptModel Model = new();
 
         [Inject]
@@ -82,9 +96,9 @@ namespace BlazorGPT.Pages
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         
 
-            protected override async Task OnInitializedAsync()
+         protected override async Task OnInitializedAsync()
         {
-            if (AuthenticationState != null)
+            if (UserId == null && AuthenticationState != null)
             {
                 var authState = await AuthenticationState;
                 var user = authState?.User;
@@ -93,6 +107,7 @@ namespace BlazorGPT.Pages
                     UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
                 }
             }
+            
 
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
         }
@@ -105,9 +120,10 @@ namespace BlazorGPT.Pages
         protected override async Task OnParametersSetAsync()
         {
             await SetupConversation();
+
         }
 
-   
+
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -117,25 +133,28 @@ namespace BlazorGPT.Pages
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
 
 
-          initialControlHeight = _browserIsSmall ? 290 : 290;
-          controlHeight = initialControlHeight;
+                initialControlHeight = _browserIsSmall ? 290 : 290;
+
+                initialControlHeight = BotMode ? 150 : initialControlHeight;
+
+                controlHeight = initialControlHeight;
 
 
-            await Interop.SetupCopyButtons();
+                await Interop.SetupCopyButtons();
 
-                await Interop.ScrollToBottom("message-pane");
 
                 _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
-
-
             }
 
-            if (selectedTabIndex == 0)
+            if (BotMode || selectedTabIndex == 0)
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
+
+            await Interop.ScrollToBottom("message-pane");
+
         }
-        
+
         async Task SetupConversation()
         {
             if (ConversationId != null)
@@ -144,6 +163,10 @@ namespace BlazorGPT.Pages
                 var loaded  = await ConversationsRepository.GetConversation(ConversationId);
                 if (loaded != null)
                 {
+                    if (loaded.UserId != UserId)
+                    {
+                        throw new UnauthorizedAccessException();
+                    }
                     if (loaded.BranchedFromMessageId != null)
                     {
                         var hive = ConversationsRepository.GetMergedBranchRootConversation((Guid)loaded.BranchedFromMessageId);
@@ -200,7 +223,7 @@ namespace BlazorGPT.Pages
 
             if (!Conversation.HasStarted())
             {
-                var selected = _profileSelectorStart.SelectedProfiles;
+                var selected = _profileSelectorStart != null ? _profileSelectorStart.SelectedProfiles : new List<QuickProfile>();
                 string startMsg = string.Join(" ", selected.Select(p => p.Content));
                 if (!string.IsNullOrEmpty(startMsg))
                     startMsg += "\n\n";
@@ -228,25 +251,24 @@ namespace BlazorGPT.Pages
                     inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>(),
                     _cancellationTokenSource.Token);
 
-              
-                    await Send();
-                
+
+                await Send();
+
 
                 if (Conversation.InitStage())
-            {
-                var selectedEnd = _profileSelectorEnd.SelectedProfiles;
-                if (selectedEnd.Any())
                 {
-                    foreach (var profile in selectedEnd)
-                    { 
-                        Conversation.AddMessage(new ConversationMessage("user", profile.Content));
-                        
+                    var selectedEnd = _profileSelectorEnd != null
+                        ? _profileSelectorEnd.SelectedProfiles
+                        : new List<QuickProfile>();
+                    if (selectedEnd.Any())
+                        foreach (var profile in selectedEnd)
+                        {
+                            Conversation.AddMessage(new ConversationMessage("user", profile.Content));
 
-                        StateHasChanged();
-                        await Send();
 
-                    }
-                    }
+                            StateHasChanged();
+                            await Send();
+                        }
                 }
             }
             catch (InvalidOperationException ioe)
@@ -309,10 +331,13 @@ namespace BlazorGPT.Pages
                     Conversation.Model = _modelConfiguration!.SelectedModel!;
                     isNew = true;
 
-                    foreach (var p in _profileSelectorStart.SelectedProfiles)
+                    if (_profileSelectorStart != null)
                     {
-                        ctx.Attach(p);
-                        Conversation.QuickProfiles.Add(p);
+                        foreach (var p in _profileSelectorStart.SelectedProfiles)
+                        {
+                            ctx.Attach(p);
+                            Conversation.QuickProfiles.Add(p);
+                        }
                     }
 
                     ctx.Conversations.Add(Conversation);
@@ -336,16 +361,19 @@ namespace BlazorGPT.Pages
                 Conversation =
                     await InterceptorHandler.Receive(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors);
 
-                if (wasSummarized)
+                if (!BotMode  && wasSummarized)
                 {
                     await _conversations.LoadConversations();
                     StateHasChanged();
                 }
-
+                
 
                 if (isNew)
                 {
-                    NavigationManager.NavigateTo("/conversation/" + Conversation.Id, false);
+                    NavigationManager.NavigateTo(
+                        BotMode ? "/bot/" + Conversation.Id
+                                : "/conversation/" + Conversation.Id, 
+                        false);
                 }
 
                 StateHasChanged();
@@ -517,9 +545,9 @@ namespace BlazorGPT.Pages
 
 
         private RadzenTextArea? _promptField2;
-        private QuickProfileSelector _profileSelectorStart;
+        private QuickProfileSelector? _profileSelectorStart;
 
-        private QuickProfileSelector _profileSelectorEnd;
+        private QuickProfileSelector? _profileSelectorEnd;
         private bool useState;
         private InterceptorSelector? inteceptorSelector;
         

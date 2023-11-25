@@ -98,37 +98,50 @@
 }
 
 <SectionContent SectionName="heading">
-
-    <div class="m-0 p-0">
-        <a href="#" class="rz-link" @onclick="GoToNew">
-            <span class="material-symbols-outlined">
-                add_circle
-            </span>
-        </a>
+    @if (!BotMode)
+    {
+        <div class="m-0 p-0">
+            <a href="#" class="rz-link" @onclick="GoToNew">
+                <span class="material-symbols-outlined">
+                    add_circle
+                </span>
+            </a>
             @Conversation.Summary
-    </div>
-
+        </div>
+    }
 </SectionContent>
 
-<div class="container-fluid">
-    <div class="row" style="">
+<!-- conv page start -->
+<div class="container-fluid demodemo @Class" style="@Style">
+    <div class="row">
         <div class="col">
+            
+            @if (!Conversation.IsStarted())
+            {
+                @ChildContent
+            }
             @if (Conversation != null)
             {
-                <ConversationDisplay Conversation="Conversation"
+                <ConversationDisplay BotMode="BotMode"
+                                     Conversation="Conversation"
                                      ShowBranches="true"
                                      RestartConversation="RestartConversation"
                                      CopyConversation="CopyConversation"
-                                     Style="@ConversationDisplayStyle()" />
+                                     Style="@ConversationDisplayStyle()"/>
 
             }
-           
-           
-        </div>
-        <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">
-            <Conversations @ref="_conversations"></Conversations>
+
+
 
         </div>
+        @if (!BotMode)
+        {
+            <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">
+                <Conversations @ref="_conversations"></Conversations>
+
+            </div>
+        }
+ 
     </div>
     
  
@@ -136,93 +149,126 @@
 
         <div id="control" class="col mt-0 mb-0 pb-0 pt-0 me-3">
           
+            @if (BotMode)
+            {
+                <EditForm Model="@Model" OnValidSubmit="@SendConversation">
+                    <div id="message-box" @onkeydown="async obj => await OnPromptKeyUp(obj)"
+                         @onkeydown:preventDefault="@preventDefaultKey">
+
+                        <RadzenTextArea @ref="_promptField2"
+                                        @bind-value="@Model.Prompt"
+                                        class="form-control"
+                                        Rows="2"
+                                        Disabled="IsBusy">
+                        </RadzenTextArea>
+                    </div>
+                    <div class="mt-4">
+                        <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
+
+                        <GPTModelConfiguration Visible="false"  Class="m-2 border-3" @ref="_modelConfiguration"
+                                               ModelSelectEnabled="@(Conversation.Id == null)"
+                                               PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
+                                               OnResize="@ModelConfigResized" />
+                    </div>
+
+                    <span class="float-end mt-2 mb-0">
+
+                        <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
+
+                        <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
+
+                    </span>
+
+                    @* <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton> *@
+
+                </EditForm>
+            } 
+            else {
             
-            <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
-                <Tabs>
-                    <RadzenTabsItem Text="Conversation" class="m-0 p-0">
+                <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
+                    <Tabs>
+                        <RadzenTabsItem Text="Conversation" class="m-0 p-0">
 
-                        <EditForm Model="@Model" OnValidSubmit="@SendConversation">
-                            <QuickProfileSelector @ref="_profileSelectorStart" InsertAt="InsertAt.Before" ShowLegend="true" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
+                            <EditForm Model="@Model" OnValidSubmit="@SendConversation">
+                                <QuickProfileSelector @ref="_profileSelectorStart" InsertAt="InsertAt.Before" ShowLegend="true" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
 
-                            <div id="message-box"  @onkeydown="async obj => await OnPromptKeyUp(obj)"
-                                 @onkeydown:preventDefault="@preventDefaultKey">
+                                <div id="message-box"  @onkeydown="async obj => await OnPromptKeyUp(obj)"
+                                     @onkeydown:preventDefault="@preventDefaultKey">
 
-                                <RadzenTextArea   @ref="_promptField2"
-                                                @bind-value="@Model.Prompt" 
+                                    <RadzenTextArea   @ref="_promptField2"
+                                                      @bind-value="@Model.Prompt" 
                                             
-                                                class="form-control" 
-                                                Rows="2"
+                                                      class="form-control" 
+                                                      Rows="2"
                                                 
-                                                Disabled="IsBusy">
-                                </RadzenTextArea>
-                            </div>
-
-
-                            <RadzenButton Visible="ConversationId != null" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
-                            <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
-
-
-                            <div class="mt-4">
-                                <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-
-                                <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
-                                                       ModelSelectEnabled="@(Conversation.Id == null)"
-                                                       PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
-                                                       OnResize="@ModelConfigResized" />
-
-                                <InterceptorSelector @ref="inteceptorSelector" Class="m-1 me-3 p-1 float-end" />
-
-                            </div>
-
-                            <span class="float-end mt-2 mb-0">
-
-                                <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
-
-                                <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
-
-                            </span>
-
-                            <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
-
-                        </EditForm>
-                    </RadzenTabsItem>
-                    <RadzenTabsItem Text="Scripts">
-                        @if (ScriptsDdn?.Scripts.Count() == 0)
-                        {
-                            <div>
-                                <RadzenText>
-                                    You do not have any scripts.
-                                    <RadzenLink Path="/scripts"> Create one here</RadzenLink>.
-                                </RadzenText>
-                            </div>
-                        }
-                        else
-                        {
-                            <div>
-                                <div>
-                                    <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
+                                                      Disabled="IsBusy">
+                                    </RadzenTextArea>
                                 </div>
 
-                            </div>
 
-                            <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
-                            <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
-                        }
-                    </RadzenTabsItem>
-                    <RadzenTabsItem Text="Tools">
-                        <RadzenButton class="" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
+                                <RadzenButton Visible="ConversationId != null" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
+                                <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
 
-                    </RadzenTabsItem>
-                </Tabs>
-            </RadzenTabs>
+
+                                <div class="mt-4">
+                                    <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
+
+                                    <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
+                                                           ModelSelectEnabled="@(Conversation.Id == null)"
+                                                           PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
+                                                           OnResize="@ModelConfigResized" />
+
+                                    <InterceptorSelector @ref="inteceptorSelector" Class="m-1 me-3 p-1 float-end" />
+
+                                </div>
+
+                                <span class="float-end mt-2 mb-0">
+
+                                    <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
+
+                                    <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
+
+                                </span>
+
+                                <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
+
+                            </EditForm>
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Scripts">
+                            @if (ScriptsDdn?.Scripts.Count() == 0)
+                            {
+                                <div>
+                                    <RadzenText>
+                                        You do not have any scripts.
+                                        <RadzenLink Path="/scripts"> Create one here</RadzenLink>.
+                                    </RadzenText>
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    <div>
+                                        <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
+                                    </div>
+
+                                </div>
+
+                                <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
+                                <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
+                            }
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Tools">
+                            <RadzenButton class="" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
+
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            }
         </div>
-        <div class="col-sm-4 d-none d-lg-block">
-            
-
-        </div>
-        
+        <div class="col-sm-4 d-none d-lg-block"></div>
+    
   
       
     </div>
 
-    </div>
+</div>

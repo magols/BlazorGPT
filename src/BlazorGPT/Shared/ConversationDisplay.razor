@@ -5,21 +5,25 @@
         <BranchedFrom Conversation="@Conversation"/>
         @if (Conversation.Messages.Any())
         {
-            <!-- system prompt -->
-            <ConversationMessageDisplay
-                Message="Conversation.Messages.FirstOrDefault()"
-                MessagesCount="Conversation.Messages.Count()" 
-                ShowEditButton="Conversation.IsStarted()"
-            />
+            if (!BotMode)
+            {
+                <!-- system prompt -->
+                <ConversationMessageDisplay
+                    Message="Conversation.Messages.FirstOrDefault()"
+                    MessagesCount="Conversation.Messages.Count()" 
+                    ShowEditButton="Conversation.IsStarted()"
+                />
+            }
+
                 
             int msgCount = 1;
             @foreach (var message in Conversation.Messages.Skip(1))
             {
                        <ConversationMessageDisplay
                         ShowBranches="@ShowBranches"
-                        ShowEditButton="Conversation.IsStarted()"
-                        ShowRestartButton="RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
-                        ShowCopyButton="CopyConversation.HasDelegate && Conversation.Id != null"
+                        ShowEditButton="!BotMode && Conversation.IsStarted()"
+                        ShowRestartButton="!BotMode && RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
+                        ShowCopyButton="!BotMode && CopyConversation.HasDelegate && Conversation.Id != null"
                         OnRestartClicked="RestartConversation"
                         OnCopyClicked="CopyConversation"
                         Message="message">
@@ -41,6 +45,9 @@
 {
     [Inject]
     public ConversationInterop? Interop { get; set; }
+
+    [Parameter]
+    public bool BotMode { get; set; }
 
     [Parameter]
     public Conversation? Conversation { get; set; }

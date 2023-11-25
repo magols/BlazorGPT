@@ -1,0 +1,57 @@
+﻿@page "/bot/{ConversationId:guid?}"
+@layout BlankLayout
+
+
+<div class="row">
+    <div class="col-12 col-md-6 mx-auto">
+
+        @if(ConversationId != null)
+        {
+            <div class="float-end me-5"><a href="/bot">New</a></div>
+        }
+    </div>
+</div>
+<div class="col-12 col-md-6 mx-auto">
+
+    @if (ConversationId == null)
+    {
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Welcome to the machine</h5>
+                <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.</p>
+            </div>
+        </div>
+    }
+
+
+    <ConversationPage Style="z-index: 50;" UserId="@UserId" BotMode="true" ConversationId="@ConversationId" MessageId="@MessageId">
+
+    </ConversationPage>
+
+
+
+</div>
+
+
+
+@code
+{
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [Parameter]
+    public Guid? ConversationId { get; set; }
+
+    [Parameter]
+    public Guid? MessageId { get; set; }
+
+    string? UserId { get; set; }
+
+    [Inject]
+    public IConfiguration? Configuration { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserId = Configuration["BotUserId"];
+    }
+}
