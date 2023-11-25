@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,8 +39,15 @@ builder.Services.AddIdentityCore<IdentityUser>(options => options.SignIn.Require
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<IEmailSender<IdentityUser>, IdentityNoOpEmailSender>();
-
+if (!string.IsNullOrEmpty( builder.Configuration["SendGridApiKey"]))
+{
+    builder.Services.AddSingleton<IEmailSender, SendGridEmailSender>();
+    builder.Services.AddSingleton<IEmailSender<IdentityUser>, SendGridIdentityEmailSender>();
+}
+else
+{
+    builder.Services.AddSingleton<IEmailSender<IdentityUser>, IdentityNoOpEmailSender>();
+}
 
 builder.Services.AddRazorPages();
 builder.Services.AddRazorComponents()
@@ -47,8 +55,6 @@ builder.Services.AddRazorComponents()
 
 builder.Services.Configure<PipelineOptions>(
     builder.Configuration.GetSection("PipelineOptions")); ;
-
-builder.Services.AddSingleton<IEmailSender<IdentityUser>, IdentityNoOpEmailSender>();
  
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
