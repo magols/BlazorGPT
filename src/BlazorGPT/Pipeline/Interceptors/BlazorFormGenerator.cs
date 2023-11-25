@@ -49,9 +49,6 @@ public class BlazorFormGenerator : InterceptorBase, IInterceptor
         var ctx = kernel.CreateNewContext();
         ctx.Variables["input"] = ask;
 
-        var actionPlanner = new ActionPlanner(kernel, new ActionPlannerConfig());
-        var actionPlan = await actionPlanner.CreatePlanAsync(ask);
-
         var memory = await _kernelService.GetMemoryStore();
         var planner = new SequentialPlanner(kernel,
             new SequentialPlannerConfig

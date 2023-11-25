@@ -1,6 +1,7 @@
 ﻿using BlazorGPT.Pipeline.Interceptors;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.AI;
 
 namespace BlazorGPT.Pipeline;
 
@@ -35,6 +36,7 @@ public class ChatWrapper
 
     public async Task<Conversation> SendWithPipeline(IKernel kernel,
         Conversation conversation,
+        ChatRequestSettings? requestSettings = default,
         Func<string, Task<string>>? callback = null,
         IEnumerable<QuickProfile>? quickProfiles = null,
         IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
@@ -48,7 +50,7 @@ public class ChatWrapper
         if (interceptors.Any())
             conversation = await _interceptorHandler.Send(kernel, conversation, interceptors, cancellationToken);
 
-        conversation = await Send(kernel, conversation, profiles, callback, cancellationToken);
+        conversation = await Send(kernel, requestSettings, conversation, profiles, callback, cancellationToken);
 
         conversation = await _quickProfileHandler.Receive(kernel, this, conversation,
             profiles.Where(p => p.InsertAt == InsertAt.After));
@@ -60,6 +62,7 @@ public class ChatWrapper
     }
 
     public async Task<Conversation> Send(IKernel kernel,
+        AIRequestSettings requestSettings,
         Conversation conversation,
         IEnumerable<QuickProfile> profiles, Func<string, Task<string>>? callback = null,
         CancellationToken cancellationToken = default)
@@ -69,7 +72,7 @@ public class ChatWrapper
         
         var conversationMessage = new ConversationMessage(new ChatMessage("assistant", ""));
         conversation.AddMessage(conversationMessage);
-        await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, callback, cancellationToken);
+        await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, requestSettings, callback, cancellationToken);
 
         await using var ctx = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
@@ -104,8 +107,14 @@ public class ChatWrapper
         return conversation;
     }
 
+    public async Task<Conversation> Send(IKernel kernel, AIRequestSettings requestSettings, Conversation conversation)
+    {
+        return await Send(kernel, requestSettings, conversation, Array.Empty<QuickProfile>());
+    }
+
     public async Task<Conversation> Send(IKernel kernel, Conversation conversation)
     {
-        return await Send(kernel, conversation, Array.Empty<QuickProfile>());
+
+        return await Send(kernel,  new ChatRequestSettings(), conversation, Array.Empty<QuickProfile>());
     }
 }

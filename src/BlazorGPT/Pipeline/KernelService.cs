@@ -75,6 +75,7 @@ public class KernelService
 
     public async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel,
         Conversation conversation,
+        AIRequestSettings requestSettings,
         Func<string, Task<string>> OnStreamCompletion,
         CancellationToken cancellationToken)
     {
@@ -92,38 +93,27 @@ public class KernelService
             chatHistory.AddMessage(role, message.Content);
         }
 
-        return await ChatCompletionAsStreamAsync(kernel, chatHistory, conversation, OnStreamCompletion,
+        return await ChatCompletionAsStreamAsync(kernel, chatHistory, conversation, requestSettings, OnStreamCompletion,
             cancellationToken);
     }
 
     private async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel,
         ChatHistory chatHistory,
         Conversation conversation,
+        AIRequestSettings requestSettings,
         Func<string, Task<string>> onStreamCompletion, CancellationToken cancellationToken)
     {
         var chatCompletion = kernel.GetService<IChatCompletion>();
         var fullMessage = string.Empty;
 
-        // todo: get chat request parameters from settings
-        var chatRequestSettings = new AIRequestSettings
-        {
-            ExtensionData = new Dictionary<string, object>
-            {
-                { "MaxTokens", 2500 },
-                { "Temperature", 0.0 },
-                { "TopP", 1 },
-                { "FrequencyPenalty", 0.0 },
-                { "PresencePenalty", 0.0 },
-                { "StopSequences", new[] { "Dragons be here" } }
-            }
-        };
+
 
 
         List<IAsyncEnumerable<string>> resultTasks = new();
         var currentResult = 0;
 
         await foreach (var completionResult in chatCompletion.GetStreamingChatCompletionsAsync(chatHistory,
-                           chatRequestSettings, cancellationToken))
+                           requestSettings, cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {

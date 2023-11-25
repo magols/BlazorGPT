@@ -109,7 +109,7 @@ Text selected:
                 StateHasChanged();
 
                 // Conversation =
-                await Chat.SendWithPipeline(kernel, Conversation, OnStreamCompletion);
+                await Chat.SendWithPipeline(kernel, Conversation, callback: OnStreamCompletion);
                 StateHasChanged();
 
             }

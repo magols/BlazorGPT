@@ -4,8 +4,6 @@ namespace BlazorGPT.Pipeline;
 
 public class PipelineOptions
 {
-
- 
     public string ServiceType { get; set; } = string.Empty;
 
  
@@ -21,6 +19,9 @@ public class PipelineOptions
     public string ModelEmbeddings { get; set; }
     public string ModelTextCompletions { get; set; }
     public string[] Models { get; set; }
+
+    public int MaxTokens { get; set; }
+
     public string[]? EnabledInterceptors { get; set; }
     public string[]? PreSelectedInterceptors { get; set; }
 

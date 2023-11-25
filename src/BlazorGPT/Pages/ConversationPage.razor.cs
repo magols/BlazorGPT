@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.AI;
 using Radzen;
 using Radzen.Blazor;
 
@@ -238,14 +239,13 @@ namespace BlazorGPT.Pages
                 {
                     foreach (var profile in selectedEnd)
                     { 
-                        Console.WriteLine("QP " + profile.Content);
                         Conversation.AddMessage(new ConversationMessage("user", profile.Content));
                         
 
                         StateHasChanged();
                         await Send();
 
-                        }
+                    }
                     }
                 }
             }
@@ -285,8 +285,15 @@ namespace BlazorGPT.Pages
                     Conversation.AddMessage("assistant", "");
 
                     StateHasChanged();
+
+
+                    var chatRequestSettings = new ChatRequestSettings();
+                    chatRequestSettings.ExtensionData["MaxTokens"] = _modelConfiguration!.MaxTokens;
+                    chatRequestSettings.ExtensionData["Temperature"] = _modelConfiguration!.Temperature;
+
+
                     Conversation = await
-                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
+                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, chatRequestSettings, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
 
                 }
 
