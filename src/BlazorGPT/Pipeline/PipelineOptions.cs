@@ -1,7 +1,22 @@
-﻿namespace BlazorGPT.Pipeline;
+﻿using System.Text.Json.Serialization;
+
+namespace BlazorGPT.Pipeline;
 
 public class PipelineOptions
 {
+
+ 
+    public string ServiceType { get; set; } = string.Empty;
+
+ 
+    public string Endpoint { get; set; } = string.Empty;
+
+ 
+    public string ApiKey { get; set; } = string.Empty;
+
+ 
+    public string OrgId { get; set; } = string.Empty;
+
     public string Model { get; set; }
     public string ModelEmbeddings { get; set; }
     public string ModelTextCompletions { get; set; }
