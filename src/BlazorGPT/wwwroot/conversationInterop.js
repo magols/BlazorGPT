@@ -110,6 +110,10 @@ export function getWindowByStateTypeAndSubId(stateType, stateSubId) {
 }
 export function getWindowByStateTypeAndSubIdAndId(stateType, stateSubId, stateId) {
     var winName = stateType + stateId
+}
 
-
+export function setupFileArea() {
+    document.getElementById('upload-button').addEventListener('click', function () {
+        document.getElementById('file-input').click();
+    });
 }

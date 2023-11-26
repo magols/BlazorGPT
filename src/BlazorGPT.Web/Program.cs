@@ -1,5 +1,6 @@
 using BlazorGPT;
 using BlazorGPT.Components.Account;
+using BlazorGPT.Components.FileUpload;
 using BlazorGPT.Data;
 using BlazorGPT.Embeddings;
 using BlazorGPT.Pipeline;
@@ -61,9 +62,8 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
-
-
 builder.Services.AddScoped<ConversationInterop>();
+
 builder.Services.AddMediaQueryService();
 builder.Services.AddScoped<IResizeListener, ResizeListener>();
 

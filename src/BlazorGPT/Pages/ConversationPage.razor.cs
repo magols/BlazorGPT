@@ -189,12 +189,7 @@ namespace BlazorGPT.Pages
             }
             else
             {
-                Conversation = new Conversation
-                {
-                    Model = !string.IsNullOrEmpty(_modelConfiguration?.SelectedModel) ?_modelConfiguration!.SelectedModel: PipelineOptions.Value.Model!,
-                    UserId = UserId
-                };
-                Conversation.AddMessage(new ConversationMessage("system", "You are a helpful assistant."));
+                Conversation = CreateDefaultConversation();
             }
             StateHasChanged();
         } 
@@ -583,5 +578,59 @@ namespace BlazorGPT.Pages
 
         }
 
+        private Conversation CreateDefaultConversation()
+        {
+            var c = new Conversation
+            {
+                Model = !string.IsNullOrEmpty(_modelConfiguration?.SelectedModel) ? _modelConfiguration!.SelectedModel : PipelineOptions.Value.Model!,
+                UserId = UserId
+            };
+            c.AddMessage(new ConversationMessage("system", "You are a helpful assistant."));
+
+            return c;
+        }
+
+        //private async Task FileAreaSynced(string folder, string filename)
+        //{
+
+        //    if (Conversation.Id == null)
+        //    {
+        //       Conversation = CreateDefaultConversation();
+        //       Conversation.Id = Guid.Parse(folder); 
+        //    }
+
+        //    await ConversationsRepository.UpdateConversation(Conversation);
+
+        //    NavigationManager.NavigateTo(
+        //        BotMode ? NewDestinationPrefix + "/" + Conversation.Id
+        //            : "/conversation/" + Conversation.Id,
+        //        false);
+        //}
+
+        private async Task FileAreaSynced(string folderId, IEnumerable<string> files)
+        {
+            Conversation.FileUrls = files.ToList();
+
+            bool uploadIsCreatingNewConveration = Conversation.Id == null;
+            if (uploadIsCreatingNewConveration)
+            {
+                Conversation = CreateDefaultConversation();
+                Conversation.Id = Guid.Parse(folderId);
+                await ConversationsRepository.SaveConversation(Conversation);
+            }
+            else
+            {
+                await ConversationsRepository.UpdateConversation(Conversation);
+            }
+
+            if (uploadIsCreatingNewConveration)
+            {
+                NavigationManager.NavigateTo(
+                    BotMode ? NewDestinationPrefix + "/" + Conversation.Id
+                        : "/conversation/" + Conversation.Id,
+                    false);
+            }
+
+        }
     }
 }

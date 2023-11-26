@@ -7,7 +7,9 @@
 
         @if(ConversationId != null)
         {
-            <div class="float-end me-5"><a href="/bot">New</a></div>
+            <div class="float-end me-5">
+                <NavLink href="/bot">New</NavLink>
+            </div>
         }
     </div>
 </div>
@@ -23,7 +25,6 @@
         </div>
     }
 
-
     <ConversationPage Style="z-index: 50;" 
                       UserId="@UserId"
                       BotMode="true"
@@ -33,11 +34,7 @@
 
     </ConversationPage>
 
-
-
 </div>
-
-
 
 @code
 {
@@ -55,8 +52,12 @@
     [Inject]
     public IConfiguration? Configuration { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    public NavigationManager? NavigationManager { get; set; }
+
+    protected override void OnInitialized()
     {
-        UserId = Configuration["BotUserId"];
+        UserId = Configuration?["BotUserId"];
+        base.OnInitialized();
     }
 }

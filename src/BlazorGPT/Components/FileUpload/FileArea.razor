@@ -1,0 +1,42 @@
+@using Microsoft.AspNetCore.Hosting
+@using FileInfo = System.IO.FileInfo
+
+<EditForm @ref="_form" Model="@_model" class="file-upload-wrapper">
+    <InputFile hidden id="file-input"
+               ref="_fileFormField"
+               @bind-Value="_model.Files"
+               OnChange="HandleFileSelected"
+               multiple
+               accept="@_fileExtensions"/>
+    <ul class="inline-list m-3 ps-0">
+        @foreach (var file in _filesOnDisk)
+        {
+            <li>
+                <a href="@($"{ContainerPath}/{FolderName}/{file.Name}")" target="_blank">
+                    @if (ImageExtensions.Contains(System.IO.Path.GetExtension(file.Name)))
+                    {
+                        <img class="file-thumbnail" src="@($"{ContainerPath}/{FolderName}/{file.Name}")"/>
+                    }
+                    else
+                    {
+                        <span class="fa fa-file file-icon"></span>
+                    }
+                    <strong>@file.Name</strong>
+                </a>
+                <span class="ms-3 fa fa-remove bg-danger file-delete @(!AllowUpload ? "invisible" : "")" @onclick="() => DeleteFile(file.Name)"></span>
+            </li>
+        }
+    </ul>
+ 
+    <button id="upload-button" style="@(!AllowUpload ? "display:none;" : "")">
+        <i class="fa fa-file-upload" />
+        Upload
+    </button>
+
+</EditForm>
+
+ 
+@code {
+    [Parameter]
+    public bool AllowUpload { get; set; } = true;
+}

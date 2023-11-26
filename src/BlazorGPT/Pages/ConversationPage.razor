@@ -115,7 +115,6 @@
 <div class="container-fluid demodemo @Class" style="@Style">
     <div class="row">
         <div class="col">
-            
             @if (!Conversation.IsStarted())
             {
                 @ChildContent
@@ -130,9 +129,6 @@
                                      Style="@ConversationDisplayStyle()"/>
 
             }
-
-
-
         </div>
         @if (!BotMode)
         {
@@ -146,9 +142,7 @@
     
  
     <div class="row sticky-bottom mt-auto mb-0 pb-0 pt-0">
-
         <div id="control" class="col mt-0 mb-0 pb-0 pt-0 me-3">
-          
             @if (BotMode)
             {
                 <EditForm Model="@Model" OnValidSubmit="@SendConversation">
@@ -167,21 +161,17 @@
 
                         <GPTModelConfiguration Visible="false"  Class="m-2 border-3" @ref="_modelConfiguration"
                                                ModelSelectEnabled="@(Conversation.Id == null)"
-                                               PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
-                                               OnResize="@ModelConfigResized" />
+                                               PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"OnResize="@ModelConfigResized" />
+
+ 
                     </div>
 
                     <span class="float-end mt-2 mb-0">
-
                         <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
-
                         <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
-
                     </span>
 
-                    @* <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton> *@
-
-                </EditForm>
+                  </EditForm>
             } 
             else {
             
@@ -230,6 +220,9 @@
 
                                 </span>
 
+                                <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
+                                          OnSyncFiles="FileAreaSynced" 
+                                          FolderName="@Conversation.Id?.ToString()" />
                                 <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
 
                             </EditForm>

@@ -64,6 +64,12 @@ namespace BlazorGPT {
             var module = await moduleTask.Value;
             var windowname = await module.InvokeAsync<string>("openWindow", url);
         }
+
+        public async ValueTask SetupFileArea()
+        {
+            var module = await moduleTask.Value;
+            await module.InvokeVoidAsync("setupFileArea");
+        }
     }
 
 }

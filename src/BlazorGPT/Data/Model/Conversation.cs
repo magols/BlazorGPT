@@ -21,6 +21,7 @@ public class Conversation
 
     public List<QuickProfile> QuickProfiles { get; set; } = new List<QuickProfile>();
 
+    public List<string>? FileUrls { get; set; } = new();
 
     public string? Summary { get; set; }
 

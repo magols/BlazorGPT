@@ -1,0 +1,54 @@
+﻿
+
+.file-upload-wrapper {
+    /* Add your styling here */
+}
+
+#upload-button {
+
+    cursor: pointer;
+ 
+}
+
+#file-name {
+    /* Additional styling for the file name display */
+    margin-left: 10px;
+}
+
+ul {
+    /*make sure the list is not bulleted*/
+    list-style-type: none;
+
+
+}
+
+ul.inline-list {
+    list-style-type: none; /* Remove default list bullets */
+    padding: 0; /* Remove default padding */
+}
+
+ul.inline-list li {
+    display: inline; /* Display list items inline */
+    margin-right: 10px; /* Add some space between items */
+}
+
+.file-icon {
+    height: 20px;
+width: 20px;
+
+
+}
+
+.file-thumbnail {
+    border: 1px solid black;
+    cursor: pointer;
+    display: inline-block;
+    height: 20px;
+    /* Style the thumbnail */
+    width: 20px;
+}
+
+.file-delete {
+    cursor: pointer;
+}
+
