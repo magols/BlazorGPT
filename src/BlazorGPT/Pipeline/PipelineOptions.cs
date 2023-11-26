@@ -34,8 +34,18 @@ public class PipelineOptions
     public string GOOGLE_API_KEY { get; set; }
     public string GOOGLE_SEARCH_ENGINE_ID { get; set; }
 
+    public FileUpload FileUpload { get; set; } = new FileUpload();
+
+    public Bot Bot { get; set; } = new Bot();
+
 }
 
+public class Bot
+{
+    public string BotUserId { get; set; }
+    public FileUpload FileUpload { get; set; }
+
+}
 public class EmbeddingsSettings
 {
     public string RedisConfigurationString { get; set; }
@@ -44,4 +54,9 @@ public class EmbeddingsSettings
     public bool UseRedis { get; set; }
     public bool UseSqlite { get; set; }
     public string SqliteConnectionString { get; set; }
+}
+
+public class FileUpload
+{
+    public bool Enabled { get; set; }
 }

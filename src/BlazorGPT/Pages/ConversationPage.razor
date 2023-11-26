@@ -163,7 +163,12 @@
                                                ModelSelectEnabled="@(Conversation.Id == null)"
                                                PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"OnResize="@ModelConfigResized" />
 
- 
+                        @if (UseFileUpload)
+                        {
+                            <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
+                                      OnSyncFiles="FileAreaSynced" 
+                                      FolderName="@Conversation.Id?.ToString()" />
+                        }
                     </div>
 
                     <span class="float-end mt-2 mb-0">
@@ -219,10 +224,14 @@
                                     <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
 
                                 </span>
-
-                                <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
-                                          OnSyncFiles="FileAreaSynced" 
-                                          FolderName="@Conversation.Id?.ToString()" />
+                                
+                                @if (UseFileUpload)
+                                {
+                                    <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
+                                              OnSyncFiles="FileAreaSynced" 
+                                              FolderName="@Conversation.Id?.ToString()" />
+                                }
+                          
                                 <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
 
                             </EditForm>

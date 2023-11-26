@@ -1,4 +1,5 @@
 ﻿@page "/bot/{ConversationId:guid?}"
+@using BlazorGPT.Pipeline
 @layout BlankLayout
 
 
@@ -26,6 +27,7 @@
     }
 
     <ConversationPage Style="z-index: 50;" 
+                      UseFileUpload="PipelineOptions!.Value.Bot.FileUpload.Enabled"
                       UserId="@UserId"
                       BotMode="true"
                       NewDestinationPrefix="/bot"
@@ -55,9 +57,12 @@
     [Inject]
     public NavigationManager? NavigationManager { get; set; }
 
+    [Inject]
+    public IOptions< PipelineOptions>? PipelineOptions { get; set; }
+
     protected override void OnInitialized()
     {
-        UserId = Configuration?["BotUserId"];
+        UserId = PipelineOptions!.Value.Bot.BotUserId;
         base.OnInitialized();
     }
 }

@@ -24,6 +24,10 @@ namespace BlazorGPT.Pages
         }
 
         [Parameter]
+        public bool UseFileUpload { get; set; }
+
+
+        [Parameter]
         public string? NewDestinationPrefix { get; set; }
 
         [Parameter]
@@ -110,7 +114,9 @@ namespace BlazorGPT.Pages
                     UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
                 }
             }
+
             
+
 
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
         }
@@ -122,8 +128,11 @@ namespace BlazorGPT.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            await SetupConversation();
 
+            UseFileUpload = PipelineOptions!.Value.Bot.FileUpload.Enabled;
+
+            await SetupConversation();
+            StateHasChanged();
         }
 
 
@@ -144,7 +153,6 @@ namespace BlazorGPT.Pages
 
 
                 await Interop.SetupCopyButtons();
-
 
                 _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
             }
@@ -412,7 +420,7 @@ namespace BlazorGPT.Pages
 
         private async Task<string> OnStreamCompletion(string s)
         {
-        //    Console.WriteLine("stream" + s);
+    
 
             Conversation.Messages.Last().Content += s; 
             await Interop.ScrollToBottom("message-pane");

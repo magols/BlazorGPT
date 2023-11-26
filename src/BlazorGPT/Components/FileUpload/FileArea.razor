@@ -11,7 +11,7 @@
     <ul class="inline-list m-3 ps-0">
         @foreach (var file in _filesOnDisk)
         {
-            <li>
+            <li class="text-nowrap">
                 <a href="@($"{ContainerPath}/{FolderName}/{file.Name}")" target="_blank">
                     @if (ImageExtensions.Contains(System.IO.Path.GetExtension(file.Name)))
                     {
@@ -23,7 +23,7 @@
                     }
                     <strong>@file.Name</strong>
                 </a>
-                <span class="ms-3 fa fa-remove bg-danger file-delete @(!AllowUpload ? "invisible" : "")" @onclick="() => DeleteFile(file.Name)"></span>
+                <span class="ms-3 p-1 fa fa-remove bg-danger file-delete @(!AllowUpload ? "invisible" : "")" @onclick="() => DeleteFile(file.Name)"></span>
             </li>
         }
     </ul>
