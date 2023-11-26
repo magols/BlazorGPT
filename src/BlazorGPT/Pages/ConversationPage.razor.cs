@@ -45,6 +45,8 @@ namespace BlazorGPT.Pages
         [SupplyParameterFromQuery]
         public bool BotMode { get; set; }
 
+        [Parameter] public string? BotSystemInstruction { get; set; } = null;
+
         [Parameter]
         public string? UserId { get; set; } = null!;
 
@@ -115,7 +117,7 @@ namespace BlazorGPT.Pages
                 }
             }
 
-            
+            BotSystemInstruction ??= PipelineOptions.Value.Bot.BotSystemInstruction;
 
 
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
@@ -593,27 +595,13 @@ namespace BlazorGPT.Pages
                 Model = !string.IsNullOrEmpty(_modelConfiguration?.SelectedModel) ? _modelConfiguration!.SelectedModel : PipelineOptions.Value.Model!,
                 UserId = UserId
             };
-            c.AddMessage(new ConversationMessage("system", "You are a helpful assistant."));
 
+            var message = new ConversationMessage("system", "You are a helpful assistant.");
+            if (BotMode) message.Content = BotSystemInstruction!;
+
+            c.AddMessage(message);
             return c;
         }
-
-        //private async Task FileAreaSynced(string folder, string filename)
-        //{
-
-        //    if (Conversation.Id == null)
-        //    {
-        //       Conversation = CreateDefaultConversation();
-        //       Conversation.Id = Guid.Parse(folder); 
-        //    }
-
-        //    await ConversationsRepository.UpdateConversation(Conversation);
-
-        //    NavigationManager.NavigateTo(
-        //        BotMode ? NewDestinationPrefix + "/" + Conversation.Id
-        //            : "/conversation/" + Conversation.Id,
-        //        false);
-        //}
 
         private async Task FileAreaSynced(string folderId, IEnumerable<string> files)
         {
@@ -623,6 +611,7 @@ namespace BlazorGPT.Pages
             if (uploadIsCreatingNewConveration)
             {
                 Conversation = CreateDefaultConversation();
+
                 Conversation.Id = Guid.Parse(folderId);
                 await ConversationsRepository.SaveConversation(Conversation);
             }

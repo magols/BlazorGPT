@@ -42,6 +42,7 @@ public class PipelineOptions
 
 public class Bot
 {
+    public string BotSystemInstruction { get; set; }
     public string BotUserId { get; set; }
     public FileUpload FileUpload { get; set; }
 
