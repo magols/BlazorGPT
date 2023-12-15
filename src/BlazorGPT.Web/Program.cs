@@ -74,7 +74,8 @@ builder.Services.AddScoped<StateRepository>();
 
 builder.Services.AddScoped<SampleDataSeeder>();
 
-builder.Services.AddSingleton<StateHasChangedInterceptorService>();
+builder.Services.AddScoped<KernelService>();
+
 
 builder.Services.AddScoped<ChatWrapper>();
 
@@ -83,14 +84,9 @@ builder.Services.AddScoped<IInterceptorHandler, InterceptorHandler>();
 builder.Services.AddScoped<IInterceptor,JsonStateInterceptor>();
 builder.Services.AddScoped<IInterceptor, StructurizrDslInterceptor>();
 builder.Services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
-
+builder.Services.AddSingleton<StateHasChangedInterceptorService>();
 builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
-
-builder.Services.AddScoped<KernelService>();
-
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
-builder.Services.AddScoped<IInterceptor, SkPlaygroundInterceptor>();
-builder.Services.AddScoped<IInterceptor, BlazorFormGenerator>();
 
 
 builder.WebHost.UseWebRoot("wwwroot");

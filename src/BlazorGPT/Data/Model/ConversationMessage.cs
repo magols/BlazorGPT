@@ -1,6 +1,6 @@
 ﻿using Azure.AI.OpenAI;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
-using ChatMessage = Azure.AI.OpenAI.ChatMessage;
+ 
+ 
 
 
 namespace BlazorGPT.Data.Model;
@@ -15,11 +15,11 @@ public class ConversationMessage
         Content = content;
     }
 
-    public ConversationMessage(ChatMessage msg)  
-    {
-        Role = msg.Role == ChatRole.User ? "user" : "assistant";
-        Content = msg.Content;
-    }
+    //public ConversationMessage(ChatMessage msg)  
+    //{
+    //    Role = msg.Role == ChatRole.User ? "user" : "assistant";
+    //    Content = msg.Content;
+    //}
 
     public Guid? Id { get; set; }
     public string Role { get; set; }

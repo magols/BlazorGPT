@@ -1,8 +1,8 @@
-﻿using Microsoft.SemanticKernel.AI;
+﻿using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Pipeline;
 
-public class ChatRequestSettings : AIRequestSettings
+public class ChatRequestSettings : PromptExecutionSettings
 {
     public ChatRequestSettings()
     {

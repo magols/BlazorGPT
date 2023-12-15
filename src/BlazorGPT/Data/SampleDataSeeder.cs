@@ -27,24 +27,6 @@ namespace BlazorGPT.Data
             _scriptRepository = scriptRepository;
         }
 
-        public async Task<Conversation> CreateConversation(IList<ChatMessage> messages, string summary)
-        {
-            // create a conversation and save to db
-              var conversation = await CreateConversation(summary);
-
-            // add the messages to the conversation
-            foreach (var message in messages)
-            {
-                conversation.AddMessage(new ConversationMessage(message.Role.ToString(), message.Content));
-            }
-
-            // save the conversation via conversationrepository
-            await _conversationsRepository.SaveConversation(conversation);
-
-
-            return conversation;
-        }
-
 
         public async Task<Conversation> CreateConversation(string summary)
         {

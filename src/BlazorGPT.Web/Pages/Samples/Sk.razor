@@ -2,10 +2,7 @@
 @inherits SamplePage
 @using BlazorGPT.Pipeline
 @using Microsoft.SemanticKernel
-@using System.Globalization
 @using Microsoft.SemanticKernel.Plugins.Core
-@using Microsoft.SemanticKernel.Plugins.Memory
-@using Microsoft.SemanticKernel.TemplateEngine.Basic
 @inject IOptions<PipelineOptions> PipelineOptions
 @layout EmptyLayout
 <h3>Semantic Kernel</h3>
@@ -15,7 +12,7 @@
 <ConversationDisplay Conversation="@Conversation" Style="height: auto"/>
 
 @code {
-
+#pragma warning disable SKEXP0050
     [Inject]
     public ChatWrapper Chat { get; set; }
 
@@ -35,71 +32,12 @@
 
 
             // This is the system prompt, ie the information that the system wants to share with the user.
-            var systemPromptTemplate = 
-@"You are an AI assistant that helps people find information.
-The chat started at: {{ $startTime }}
-The current time is: {{ time.now }}
-Text selected:
-{{ $selectedText }}";
+            var systemMessage = @"You are an AI assistant that helps people find information.";
 
-            // This is the user prompt, ie the information that the user wants to share with the system.
-            var selectedText = "The central Sahara is hyperarid, with sparse vegetation. The northern and southern reaches of the desert, along with the highlands, have areas of sparse grassland and desert shrub, with trees and taller shrubs in wadis, where moisture collects. In the central, hyperarid region, there are many subdivisions of the great desert: Tanezrouft, the Ténéré, the Libyan Desert, the Eastern Desert, the Nubian Desert and others. These extremely arid areas often receive no rain for years.";
-            var userPromptTemplate = "{{ time.now }}: {{ $userMessage }}";
-
-
-            kernel.ImportSkill(new TimePlugin(), "time");
-            kernel.ImportSkill(new HttpPlugin(), "http");
-            kernel.ImportSkill(new TextMemoryPlugin(kernel.Memory), "memory");
-
-
-
-            // We need a kernel context to store some information to pass to the prompts and the list
-            // of available skills needed to render prompt templates.
-            var context = kernel.CreateNewContext();
-
-            // Put the selected document into the variable used by the system prompt (see 28-system-prompt.txt).
-            context.Variables["selectedText"] = selectedText;
-
-            // Demo another variable, e.g. when the chat started, used by the system prompt (see 28-system-prompt.txt).
-            context.Variables["startTime"] = DateTimeOffset.Now.ToString("hh:mm:ss tt zz", CultureInfo.CurrentCulture);
-
-            // This is the user message, store it in the variable used by 28-user-prompt.txt
-
-            context.Variables["url"] = "https://www.bing.com";
-            context.Variables["userMessage"] = "extract locations as a bullet point list.";
-
-            // Instantiate the prompt renderer, which we will use to turn prompt templates
-            // into strings, that we will store into a Chat history object, which is then sent
-            // to the Chat Model.
-            var promptRenderer = new BasicPromptTemplateEngine();
-
-            // Render the system prompt. This string is used to configure the chat.
-            // This contains the context, ie a piece of a wikipedia page selected by the user.
-            string systemMessage = await promptRenderer.RenderAsync(systemPromptTemplate, context);
-      //      Console.WriteLine($"------------------------------------\n{systemMessage}");
-
-            // Render the user prompt. This string is the query sent by the user
-            // This contains the user request, ie "extract locations as a bullet point list"
-            string userMessage = await promptRenderer.RenderAsync(userPromptTemplate, context);
-       //     Console.WriteLine($"------------------------------------\n{userMessage}");
-
-            // // // Client used to request answers to gpt-3.5-turbo
-            // // var chatGPT = kernel.GetService<IChatCompletion>();
-
-            
-    
-            // // // The full chat history. Depending on your scenario, you can pass the full chat if useful,
-            // // // or create a new one every time, assuming that the "system message" contains all the
-            // // // information needed.
-            // // var chatHistory = chatGPT.CreateNewChat(systemMessage);
-
-            // // // Add the user query to the chat history
-            // // chatHistory.AddMessage(ChatHistory.AuthorRoles.User, userMessage);
-
-            // // // Finally, get the response from AI
-            // // string answer = await chatGPT.GenerateMessageAsync(chatHistory);
-            // // Console.WriteLine($"------------------------------------\n{answer}");
-
+            kernel.ImportPluginFromObject(new TimePlugin(), "time");
+            kernel.ImportPluginFromObject(new HttpPlugin(), "http");
+            string userMessage = "Where is Stockholm?";
+ 
 
             if (Conversation != null)
             {
@@ -116,7 +54,7 @@ Text selected:
         }
     }
 
-    public IKernel kernel { get; set; }
+    public Kernel kernel { get; set; }
  
    
 

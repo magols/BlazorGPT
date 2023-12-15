@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.SemanticKernel.Planning;
 
 namespace BlazorGPT.Data.Model;
 

@@ -1,28 +1,24 @@
 using System.ComponentModel;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Orchestration;
-using Microsoft.SemanticKernel.TemplateEngine.Basic;
 
 
 namespace BlazorGPT.Plugins;
 
 public class TranslateSkill
 {
-    private IKernel _kernel;
+    private Kernel _kernel;
 
-    public TranslateSkill(IKernel kernel)
+    public TranslateSkill(Kernel kernel)
     {
         _kernel = kernel;
     }
 
-    [SKFunction]
-    [SKName("Translate")]
+    [KernelFunction("Translate")]
     public async Task<string> TranslateAsync(
         [Description("Text to translate")]
         string input,
         [Description("Language to translate text into")]
-        string language,
-        SKContext ctx)
+        string language)
     {
 
 
@@ -34,12 +30,10 @@ public class TranslateSkill
             """;
 
 
+        var function = _kernel.CreateFunctionFromPrompt(funcDesc, new PromptExecutionSettings() {});
 
-        var promptRenderer = new BasicPromptTemplateEngine();
-        var prompt = await promptRenderer.RenderAsync(funcDesc, ctx);
+        var result = await _kernel.InvokeAsync(function, new() { ["input"] = input });
 
-        var func = _kernel.CreateSemanticFunction(funcDesc);
-        var res = await func.InvokeAsync(ctx);
-        return res.ToString();
+        return result.GetValue<string>();
     }
 }

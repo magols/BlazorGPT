@@ -17,13 +17,13 @@ public class StateFileSaveInterceptor : InterceptorBase, IInterceptor
     public string Name { get; } = "Save file";
     public bool Internal { get; } = true;
 
-    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         await ParseMessageAndSaveStateToDisk(conversation.Messages.Last());
         return conversation;
     }
 
-    public async Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public async Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         return conversation;
     }

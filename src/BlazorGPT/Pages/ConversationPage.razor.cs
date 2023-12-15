@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI;
 using Radzen;
 using Radzen.Blazor;
 
@@ -100,7 +99,7 @@ namespace BlazorGPT.Pages
         private int controlHeight { get; set; }
         private int initialControlHeight = 0;
 
-        private IKernel _kernel = null!;
+        private Kernel _kernel = null!;
         private CancellationTokenSource _cancellationTokenSource;
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         
