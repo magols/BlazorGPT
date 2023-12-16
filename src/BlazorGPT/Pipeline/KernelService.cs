@@ -1,15 +1,19 @@
 ﻿using System.Globalization;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
-using Microsoft.SemanticKernel.Connectors.Memory.Redis;
-using Microsoft.SemanticKernel.Connectors.Memory.Sqlite;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.Connectors.Redis;
+using Microsoft.SemanticKernel.Connectors.Sqlite;
 using Microsoft.SemanticKernel.Memory;
-using Microsoft.SemanticKernel.Plugins.Memory;
 using StackExchange.Redis;
+#pragma warning disable SKEXP0003
+#pragma warning disable SKEXP0011
+#pragma warning disable SKEXP0052
+#pragma warning disable SKEXP0012
 
+#pragma warning disable SKEXP0027
+#pragma warning disable SKEXP0028
 namespace BlazorGPT.Pipeline;
 
 public class KernelService
@@ -21,21 +25,30 @@ public class KernelService
         _options = options.Value;
     }
 
-    public async Task<IKernel> CreateKernelAsync(string? model = null)
+    public async Task<Kernel> CreateKernelAsync(string? model = null)
     {
         var useAzureOpenAI = _options.ServiceType != "OpenAI";
 
-        var builder = new KernelBuilder();
+        var builder = Kernel.CreateBuilder();
         if (useAzureOpenAI)
+        {
+#pragma warning disable SKEXP0011
             builder
-                .WithAzureOpenAIChatCompletionService(model ?? _options.Model, _options.Endpoint, _options.ApiKey)
-                .WithAzureOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _options.Endpoint,
-                    _options.ApiKey);
+            .AddAzureOpenAIChatCompletion(model ?? _options.Model, _options.Endpoint, _options.ApiKey,
+                    _options.ApiKey)
+                .AddAzureOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.Endpoint, _options.ApiKey);
+#pragma warning restore SKEXP0011
+
+        }
         else
+        {
+#pragma warning disable SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             builder
-                .WithOpenAIChatCompletionService(model ?? _options.Model, _options.ApiKey, _options.OrgId)
-                .WithOpenAITextCompletionService(_options.ModelTextCompletions, _options.ApiKey, _options.OrgId)
-                .WithOpenAIImageGenerationService(_options.ApiKey, _options.OrgId);
+                .AddOpenAIChatCompletion(model ?? _options.Model, _options.ApiKey, _options.OrgId)
+                .AddOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.ApiKey, _options.OrgId)
+                .AddOpenAITextToImage(_options.ApiKey, _options.OrgId);
+#pragma warning restore SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        }
 
         return builder.Build();
     }
@@ -56,26 +69,31 @@ public class KernelService
         var useAzureOpenAI = _options.ServiceType != "OpenAI";
         if (useAzureOpenAI)
         {
+#pragma warning disable SKEXP0011
+#pragma warning disable SKEXP0052
             var mem = new MemoryBuilder()
-                .WithAzureOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _options.Endpoint,
+
+                .WithAzureOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.ModelEmbeddings, _options.Endpoint,
                     _options.ApiKey)
                 .WithMemoryStore(memoryStore)
                 .Build();
+ 
+
             return mem;
         }
         else
         {
             var mem = new MemoryBuilder()
-                .WithOpenAITextEmbeddingGenerationService(_options.ModelEmbeddings, _options.ApiKey)
+                .WithOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.ApiKey)
                 .WithMemoryStore(memoryStore)
                 .Build();
             return mem;
         }
     }
 
-    public async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel,
+    public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
         Conversation conversation,
-        AIRequestSettings requestSettings,
+        PromptExecutionSettings requestSettings,
         Func<string, Task<string>> OnStreamCompletion,
         CancellationToken cancellationToken)
     {
@@ -97,45 +115,31 @@ public class KernelService
             cancellationToken);
     }
 
-    private async Task<Conversation> ChatCompletionAsStreamAsync(IKernel kernel,
+    private async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
         ChatHistory chatHistory,
         Conversation conversation,
-        AIRequestSettings requestSettings,
+        PromptExecutionSettings requestSettings,
         Func<string, Task<string>> onStreamCompletion, CancellationToken cancellationToken)
     {
-        var chatCompletion = kernel.GetService<IChatCompletion>();
+        var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
         var fullMessage = string.Empty;
 
-
-
-
-        List<IAsyncEnumerable<string>> resultTasks = new();
-        var currentResult = 0;
-
-        await foreach (var completionResult in chatCompletion.GetStreamingChatCompletionsAsync(chatHistory,
-                           requestSettings, cancellationToken))
+        await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(chatHistory,
+                           requestSettings, cancellationToken: cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
                 return conversation;
-                throw new TaskCanceledException();
             }
 
-            var message = string.Empty;
-
-            await foreach (var chatMessage in completionResult.GetStreamingChatMessageAsync(cancellationToken))
+            if (cancellationToken.IsCancellationRequested)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return conversation;
-                    throw new TaskCanceledException();
-                }
-
-                var role = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(chatMessage.Role.Label);
-                message += chatMessage.Content;
-                fullMessage += chatMessage.Content;
-                if (onStreamCompletion != null) await onStreamCompletion.Invoke(chatMessage.Content);
+                return conversation;
             }
+ 
+            fullMessage += completionResult.Content;
+            if (onStreamCompletion != null) await onStreamCompletion.Invoke(completionResult.Content);
+ 
         }
 
         conversation.Messages.Last().Content = fullMessage;

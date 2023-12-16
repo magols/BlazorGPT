@@ -31,7 +31,7 @@ public class InterceptorHandler : IInterceptorHandler
 
     private IEnumerable<IInterceptor> EnabledInterceptors => Interceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
         
-    public async Task<Conversation> Send(IKernel kernel, Conversation conversation,
+    public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
     {
 
@@ -56,7 +56,7 @@ public class InterceptorHandler : IInterceptorHandler
 
     }
 
-    public async Task<Conversation> Receive(IKernel kernel, Conversation conversation,
+    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors, CancellationToken cancellationToken = default)
     {
         IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;

@@ -1,7 +1,6 @@
 ﻿ 
 
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
 
 namespace BlazorGPT.Pipeline;
 
@@ -14,7 +13,7 @@ public class QuickProfileHandler : IQuickProfileHandler
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<Conversation> Send(IKernel kernel, Conversation conversation,
+    public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
         IEnumerable<QuickProfile>? beforeProfiles = null)
     {
 
@@ -33,7 +32,7 @@ public class QuickProfileHandler : IQuickProfileHandler
         return conversation;
     }
 
-    public  async Task<Conversation> Receive(IKernel kernel, ChatWrapper chatWrapper, Conversation conversation,
+    public  async Task<Conversation> Receive(Kernel kernel, ChatWrapper chatWrapper, Conversation conversation,
         IEnumerable<QuickProfile>? profiles = null)
     {
 

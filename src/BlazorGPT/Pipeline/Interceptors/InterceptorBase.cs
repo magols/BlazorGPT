@@ -93,12 +93,12 @@ public abstract class InterceptorBase: IInterceptor
 
     public virtual string Name { get; }
     public virtual bool Internal { get; }
-    public virtual Task<Conversation> Receive(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public virtual Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public async virtual Task<Conversation> Send(IKernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public async virtual Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         if (cancellationToken != default)
         {

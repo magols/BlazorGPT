@@ -29,21 +29,18 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
 
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta8" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta8" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="1.0.0-beta8" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="1.0.0-beta8" />
-
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta8" />
-
-    <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.0.0-beta8" />
-
-    <PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.24.230918.1-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-rc4" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.0.0-rc4" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.0.0-rc4" />
+    <!--<PackageReference Include="Microsoft.SemanticKernel.Planners.Core" Version="1.0.0-beta8" />-->
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.0.0-rc4" />
+    <!--<PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.0.0-rc4" />-->
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.0.0-rc4" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.10.1" />
     <PackageReference Include="Radzen.Blazor" Version="4.21.3" />
-    <PackageReference Include="SharpToken" Version="1.2.12" />
+    <PackageReference Include="SharpToken" Version="1.2.14" />
 
   </ItemGroup>
 
@@ -80,12 +77,18 @@
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.ActionPlanner\Planning.ActionPlanner.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Extensions\Planning.SequentialPlanner\Planning.SequentialPlanner.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.OpenAPI\Skills.OpenAPI.csproj" />
-    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel.Abstractions\SemanticKernel.Abstractions.csproj" />
 
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Core\Skills.Core.csproj" />
+    
 
   </ItemGroup>-->
 
+  <ItemGroup>
+    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />-->
+
+    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Planners\Planners.Core\Planners.Core.csproj" />-->
+
+  </ItemGroup>
 
 </Project>
