@@ -63,7 +63,8 @@
     {
         if (Interop != null)
         {
-            await Interop.OpenStateViewer("conversation", Conversation.Id!.ToString() ?? string.Empty, RenderType());
+            var srs = await RenderType();
+            await Interop.OpenStateViewer("conversation", Conversation.Id!.ToString() ?? string.Empty, srs);
         }
     }
 
@@ -213,8 +214,8 @@
                                                            PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
                                                            OnResize="@ModelConfigResized" />
 
-                                    <InterceptorSelector @ref="inteceptorSelector" Class="m-1 me-3 p-1 float-end" />
-
+                                    <PluginSelectorButton Class="m-1 me-3 p-1 float-end" />
+                                    <InterceptorSettings Class="m-1 me-3 p-1  float-end" />
                                 </div>
 
                                 <span class="float-end mt-2 mb-0">

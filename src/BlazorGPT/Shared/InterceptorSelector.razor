@@ -2,17 +2,16 @@
 @using Microsoft.Extensions.Options
 @using BlazorGPT.Pipeline.Interceptors
 @using BlazorGPT.Pipeline
+@using Blazored.LocalStorage
+@using System.Text.Json
 
 
-<RadzenPanel AllowCollapse="true" Collapsed="true" Text="Interceptors" class="@Class">
-    <ChildContent>
-        <RadzenCheckBoxList @ref="list" @bind-Value=@Selected TValue="string"
-                            Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
-                            Change="OnListChanged"
-                            class="mb-3 mt-0">
-        </RadzenCheckBoxList>
-    </ChildContent>
-</RadzenPanel>
+
+<RadzenCheckBoxList  @ref="list" @bind-Value=@Selected TValue="string" Orientation="Orientation.Vertical"
+                    Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
+                    Change="OnListChanged"
+                    class="@Class">
+</RadzenCheckBoxList>
 
 
 @code {
@@ -29,8 +28,12 @@
     [Inject]
     public DialogService DialogService { get; set; } = null!;
 
+    [Inject] 
+    private ILocalStorageService? LocalStorage { get; set; }
     
     public IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
+
+    private readonly object _model = new();
 
 
     IEnumerable<IInterceptor> Interceptors => ServiceProvider.GetServices<IInterceptor>();
@@ -43,15 +46,52 @@
         Selected = EnabledInterceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
     }
 
-    private void OnListChanged()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Selected = await GetSelectionsFromLocalStorage();
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnListChanged()
     {
         if (SelectedInterceptors?.Count(i => i is IStateWritingInterceptor) > 1)
         {
-            DialogService.Alert("You can only use one hive interceptor at a time.");
+            await DialogService.Alert("You can only use one hive interceptor at a time.");
+            return;
+        }
 
-        } 
+        await SetSelectionsInLocalStorage();
     }
 
     public RadzenCheckBoxList<string> list { get; set; }
 
+
+    private async Task<ICollection<string>>  GetSelectionsFromLocalStorage()
+    {
+        if (LocalStorage != null)
+        {
+            var data = await LocalStorage.GetItemAsync<ICollection<string>>("bgpt_interceptors");
+            if (data != null)
+                return data;
+        }
+        return new List<string>();
+    }
+
+    List<string>? BrowserData { get; set; }
+
+    private async Task SetSelectionsInLocalStorage()
+    {
+        if (LocalStorage != null)
+        {
+            await LocalStorage.SetItemAsync("bgpt_interceptors", Selected);
+        }
+    }
+
+    class InterceptorSettings
+    {
+
+    }
 }

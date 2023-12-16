@@ -1,0 +1,26 @@
+@page "/settingsplugins"
+
+<p>
+    Select which plugins you want to use.
+</p>
+<EditForm Model="_model" OnValidSubmit="Submit">
+
+    @for (var i = 0; i < _plugins.Count; i++)
+    {
+        var plugin = _plugins[i];
+        var selected = _model.SelectedPlugins[i];
+
+        <h5>
+            <InputCheckbox @bind-Value="@selected.Selected" @onclick="Submit"/> @plugin.Name
+        </h5>
+        <ul>
+            @foreach (var function in plugin.Functions)
+            {
+                <li>
+
+                    @function.Name
+                </li>
+            }
+        </ul>
+    }
+</EditForm>

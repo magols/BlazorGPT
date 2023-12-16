@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using BlazorGPT;
 using BlazorGPT.Components.Account;
 using BlazorGPT.Components.FileUpload;
@@ -54,6 +55,8 @@ else
 builder.Services.AddRazorPages();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.Configure<PipelineOptions>(
     builder.Configuration.GetSection("PipelineOptions")); ;

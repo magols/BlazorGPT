@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
 
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.2" />
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.113" />
@@ -84,11 +85,12 @@
 
   </ItemGroup>-->
 
-  <ItemGroup>
-    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />-->
+  <ItemGroup><!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />-->
 
     <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Planners\Planners.Core\Planners.Core.csproj" />-->
 
+  
   </ItemGroup>
+ 
 
 </Project>

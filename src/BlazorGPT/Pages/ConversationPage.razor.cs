@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Blazored.LocalStorage;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Shared;
@@ -244,7 +245,7 @@ namespace BlazorGPT.Pages
             else
             {
                 Conversation.AddMessage(new ConversationMessage("user", Model.Prompt!));
-                StateHasChanged();
+                StateHasChanged();  
 
             }
 
@@ -253,9 +254,11 @@ namespace BlazorGPT.Pages
             _cancellationTokenSource = new CancellationTokenSource(2*60*1000);
             try
             {
+                var strs = await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors");
+
                 Conversation = await InterceptorHandler.Send(_kernel,
-                    Conversation,
-                    inteceptorSelector?.SelectedInterceptors ?? Array.Empty<IInterceptor>(),
+                    Conversation, strs
+                    ,
                     _cancellationTokenSource.Token);
 
 
@@ -366,7 +369,8 @@ namespace BlazorGPT.Pages
                 await ctx.SaveChangesAsync();
 
                 Conversation =
-                    await InterceptorHandler.Receive(_kernel, Conversation, inteceptorSelector?.SelectedInterceptors);
+                    await InterceptorHandler.Receive(_kernel, Conversation,
+                        await LocalStorageService.GetItemAsync<List<string>>("bgtpc_interceptors"));
 
                 if (!BotMode  && wasSummarized)
                 {
@@ -484,9 +488,10 @@ namespace BlazorGPT.Pages
             IsBusy = false;
         }
 
-        private string RenderType()
+        private async Task<string> RenderType()
         {
-            if (inteceptorSelector.SelectedInterceptors.Any(i => i.Name == "Structurizr Hive DSL"))
+            var enabled = await LocalStorageService.GetItemAsync<List<string>>("bgtpc_interceptors");
+            if (enabled.Any(i => i == "Structurizr Hive DSL"))
             {
                 return "StructurizrDslInterceptor";
             }
@@ -557,8 +562,11 @@ namespace BlazorGPT.Pages
 
         private QuickProfileSelector? _profileSelectorEnd;
         private bool useState;
-        private InterceptorSelector? inteceptorSelector;
+
+        [Inject]
+        ILocalStorageService LocalStorageService { get; set; } = null!;
         
+        //IEnumerable<string> enabledInterceptors = Array.Empty<string>();
 
         private int selectedTabIndex;
 
@@ -568,7 +576,7 @@ namespace BlazorGPT.Pages
         {
             if (Interop != null)
             {
-                await Interop.OpenStateViewer("hive", Conversation.Id!.ToString() ?? string.Empty, RenderType());
+                await Interop.OpenStateViewer("hive", Conversation.Id!.ToString() ?? string.Empty, await RenderType());
             }
         }
 

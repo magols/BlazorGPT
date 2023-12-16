@@ -71,10 +71,21 @@ public class KernelService
         {
 #pragma warning disable SKEXP0011
 #pragma warning disable SKEXP0052
+
+            var mem2 = new MemoryBuilder()
+
+                .WithAzureOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.ModelEmbeddings,
+                    _options.Endpoint,
+                    _options.ApiKey)
+                .WithMemoryStore(memoryStore)
+                .Build();
+
             var mem = new MemoryBuilder()
 
-                .WithAzureOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.ModelEmbeddings, _options.Endpoint,
-                    _options.ApiKey)
+                .WithAzureOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, 
+                    _options.ModelEmbeddings, 
+                    endpoint: _options.Endpoint,
+                    apiKey: _options.ApiKey)
                 .WithMemoryStore(memoryStore)
                 .Build();
  

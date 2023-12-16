@@ -1,0 +1,17 @@
+<button class="btn btn-secondary @Class" type="button" @onclick="OpenSettings">Plugins</button>
+@code
+{
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Inject]
+    DialogService? DialogService { get; set; }
+
+    private async Task OpenSettings()
+    {
+        await DialogService!.OpenAsync<PluginsList>("Plugin selection", options: new DialogOptions()
+        {
+            CloseDialogOnOverlayClick = true,
+        });
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,8 @@ public class InterceptorHandler : IInterceptorHandler
 
     public Func<Task>? OnUpdate { get; set; }
 
+    [Inject]
+    public IServiceProvider ServiceProvider { get; set; } = null!;
 
     public InterceptorHandler(IServiceProvider serviceProvider, IConfiguration configuration, IOptions<PipelineOptions> options)
     {
@@ -54,6 +57,28 @@ public class InterceptorHandler : IInterceptorHandler
         }
         return conversation;
 
+    }
+
+
+ 
+
+    public async Task<Conversation> Send(Kernel kernel, Conversation conversation, IEnumerable<string>? enabledInterceptors,
+        CancellationToken cancellationToken = default)
+    {
+        if (enabledInterceptors == null)
+            enabledInterceptors = Enumerable.Empty<string>();
+        var interceptors = Interceptors.Where(i => enabledInterceptors.Contains(i.Name));
+        return await Send(kernel, conversation, interceptors, cancellationToken);
+
+    }
+
+    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, IEnumerable<string>? enabledInterceptors,
+        CancellationToken cancellationToken = default)
+    {
+        if (enabledInterceptors == null)
+            enabledInterceptors = Enumerable.Empty<string>();
+        var interceptors = Interceptors.Where(i => enabledInterceptors.Contains(i.Name));
+        return await Receive(kernel, conversation, interceptors, cancellationToken);
     }
 
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation,
