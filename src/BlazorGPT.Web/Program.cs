@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,12 +105,20 @@ builder.Services.AddDbContextFactory<BlazorGptDBContext>(options =>
     });
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                               ForwardedHeaders.XForwardedProto |
+                               ForwardedHeaders.XForwardedHost;
+});
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
 }
+
+app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
