@@ -43,6 +43,12 @@
     <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Plugins\**\skprompt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="CopyPlugins" AfterTargets="Build">
     <ItemGroup>
       <PluginFiles Include="Plugins\**\*.*" />
