@@ -10,12 +10,18 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     private CancellationToken _cancellationToken;
     private PluginsRepository _pluginsRepository;
     private ILocalStorageService? _localStorageService;
+    private KernelService _kernelService;
+    private IServiceProvider _serviceProvider;
 
     public PluginInterceptor(IDbContextFactory<BlazorGptDBContext> context,
         ConversationsRepository conversationsRepository,
         PluginsRepository pluginsRepository,
-            ILocalStorageService localStorageService) : base(context, conversationsRepository)
+            ILocalStorageService localStorageService,
+        KernelService kernelService,
+        IServiceProvider serviceProvider) : base(context, conversationsRepository)
     {
+        _serviceProvider = serviceProvider;
+        _kernelService = kernelService;
         _localStorageService = localStorageService;
         _pluginsRepository = pluginsRepository;
     }
@@ -46,23 +52,34 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         await LoadPluginsAsync(kernel);
         var ask = conversation.Messages.Last().Content;
 
-        var lastMsg = new ConversationMessage("assistant", "....");
+        var lastMsg = new ConversationMessage("assistant", "Constructing plan...");
         conversation.Messages.Add(lastMsg);
         OnUpdate?.Invoke();
 
         var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
-        var plan = await planner.CreatePlanAsync(kernel, ask, _cancellationToken);
-        conversation.SKPlan = plan.ToString();
 
-        conversation.PluginsNames = string.Join(",", kernel.Plugins.Select(o => o.Name));
+        try
+        {
+            var plan = await planner.CreatePlanAsync(kernel, ask, _cancellationToken);
+            conversation.SKPlan = plan.ToString();
 
-        OnUpdate?.Invoke();
+            lastMsg.Content = "Executing plan...";
+            conversation.PluginsNames = string.Join(",", kernel.Plugins.Select(o => o.Name));
+            OnUpdate?.Invoke();
 
+            KernelArguments args = new KernelArguments();
+            var result = await plan.InvokeAsync(kernel, args, _cancellationToken);
 
-        KernelArguments args = new KernelArguments();
-        var result = await plan.InvokeAsync(kernel, args, _cancellationToken);
+            lastMsg.Content = result;
+        }
+        catch (Exception e)
+        {
+            lastMsg.Content = e.Message + "\n";
+            OnUpdate?.Invoke();
 
-        lastMsg.Content = result;
+            Console.WriteLine(e);
+        }
+
 
     }
 
@@ -70,6 +87,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     {
         var semanticPlugins = await  _pluginsRepository.GetFromDiskAsync();
 
+        List<string> nativePlugins = new List<string>();
         // todo: bad to read from browser here but here we are
         if (_localStorageService != null)
         {
@@ -78,6 +96,9 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
                 var enabledPlugins = await _localStorageService.GetItemAsync<List<Plugin>>("bgpt_plugins", _cancellationToken);
                 var enabledNames = enabledPlugins.Select(o => o.Name);
                 semanticPlugins = semanticPlugins.Where(o => enabledNames.Contains(o.Name)).ToList();
+
+                var native = enabledPlugins.Where(o => o.Name.LastIndexOf(".") > 1);
+                nativePlugins = native.Select(o => o.Name).ToList();
             }
             catch (Exception e)
             {
@@ -91,6 +112,28 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         {
             var path = Path.Combine(Environment.CurrentDirectory, "Plugins", plugin.Name);
             kernel.ImportPluginFromPromptDirectory(path, plugin.Name);
+        }
+
+        foreach (var className in nativePlugins)
+        {
+            // instantiate the class
+            var type = Type.GetType(className);
+            if (type != null)
+            {
+                var instance = Activator.CreateInstance(type, _serviceProvider );
+                try
+                {
+                    var pluginName = className.Substring(className.LastIndexOf(".") + 1);
+                    Console.WriteLine(pluginName);
+                    kernel.ImportPluginFromObject(instance, pluginName);
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
         }
     }
 }
