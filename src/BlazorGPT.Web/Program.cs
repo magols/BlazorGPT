@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
+using BlazorGPT.Shared.PluginSelector;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -91,6 +92,10 @@ builder.Services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
 builder.Services.AddSingleton<StateHasChangedInterceptorService>();
 builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
+builder.Services.AddScoped<PluginsRepository>();
+
+builder.Services.AddScoped<IInterceptor, PluginInterceptor>();
+
 
 
 builder.WebHost.UseWebRoot("wwwroot");

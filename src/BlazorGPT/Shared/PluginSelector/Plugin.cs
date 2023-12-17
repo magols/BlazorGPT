@@ -1,7 +1,7 @@
 ﻿namespace BlazorGPT.Shared.PluginSelector;
 
-internal class Plugin
+public class Plugin
 {
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public ICollection<Function> Functions { get; set; } = new List<Function>();
 }

@@ -3,6 +3,7 @@
 {
     <div id="message-pane" class="scroll-pane" style="@Style">
         <BranchedFrom Conversation="@Conversation"/>
+
         @if (Conversation.Messages.Any())
         {
             if (!BotMode)
@@ -19,15 +20,19 @@
             int msgCount = 1;
             @foreach (var message in Conversation.Messages.Skip(1))
             {
-                       <ConversationMessageDisplay
-                        ShowBranches="@ShowBranches"
-                        ShowEditButton="!BotMode && Conversation.IsStarted()"
-                        ShowRestartButton="!BotMode && RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
-                        ShowCopyButton="!BotMode && CopyConversation.HasDelegate && Conversation.Id != null"
-                        OnRestartClicked="RestartConversation"
-                        OnCopyClicked="CopyConversation"
-                        Message="message">
-                    </ConversationMessageDisplay>
+                <ConversationMessageDisplay
+                    ShowBranches="@ShowBranches"
+                    ShowEditButton="!BotMode && Conversation.IsStarted()"
+                    ShowRestartButton="!BotMode && RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
+                    ShowCopyButton="!BotMode && CopyConversation.HasDelegate && Conversation.Id != null"
+                    OnRestartClicked="RestartConversation"
+                    OnCopyClicked="CopyConversation"
+                    Message="message">
+                </ConversationMessageDisplay>
+                @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.PluginsNames != null)
+                {
+                    <div class="m-3">Using plugins: @Conversation.PluginsNames</div>
+                }
                     @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.SKPlan != null)
                     {
 

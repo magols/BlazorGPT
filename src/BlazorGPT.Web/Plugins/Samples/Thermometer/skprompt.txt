@@ -1,0 +1,1 @@
+Return a random fictional temperature in celsius:

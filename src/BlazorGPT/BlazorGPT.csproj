@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <NoWarn>SKEXP0001,SKEXP0011,SKEXP0060</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />

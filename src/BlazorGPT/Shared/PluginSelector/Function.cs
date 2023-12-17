@@ -1,6 +1,6 @@
 ﻿namespace BlazorGPT.Shared.PluginSelector;
 
-internal class Function
+public class Function
 {
     public string? Name { get; set; }
     public string? Description { get; set; }
