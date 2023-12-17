@@ -58,12 +58,10 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
 
         OnUpdate?.Invoke();
 
-        Console.WriteLine($"Plan: {plan}");
 
         KernelArguments args = new KernelArguments();
         var result = await plan.InvokeAsync(kernel, args, _cancellationToken);
 
-        Console.WriteLine($"Results: {result}");
         lastMsg.Content = result;
 
     }
@@ -93,7 +91,6 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         {
             var path = Path.Combine(Environment.CurrentDirectory, "Plugins", plugin.Name);
             kernel.ImportPluginFromPromptDirectory(path, plugin.Name);
-            Console.WriteLine("loading " + path);
         }
     }
 }
