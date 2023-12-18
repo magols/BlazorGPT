@@ -73,31 +73,17 @@ public class KernelService
 #pragma warning disable SKEXP0052
 
 
-            //var mem = new MemoryBuilder()
-            //    .WithAzureOpenAITextEmbeddingGeneration(
-            //        deploymentName: _options.ModelEmbeddings, 
-            //        modelId: _options.ModelEmbeddings,
-            //        endpoint: _options.Endpoint,
-            //        apiKey: _options.ApiKey)
-            //    .WithMemoryStore(memoryStore)
-            //    .Build();
+            var mem = new MemoryBuilder()
+            .WithAzureOpenAITextEmbeddingGeneration(
+                 _options.ModelEmbeddings,
+                 _options.Endpoint,
+                 _options.ApiKey,
+                 _options.ModelEmbeddings
+            )
+            .WithMemoryStore(memoryStore)
+            .Build();
 
-           
-                var mem = new MemoryBuilder()
-                    .WithAzureOpenAITextEmbeddingGeneration(
-                         _options.ModelEmbeddings,
-                         _options.Endpoint,
-                         _options.ApiKey,
-                         _options.ModelEmbeddings
-                    )
-                    .WithMemoryStore(memoryStore)
-                    .Build();
-
-                Console.WriteLine("got memstore!");
-
-
-                return mem;
-    
+            return mem;
         }
         else
         {

@@ -91,16 +91,7 @@ public class ConversationsRepository
     {
         await using var ctx = await _dbContextFactory.CreateDbContextAsync();
         ctx.Conversations.Update(conversation);
-        try
-        {
-            await ctx.SaveChangesAsync();
-
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        await ctx.SaveChangesAsync();
     }
 
     public async Task DeleteMessages(List<ConversationMessage> messagesToRemove)

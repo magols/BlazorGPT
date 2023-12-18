@@ -283,18 +283,18 @@ namespace BlazorGPT.Pages
             }
             catch (InvalidOperationException ioe)
             {
-         //       Console.WriteLine(ioe);
+                // todo: handle this
             }
             catch (Exception e)
             {
-          //      Console.WriteLine(e);
+                // todo: handle this
+
             }
             finally
             {
                 _cancellationTokenSource.TryReset();
                 semaphoreSlim.Release();
                 StateHasChanged();
-
             }
 
             IsBusy = false;
@@ -303,8 +303,6 @@ namespace BlazorGPT.Pages
                 await Interop.FocusElement(_promptField2.Element);
             }
         }
-
-
 
         private async Task Send()
         {

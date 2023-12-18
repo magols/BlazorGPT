@@ -35,14 +35,6 @@ public partial class BlazorGptLayout
     async Task SidebarToggleClick() {
         sidebarExpanded = !sidebarExpanded;
     }
-    void SidebarToggleClickMenu()
-    {
-        Console.WriteLine("sidelick");
-        if (_browserIsSmall)
-        {
-            sidebarExpanded = !sidebarExpanded;
-        }
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -54,10 +46,5 @@ public partial class BlazorGptLayout
         }
 
         await base.OnAfterRenderAsync(firstRender);
-    }
-
-    private async Task Cliekc()
-    {
-        Console.WriteLine("asasas");
     }
 }

@@ -77,12 +77,8 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
             lastMsg.Content = e.Message + "\n";
             OnUpdate?.Invoke();
 
-            Console.WriteLine(e);
         }
-
-
     }
-
     private async Task LoadPluginsAsync(Kernel kernel)
     {
         var semanticPlugins = await  _pluginsRepository.GetFromDiskAsync();
@@ -91,21 +87,13 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         // todo: bad to read from browser here but here we are
         if (_localStorageService != null)
         {
-            try
-            {
-                var enabledPlugins = await _localStorageService.GetItemAsync<List<Plugin>>("bgpt_plugins", _cancellationToken);
-                var enabledNames = enabledPlugins.Select(o => o.Name);
-                semanticPlugins = semanticPlugins.Where(o => enabledNames.Contains(o.Name)).ToList();
+          var enabledPlugins = await _localStorageService.GetItemAsync<List<Plugin>>("bgpt_plugins", _cancellationToken);
+            var enabledNames = enabledPlugins.Select(o => o.Name);
+            semanticPlugins = semanticPlugins.Where(o => enabledNames.Contains(o.Name)).ToList();
 
-                var native = enabledPlugins.Where(o => o.Name.LastIndexOf(".") > 1);
-                nativePlugins = native.Select(o => o.Name).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                
-            }
-
+            var native = enabledPlugins.Where(o => o.Name.LastIndexOf(".") > 1);
+            nativePlugins = native.Select(o => o.Name).ToList();
+ 
         }
 
         foreach (var plugin in semanticPlugins)
@@ -124,14 +112,11 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
                 try
                 {
                     var pluginName = className.Substring(className.LastIndexOf(".") + 1);
-                    Console.WriteLine(pluginName);
                     kernel.ImportPluginFromObject(instance, pluginName);
-
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    throw new InvalidOperationException("Could not load native plugins", e);
                 }
             }
         }

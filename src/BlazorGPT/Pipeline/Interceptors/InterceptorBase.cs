@@ -84,8 +84,7 @@ public abstract class InterceptorBase: IInterceptor
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                throw new InvalidOperationException("Could not save conversation after interceptor run", e);
             }
         }
     }
