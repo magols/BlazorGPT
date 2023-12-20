@@ -159,11 +159,7 @@
                     </div>
                     <div class="mt-4">
                         <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-
-                        <GPTModelConfiguration Visible="false"  Class="m-2 border-3" @ref="_modelConfiguration"
-                                               ModelSelectEnabled="@(Conversation.Id == null)"
-                                               PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"OnResize="@ModelConfigResized" />
-
+                        <ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
                         @if (UseFileUpload)
                         {
                             <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
@@ -202,20 +198,27 @@
                                 </div>
 
 
-                                <RadzenButton Visible="ConversationId != null" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
+                                <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
                                 <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
 
 
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-
-                                    <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
+                                    
+@*                                     <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
                                                            ModelSelectEnabled="@(Conversation.Id == null)"
                                                            PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
-                                                           OnResize="@ModelConfigResized" />
+                                                           OnResize="@ModelConfigResized" 
+                                                           Toggled="true"/> *@
+
+
 
                                     <PluginSelectorButton Class="m-1 me-3 p-1 float-end" />
-                                    <InterceptorSettings Class="m-1 me-3 p-1  float-end" />
+                                    <InterceptorSettingsButton Class="m-1 me-3 p-1  float-end" />
+                                    <ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
+
+                                    <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
+
                                 </div>
 
                                 <span class="float-end mt-2 mb-0">
@@ -233,7 +236,6 @@
                                               FolderName="@Conversation.Id?.ToString()" />
                                 }
                           
-                                <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
 
                             </EditForm>
                         </RadzenTabsItem>

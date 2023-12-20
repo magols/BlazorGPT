@@ -18,7 +18,7 @@ public class PipelineOptions
     public string Model { get; set; }
     public string ModelEmbeddings { get; set; }
     public string ModelTextCompletions { get; set; }
-    public string[] Models { get; set; }
+    public string[]? Models { get; set; }
 
     public int MaxTokens { get; set; }
 

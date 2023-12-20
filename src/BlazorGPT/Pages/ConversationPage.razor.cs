@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Blazored.LocalStorage;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
+using BlazorGPT.Settings;
 using BlazorGPT.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
@@ -91,7 +92,7 @@ namespace BlazorGPT.Pages
        
         private Conversation Conversation = new();
 
-        private GPTModelConfiguration? _modelConfiguration;
+        private ModelConfiguration? _modelConfiguration;
 
         bool promptIsReady;
         string scriptInput;
@@ -103,10 +104,13 @@ namespace BlazorGPT.Pages
         private Kernel _kernel = null!;
         private CancellationTokenSource _cancellationTokenSource;
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
-        
+
+        [Inject] private ModelConfigurationService _modelConfigurationService { get; set; }
 
          protected override async Task OnInitializedAsync()
-        {
+         {
+
+
             if (UserId == null && AuthenticationState != null)
             {
                 var authState = await AuthenticationState;
@@ -156,7 +160,6 @@ namespace BlazorGPT.Pages
 
                 await Interop.SetupCopyButtons();
 
-                _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.SelectedModel);
             }
 
             if (BotMode || selectedTabIndex == 0)
@@ -165,7 +168,6 @@ namespace BlazorGPT.Pages
             }
 
             await Interop.ScrollToBottom("message-pane");
-
         }
 
         async Task SetupConversation()
@@ -252,6 +254,18 @@ namespace BlazorGPT.Pages
             await semaphoreSlim.WaitAsync();
 
             _cancellationTokenSource = new CancellationTokenSource(2*60*1000);
+
+
+            if ( BotMode)
+            {
+                _modelConfiguration = await _modelConfigurationService.GetConfig();
+            }
+            else
+            {
+                _modelConfiguration = _modelConfigurationService.GetDefaultConfig();
+            }
+            _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.Model);
+
             try
             {
                 var strs = await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors");
@@ -316,7 +330,6 @@ namespace BlazorGPT.Pages
 
                     StateHasChanged();
 
-
                     var chatRequestSettings = new ChatRequestSettings();
                     chatRequestSettings.ExtensionData["MaxTokens"] = _modelConfiguration!.MaxTokens;
                     chatRequestSettings.ExtensionData["Temperature"] = _modelConfiguration!.Temperature;
@@ -336,7 +349,7 @@ namespace BlazorGPT.Pages
                 if (Conversation.Id == null || Conversation.Id == default(Guid))
                 {
                     Conversation.UserId = UserId;
-                    Conversation.Model = _modelConfiguration!.SelectedModel!;
+                    Conversation.Model = _modelConfiguration!.Model!;
                     isNew = true;
 
                     if (_profileSelectorStart != null)
@@ -578,26 +591,12 @@ namespace BlazorGPT.Pages
             }
         }
 
-        private async Task ModelConfigResized()
-        {
-            
-            if (_modelConfiguration!.Toggled)
-            {
-              //  controlHeight = controlHeight + 100;
-            }
-            else
-            {
-                controlHeight = initialControlHeight;
-            }
-            await Interop.ScrollToBottom("message-pane");
-
-        }
 
         private Conversation CreateDefaultConversation()
         {
             var c = new Conversation
             {
-                Model = !string.IsNullOrEmpty(_modelConfiguration?.SelectedModel) ? _modelConfiguration!.SelectedModel : PipelineOptions.Value.Model!,
+                Model = !string.IsNullOrEmpty(_modelConfiguration?.Model) ? _modelConfiguration!.Model : PipelineOptions.Value.Model!,
                 UserId = UserId
             };
 
