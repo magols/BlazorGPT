@@ -1,9 +1,16 @@
 @using BlazorGPT.Pipeline
 @using Microsoft.Extensions.Options
+@using Blazored.LocalStorage
 
 @inject IOptions<PipelineOptions> PipelineOptions
 <div class="container">
-
+    <RadzenRadioButtonList TValue="ChatModelsProvider" @bind-Value=@model.Provider Change="OnModelsProviderChange">
+        <Items>
+            <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI" />
+            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="ChatModelsProvider.AzureOpenAI" />
+            <RadzenRadioButtonListItem Text="Local" Value="ChatModelsProvider.Local" />
+        </Items>
+    </RadzenRadioButtonList>
     <div class="row m-3">
         <div class="col-3">
             <RadzenText Class="mt-3">Model</RadzenText>
@@ -16,6 +23,7 @@
                             Data="_models "@bind-Value="@model.Model"/>
         </div>
     </div>
+
     <div class="row m-3">
         <div class="col-3">
             <RadzenText>Max tokens</RadzenText>
@@ -41,9 +49,6 @@
 @code {
 
 
-    [Parameter]
-    public string? PreSelectedModel { get; set; }
-
     public string? SelectedModel { get; set; }
 
     [Parameter]
@@ -58,28 +63,49 @@
  
     string[] _models;
 
-    protected override void OnInitialized()
+
+    private void SetModels(bool setDefault = false)
     {
-        _models = PipelineOptions.Value.Models;
-        SelectedModel ??= PreSelectedModel ?? PipelineOptions.Value.Model;
+        switch (model.Provider)
+        {
+            case ChatModelsProvider.OpenAI:
+                if(setDefault) model.Model = PipelineOptions.Value.Providers.OpenAI.ChatModel;
+                _models = PipelineOptions.Value.Providers.OpenAI.ChatModels;
+                break;
+            case ChatModelsProvider.AzureOpenAI:
+                if (setDefault) model.Model = PipelineOptions.Value.Providers.AzureOpenAI.ChatModel;
+                _models = PipelineOptions.Value.Providers.AzureOpenAI.ChatModels.Select(o => o.Value).ToArray();
+                break;
+            case ChatModelsProvider.Local:
+                if (setDefault) model.Model = PipelineOptions.Value.Providers.Local.ChatModel;
+                _models = PipelineOptions.Value.Providers.Local.ChatModels;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+            
+        }
+        SelectedModel = model.Model;
         StateHasChanged();
 
-        base.OnInitialized();
+    }
+
+    private async Task OnModelsProviderChange()
+    {
+        SetModels(true);
+        await Save();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            model = await ModelConfigurationService!.GetConfig();
-            StateHasChanged();
+            model =  await ModelConfigurationService!.GetConfig();
+            SetModels();
         }
     }
-
 
     public async Task Save()
     {
         await ModelConfigurationService?.SaveConfig(model)!;
     }
-
 }

@@ -26,41 +26,6 @@ namespace BlazorGPT.Data
             _quickProfileRepository = quickProfileRepository;
             _scriptRepository = scriptRepository;
         }
-
-
-        public async Task<Conversation> CreateConversation(string summary)
-        {
-            string userId = "df2191cc-160c-49f0-a136-8cbdbba09200";
-
-
-            // create a conversation
-            var conversation = new Conversation()
-            {
-                UserId = userId,
-                Model = _options.Model!,
-                DateStarted = DateTime.Now,
-                Summary = summary
-            };
-
-            // add some chatmessages to the convrsation
-            var messages = new List<ConversationMessage>();
-            
-            conversation.AddMessage(new ConversationMessage("system","You are helping me debug this ChatpGPT app I am building"));
-            conversation.AddMessage(new ConversationMessage("user","I am using the GPT-3 API to generate responses"));
-            conversation.AddMessage(new ConversationMessage("assistant", "I will try to help you"));
-
-
-            // add the conversation to the context
-            await using var ctx = await _dbContextFactory.CreateDbContextAsync();
-            ctx.Conversations.Add(conversation);
-            await ctx.SaveChangesAsync();
-
-            return conversation;
-
-        }
-
-
-
     }
 
 

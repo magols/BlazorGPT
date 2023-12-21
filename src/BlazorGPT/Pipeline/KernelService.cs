@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Linq;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -25,37 +26,110 @@ public class KernelService
         _options = options.Value;
     }
 
-    public async Task<Kernel> CreateKernelAsync(string? model = null)
+    public async Task<Kernel> CreateKernelAsync()
     {
-        var useAzureOpenAI = _options.ServiceType != "OpenAI";
+        return await CreateKernelAsync(null, null);
+    }
 
+    public async Task<Kernel> CreateKernelAsync(string model)
+    {
+        return await CreateKernelAsync(null, model);
+    }
+
+
+    public async Task<Kernel> CreateKernelAsync(ChatModelsProvider? provider, 
+        string? model = null)
+    {
+        if (model == "") model = null;
         var builder = Kernel.CreateBuilder();
-        if (useAzureOpenAI)
+
+        if (provider == null)
         {
+            if (_options.Providers.OpenAI.IsConfigured())
+            {
+                provider = ChatModelsProvider.OpenAI;
+            }
+            else if (_options.Providers.AzureOpenAI.IsConfigured())
+            {
+                provider = ChatModelsProvider.AzureOpenAI;
+            }
+            else if (_options.Providers.Local.IsConfigured())
+            {
+                provider = ChatModelsProvider.Local;
+            }
+
+            if (provider == null)
+            {
+                throw new InvalidOperationException("No model provider is configured");
+            }
+        }
+
+        if (provider == ChatModelsProvider.AzureOpenAI)
+        {
+            model ??= _options.Providers.AzureOpenAI.ChatModel;
+
 #pragma warning disable SKEXP0011
             builder
-            .AddAzureOpenAIChatCompletion(model ?? _options.Model, _options.Endpoint, _options.ApiKey,
-                    _options.ApiKey)
-                .AddAzureOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.Endpoint, _options.ApiKey);
+            .AddAzureOpenAIChatCompletion(
+                deploymentName: _options.Providers.AzureOpenAI.ChatModels.First( p => p.Key == model).Key,
+                modelId: model,
+                endpoint: _options.Providers.AzureOpenAI.Endpoint,
+                apiKey: _options.Providers.AzureOpenAI.ApiKey
+                )
+            .AddAzureOpenAITextEmbeddingGeneration(
+                deploymentName: _options.Providers.AzureOpenAI.EmbeddingsModels.First(p => p.Key == _options.Providers.AzureOpenAI.EmbeddingsModel).Key,
+                modelId: _options.Providers.AzureOpenAI.EmbeddingsModel,
+                endpoint: _options.Providers.AzureOpenAI.Endpoint,
+                apiKey: _options.Providers.AzureOpenAI.ApiKey
+                );
 #pragma warning restore SKEXP0011
-
         }
-        else
+        if (provider == ChatModelsProvider.OpenAI)
+
         {
+            model ??= _options.Providers.OpenAI.ChatModel;
 #pragma warning disable SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             builder
-                .AddOpenAIChatCompletion(model ?? _options.Model, _options.ApiKey, _options.OrgId)
-                .AddOpenAITextEmbeddingGeneration(_options.ModelEmbeddings, _options.ApiKey, _options.OrgId)
-                .AddOpenAITextToImage(_options.ApiKey, _options.OrgId);
+                .AddOpenAIChatCompletion(model, _options.Providers.OpenAI.ApiKey)
+                .AddOpenAITextEmbeddingGeneration(_options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
+                .AddOpenAITextToImage(_options.Providers.OpenAI.ApiKey);
+
 #pragma warning restore SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         }
 
         return builder.Build();
     }
 
-
     public async Task<ISemanticTextMemory> GetMemoryStore()
     {
+        return await GetMemoryStore(null);
+    }
+
+
+    public async Task<ISemanticTextMemory> GetMemoryStore(EmbeddingsModelProvider? provider)
+    {
+        if (provider == null)
+        {
+            if (_options.Providers.OpenAI.IsConfigured())
+            {
+                provider = EmbeddingsModelProvider.OpenAI;
+            }
+            else if (_options.Providers.AzureOpenAI.IsConfigured())
+            {
+                provider = EmbeddingsModelProvider.AzureOpenAI;
+            }
+            else if (_options.Providers.Local.IsConfigured())
+            {
+                provider = EmbeddingsModelProvider.Local;
+            }
+
+            if (provider == null)
+            {
+                throw new InvalidOperationException("No embeddings model provider is configured");
+            }
+        }
+
+
         IMemoryStore memoryStore = null!;
         if (_options.Embeddings.UseSqlite)
             memoryStore = await SqliteMemoryStore.ConnectAsync(_options.Embeddings.SqliteConnectionString);
@@ -66,33 +140,39 @@ public class KernelService
             memoryStore = new RedisMemoryStore(_db);
         }
 
-        var useAzureOpenAI = _options.ServiceType != "OpenAI";
-        if (useAzureOpenAI)
+        if (provider == EmbeddingsModelProvider.AzureOpenAI)
         {
 #pragma warning disable SKEXP0011
 #pragma warning disable SKEXP0052
 
-
             var mem = new MemoryBuilder()
             .WithAzureOpenAITextEmbeddingGeneration(
-                 _options.ModelEmbeddings,
-                 _options.Endpoint,
-                 _options.ApiKey,
-                 _options.ModelEmbeddings
+                deploymentName: _options.Providers.AzureOpenAI.EmbeddingsModels.First(o => o.Value == _options.Providers.AzureOpenAI.EmbeddingsModel).Key,
+                modelId: _options.Providers.AzureOpenAI.EmbeddingsModel,
+                endpoint: _options.Providers.AzureOpenAI.Endpoint,
+                apiKey: _options.Providers.AzureOpenAI.ApiKey
             )
             .WithMemoryStore(memoryStore)
             .Build();
 
             return mem;
         }
-        else
+        
+        if (provider == EmbeddingsModelProvider.OpenAI)
         {
             var mem = new MemoryBuilder()
-                .WithOpenAITextEmbeddingGeneration(modelId:_options.ModelEmbeddings, _options.ApiKey)
+                .WithOpenAITextEmbeddingGeneration(modelId:_options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
                 .WithMemoryStore(memoryStore)
                 .Build();
             return mem;
         }
+
+        // todo: add local embeddings
+        throw new InvalidOperationException("No embeddings provider is configured");
+
+        return new MemoryBuilder()
+            .WithMemoryStore(memoryStore)
+            .Build();
     }
 
     public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,

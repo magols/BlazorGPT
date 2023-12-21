@@ -1,24 +1,129 @@
 ﻿using System.Text.Json.Serialization;
+ 
 
 namespace BlazorGPT.Pipeline;
 
-public class PipelineOptions
+public class ModelsProvidersOptions
 {
-    public string ServiceType { get; set; } = string.Empty;
+    public OpenAIModelsOptions OpenAI { get; set; } = new OpenAIModelsOptions();
+    public AzureOpenAIModelsOptions AzureOpenAI { get; set; } = new AzureOpenAIModelsOptions();
+    public LocalModelsOptions Local { get; set; } = new LocalModelsOptions();
 
- 
-    public string Endpoint { get; set; } = string.Empty;
+    public ChatModelsProvider GetChatModelsProvider()
+    {
+        if (OpenAI.IsConfigured())
+        {
+            return ChatModelsProvider.OpenAI;
+        }
+        else
+        {
+            if (AzureOpenAI.IsConfigured())
+            {
+                return ChatModelsProvider.AzureOpenAI;
+            }
+            if (Local.IsConfigured())
+            {
+                return ChatModelsProvider.Local;
+            }
+        }
 
- 
+        return ChatModelsProvider.Local; 
+    }
+
+    public string GetChatModel()
+    {
+
+        if (OpenAI.IsConfigured())
+        {
+            return OpenAI.ChatModel;
+        }
+        else
+        {
+            if (AzureOpenAI.IsConfigured())
+            {
+                return AzureOpenAI.ChatModel;
+            }
+
+            if (Local.IsConfigured())
+            {
+                return Local.LocalModelName;
+            }
+        }
+
+        return string.Empty;
+    }
+}
+
+public class LocalModelsOptions
+{
+    public string LocalModelName { get; set; } = string.Empty;
+
+    public string ChatModel { get; set; } = string.Empty;
+    public string[] ChatModels { get; set; } = Array.Empty<string>();
+
+    public string EmbeddingsModel { get; set; } = string.Empty;
+    public string[]? EmbeddingsModels { get; set; } = Array.Empty<string>();
+
+    public bool IsConfigured()
+    {
+        return string.IsNullOrEmpty(LocalModelName);
+    }
+}
+
+public enum ChatModelsProvider
+{
+    OpenAI,
+    AzureOpenAI,
+    Local
+}
+
+public enum EmbeddingsModelProvider
+{
+    OpenAI,
+    AzureOpenAI,
+    Local
+}
+
+
+public class OpenAIModelsOptions
+{
     public string ApiKey { get; set; } = string.Empty;
 
- 
-    public string OrgId { get; set; } = string.Empty;
+    public string ChatModel { get; set; } = string.Empty;
+    public string[] ChatModels { get; set; } = Array.Empty<string>();
 
-    public string Model { get; set; }
-    public string ModelEmbeddings { get; set; }
-    public string ModelTextCompletions { get; set; }
-    public string[]? Models { get; set; }
+    public string EmbeddingsModel { get; set; } = string.Empty;
+    public string[]? EmbeddingsModels { get; set; } = Array.Empty<string>();
+
+    public bool IsConfigured()
+    {
+        return !string.IsNullOrEmpty(ApiKey);
+    }
+}
+
+public class AzureOpenAIModelsOptions
+{
+    public string ApiKey { get; set; } = string.Empty;
+    public string Endpoint { get; set; } = string.Empty;
+
+    public string ChatModel { get; set; } = string.Empty;
+    public Dictionary<string, string> ChatModels { get; set; } = new Dictionary<string, string>();
+
+    public string EmbeddingsModel { get; set; } = string.Empty;
+
+
+    // deploymentId, modelId
+    public Dictionary<string,string> EmbeddingsModels { get; set; } = new Dictionary<string,string>();
+
+    public bool IsConfigured()
+    {
+        return !string.IsNullOrEmpty(ApiKey);
+    }
+}
+
+public class PipelineOptions
+{
+    public ModelsProvidersOptions Providers { get; set; } =  new ModelsProvidersOptions();
 
     public int MaxTokens { get; set; }
 
