@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
+using BlazorGPT.Settings;
 using BlazorGPT.Shared.PluginSelector;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -61,11 +62,13 @@ builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.Configure<PipelineOptions>(
     builder.Configuration.GetSection("PipelineOptions")); ;
- 
+
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
+
+builder.Services.AddScoped<ModelConfigurationService>();
 
 builder.Services.AddScoped<ConversationInterop>();
 
