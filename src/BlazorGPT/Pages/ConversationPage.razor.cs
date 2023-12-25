@@ -130,8 +130,8 @@ namespace BlazorGPT.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-
-            UseFileUpload = PipelineOptions!.Value.Bot.FileUpload.Enabled;
+            UseFileUpload = BotMode ? PipelineOptions!.Value.Bot.FileUpload.Enabled :
+                    PipelineOptions!.Value.FileUpload.Enabled;
 
             await SetupConversation();
             StateHasChanged();
