@@ -22,7 +22,8 @@ public class ModelConfigurationService
     {
         return new ModelConfiguration()
         {
-            Model = _pipelineOptions.Model,
+            Provider = _pipelineOptions.Providers.GetChatModelsProvider(),
+            Model = _pipelineOptions.Providers.GetChatModel(),
             MaxTokens = _pipelineOptions.MaxTokens,
             Temperature = 0.0f
         };

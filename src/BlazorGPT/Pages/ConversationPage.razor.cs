@@ -258,13 +258,13 @@ namespace BlazorGPT.Pages
 
             if ( BotMode)
             {
-                _modelConfiguration = await _modelConfigurationService.GetConfig();
+                _modelConfiguration =   _modelConfigurationService.GetDefaultConfig();
             }
             else
             {
-                _modelConfiguration = _modelConfigurationService.GetDefaultConfig();
+                _modelConfiguration = await _modelConfigurationService.GetConfig();
             }
-            _kernel = await KernelService.CreateKernelAsync(_modelConfiguration!.Model);
+            _kernel = await KernelService.CreateKernelAsync( provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
 
             try
             {
@@ -333,7 +333,6 @@ namespace BlazorGPT.Pages
                     var chatRequestSettings = new ChatRequestSettings();
                     chatRequestSettings.ExtensionData["MaxTokens"] = _modelConfiguration!.MaxTokens;
                     chatRequestSettings.ExtensionData["Temperature"] = _modelConfiguration!.Temperature;
-
 
                     Conversation = await
                         KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, chatRequestSettings, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
@@ -405,10 +404,8 @@ namespace BlazorGPT.Pages
             catch (TaskCanceledException)
             {
                 var res = await DialogService.Alert("The operation was cancelled");
-                //cancellationTokenSource = new CancellationTokenSource();
                 Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
 
-                //_cancellationTokenSource?.TryReset();
                 semaphoreSlim.Release();
                 StateHasChanged();
                 return;
@@ -596,7 +593,7 @@ namespace BlazorGPT.Pages
         {
             var c = new Conversation
             {
-                Model = !string.IsNullOrEmpty(_modelConfiguration?.Model) ? _modelConfiguration!.Model : PipelineOptions.Value.Model!,
+                Model = !string.IsNullOrEmpty(_modelConfiguration?.Model) ? _modelConfiguration!.Model : PipelineOptions.Value.Providers.OpenAI.ChatModel!,
                 UserId = UserId
             };
 
