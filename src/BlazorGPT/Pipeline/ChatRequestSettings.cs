@@ -8,7 +8,7 @@ public class ChatRequestSettings : PromptExecutionSettings
     {
         ExtensionData = new Dictionary<string, object>
         {
-            { "MaxTokens", 2500 },
+            { "MaxTokens", 4000 },
             { "Temperature", 0.0 },
             { "TopP", 0 },
             { "FrequencyPenalty", 0.0 },

@@ -72,7 +72,7 @@ public class ChatWrapper
         
         var conversationMessage = new ConversationMessage("assistant", "");
         conversation.AddMessage(conversationMessage);
-        await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, requestSettings, callback, cancellationToken);
+        await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, requestSettings: requestSettings, callback, cancellationToken);
 
         await using var ctx = await _contextFactory.CreateDbContextAsync(cancellationToken);
 

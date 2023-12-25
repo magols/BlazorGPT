@@ -251,6 +251,9 @@ namespace BlazorGPT.Pages
 
             }
 
+            // add images if user has uploaded
+
+
             await semaphoreSlim.WaitAsync();
 
             _cancellationTokenSource = new CancellationTokenSource(2*60*1000);

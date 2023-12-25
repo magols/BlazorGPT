@@ -176,39 +176,52 @@ public class KernelService
     }
 
     public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
-        Conversation conversation,
-        PromptExecutionSettings requestSettings,
-        Func<string, Task<string>> OnStreamCompletion,
-        CancellationToken cancellationToken)
-    {
-        var chatHistory = new ChatHistory();
-        foreach (var message in conversation.Messages.Where(c => !string.IsNullOrEmpty(c.Content.Trim())))
-        {
-            var role =
-                message.Role == "system"
-                    ? AuthorRole.System
-                    : // if the role is system, set the role to system
-                    message.Role == "user"
-                        ? AuthorRole.User
-                        : AuthorRole.Assistant;
-
-            chatHistory.AddMessage(role, message.Content);
-        }
-
-        return await ChatCompletionAsStreamAsync(kernel, chatHistory, conversation, requestSettings, OnStreamCompletion,
-            cancellationToken);
-    }
-
-    private async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
         ChatHistory chatHistory,
-        Conversation conversation,
-        PromptExecutionSettings requestSettings,
-        Func<string, Task<string>> onStreamCompletion, CancellationToken cancellationToken)
+        PromptExecutionSettings? requestSettings = default,
+        Func<string, Task<string>>? onStreamCompletion = null,
+        CancellationToken cancellationToken = default)
     {
+        requestSettings ??= new ChatRequestSettings();
+
         var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
         var fullMessage = string.Empty;
 
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(chatHistory,
+                           requestSettings, cancellationToken: cancellationToken))
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return chatHistory.ToConversation();
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return chatHistory.ToConversation();
+            }
+ 
+            fullMessage += completionResult.Content;
+            if (onStreamCompletion != null) await onStreamCompletion.Invoke(completionResult.Content);
+ 
+        }
+
+        chatHistory.AddMessage(AuthorRole.Assistant, fullMessage);
+        return chatHistory.ToConversation();
+    }
+
+    public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
+        Conversation conversation,
+        PromptExecutionSettings? requestSettings = default,
+        Func<string, Task<string>>? onStreamCompletion = null,
+        CancellationToken cancellationToken = default)
+    {
+        requestSettings ??= new ChatRequestSettings();
+
+        var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
+        var fullMessage = string.Empty;
+
+        var history = conversation.ToChatHistory();
+
+        await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(history,
                            requestSettings, cancellationToken: cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
@@ -228,5 +241,47 @@ public class KernelService
 
         conversation.Messages.Last().Content = fullMessage;
         return conversation;
+    }
+}
+
+public static class ChatExtensions
+{
+    public static ChatHistory ToChatHistory(this Conversation conversation)
+    {
+        var chatHistory = new ChatHistory();
+        foreach (var message in conversation.Messages.Where(c => !string.IsNullOrEmpty(c.Content.Trim())))
+        {
+            var role =
+                message.Role == "system"
+                    ? AuthorRole.System
+                    : // if the role is system, set the role to system
+                    message.Role == "user"
+                        ? AuthorRole.User
+                        : AuthorRole.Assistant;
+
+            chatHistory.AddMessage(role, message.Content);
+        }
+
+        return chatHistory;
+    }
+
+    public static Conversation ToConversation(this ChatHistory chatHistory)
+    {
+        var conversation = new Conversation();
+        foreach (var message in chatHistory)
+        {
+            var role =
+                message.Role == AuthorRole.System
+                    ? "system"
+                    : // if the role is system, set the role to system
+                    message.Role == AuthorRole.User
+                        ? "user"
+                        : "assistant";
+
+            conversation.AddMessage(new ConversationMessage(role, message.Content));
+        }
+
+        return conversation;
+
     }
 }
