@@ -101,7 +101,7 @@ namespace BlazorGPT.Pages
         private int controlHeight { get; set; }
         private int initialControlHeight = 0;
 
-        private Kernel _kernel = null!;
+        private Kernel? _kernel = null!;
         private CancellationTokenSource _cancellationTokenSource;
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
@@ -267,7 +267,8 @@ namespace BlazorGPT.Pages
             {
                 _modelConfiguration = await _modelConfigurationService.GetConfig();
             }
-            _kernel = await KernelService.CreateKernelAsync( provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
+            
+            _kernel ??= await KernelService.CreateKernelAsync( provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
 
             try
             {
@@ -455,9 +456,11 @@ namespace BlazorGPT.Pages
 
         BrowserWindowSize browser = new BrowserWindowSize();
 
-        void IDisposable.Dispose()
+        public void Dispose()
         {
-            ResizeListener.OnResized -= WindowResized;
+	        _kernel = null;
+
+			ResizeListener.OnResized -= WindowResized;
 
             if (InterceptorHandler != null)
                 InterceptorHandler.OnUpdate -= UpdateAndRedraw;

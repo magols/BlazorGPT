@@ -1,5 +1,6 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using LLama;
+using LLamaSharp.SemanticKernel.ChatCompletion;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -8,6 +9,10 @@ using Microsoft.SemanticKernel.Connectors.Redis;
 using Microsoft.SemanticKernel.Connectors.Sqlite;
 using Microsoft.SemanticKernel.Memory;
 using StackExchange.Redis;
+using AuthorRole = Microsoft.SemanticKernel.ChatCompletion.AuthorRole;
+using ChatHistory = Microsoft.SemanticKernel.ChatCompletion.ChatHistory;
+using ModelParams = LLama.Common.ModelParams;
+
 #pragma warning disable SKEXP0003
 #pragma warning disable SKEXP0011
 #pragma warning disable SKEXP0052
@@ -21,7 +26,7 @@ public class KernelService
 {
     private readonly PipelineOptions _options;
 
-    public KernelService(IOptions<PipelineOptions> options)
+	public KernelService(IOptions<PipelineOptions> options)
     {
         _options = options.Value;
     }
@@ -36,6 +41,7 @@ public class KernelService
         return await CreateKernelAsync(null, model);
     }
 
+    public static LLamaWeights? _weights;
 
     public async Task<Kernel> CreateKernelAsync(ChatModelsProvider? provider, 
         string? model = null)
@@ -97,8 +103,30 @@ public class KernelService
 #pragma warning restore SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         }
 
+        if (provider == ChatModelsProvider.Local)
+        {
+			model ??= _options.Providers.Local.ChatModel;
+
+            var parameters = new ModelParams(model)
+            {
+                GpuLayerCount = 10
+            };
+
+            _weights ??= LoadLocalModel(model, parameters);
+            var se = new StatelessExecutor(_weights, parameters);
+            builder.Services.AddSingleton<IChatCompletionService>(new LLamaSharpChatCompletion(se));
+		}
+
+
         return builder.Build();
     }
+
+    public LLamaWeights LoadLocalModel(string modelPath, ModelParams modelParams)
+    {
+ 	    var weights = LLamaWeights.LoadFromFile(modelParams);
+
+		return weights;
+	}
 
     public async Task<ISemanticTextMemory> GetMemoryStore()
     {
@@ -167,13 +195,9 @@ public class KernelService
             return mem;
         }
 
-        // todo: add local embeddings
         throw new InvalidOperationException("No embeddings provider is configured");
-
-        return new MemoryBuilder()
-            .WithMemoryStore(memoryStore)
-            .Build();
     }
+
 
     public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
         ChatHistory chatHistory,
@@ -216,13 +240,13 @@ public class KernelService
     {
         requestSettings ??= new ChatRequestSettings();
 
-        var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
+        IChatCompletionService chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
         var fullMessage = string.Empty;
 
         var history = conversation.ToChatHistory();
 
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(history,
-                           requestSettings, cancellationToken: cancellationToken))
+                           requestSettings, kernel, cancellationToken: cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -241,47 +265,5 @@ public class KernelService
 
         conversation.Messages.Last().Content = fullMessage;
         return conversation;
-    }
-}
-
-public static class ChatExtensions
-{
-    public static ChatHistory ToChatHistory(this Conversation conversation)
-    {
-        var chatHistory = new ChatHistory();
-        foreach (var message in conversation.Messages.Where(c => !string.IsNullOrEmpty(c.Content.Trim())))
-        {
-            var role =
-                message.Role == "system"
-                    ? AuthorRole.System
-                    : // if the role is system, set the role to system
-                    message.Role == "user"
-                        ? AuthorRole.User
-                        : AuthorRole.Assistant;
-
-            chatHistory.AddMessage(role, message.Content);
-        }
-
-        return chatHistory;
-    }
-
-    public static Conversation ToConversation(this ChatHistory chatHistory)
-    {
-        var conversation = new Conversation();
-        foreach (var message in chatHistory)
-        {
-            var role =
-                message.Role == AuthorRole.System
-                    ? "system"
-                    : // if the role is system, set the role to system
-                    message.Role == AuthorRole.User
-                        ? "user"
-                        : "assistant";
-
-            conversation.AddMessage(new ConversationMessage(role, message.Content));
-        }
-
-        return conversation;
-
     }
 }
