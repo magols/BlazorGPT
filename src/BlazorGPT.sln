@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorGPT.Web", "BlazorGPT.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorGPT", "BlazorGPT\BlazorGPT.csproj", "{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codeblaze.SemanticKernel.Connectors.Ollama", "..\..\Codeblaze.SemanticKernel\Codeblaze.SemanticKernel.Connectors.Ollama\Codeblaze.SemanticKernel.Connectors.Ollama.csproj", "{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,12 @@ Global
 		{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2C580CE-9413-4040-8A56-6DF7B24C8E1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}.Publish|Any CPU.Build.0 = Debug|Any CPU
+		{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35322FB0-2FE3-4DB9-802E-3D8472B6C4E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

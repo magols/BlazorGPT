@@ -19,6 +19,8 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
 
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.2" />
+
+    <PackageReference Include="Codeblaze.SemanticKernel.Connectors.Ollama" Version="1.1.0" />
     <PackageReference Include="CoreCLR-NCalc" Version="3.0.119" />
     <PackageReference Include="Markdig" Version="0.34.0" />
     <PackageReference Include="Markdown.ColorCode" Version="2.1.0" />
@@ -73,6 +75,11 @@
 
 
   <!--<ItemGroup>
+    <ProjectReference Include="..\..\..\Codeblaze.SemanticKernel\Codeblaze.SemanticKernel.Connectors.Ollama\Codeblaze.SemanticKernel.Connectors.Ollama.csproj" />
+  </ItemGroup>-->
+
+
+  <!--<ItemGroup>
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Skills\Skills.Web\Skills.Web.csproj" />
 
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.AI.OpenAI\Connectors.AI.OpenAI.csproj" />
@@ -88,13 +95,6 @@
     
 
   </ItemGroup>-->
-
-  <ItemGroup><!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel\SemanticKernel.csproj" />-->
-
-    <!--<ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Planners\Planners.Core\Planners.Core.csproj" />-->
-
-  
-  </ItemGroup>
  
 
 </Project>

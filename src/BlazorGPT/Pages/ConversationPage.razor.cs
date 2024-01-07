@@ -334,8 +334,13 @@ namespace BlazorGPT.Pages
                     StateHasChanged();
 
                     var chatRequestSettings = new ChatRequestSettings();
-                    chatRequestSettings.ExtensionData["MaxTokens"] = _modelConfiguration!.MaxTokens;
-                    chatRequestSettings.ExtensionData["Temperature"] = _modelConfiguration!.Temperature;
+                    chatRequestSettings.ExtensionData["max_tokens"] = _modelConfiguration!.MaxTokens;
+                    chatRequestSettings.ExtensionData["temperature"] = _modelConfiguration!.Temperature;
+
+                    if (_modelConfiguration.Provider == ChatModelsProvider.Ollama)
+                    {
+                        chatRequestSettings.ModelId = _modelConfiguration!.Model;
+					}
 
                     Conversation = await
                         KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, chatRequestSettings, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);

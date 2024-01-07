@@ -9,6 +9,8 @@ public class ModelsProvidersOptions
     public AzureOpenAIModelsOptions AzureOpenAI { get; set; } = new AzureOpenAIModelsOptions();
     public LocalModelsOptions Local { get; set; } = new LocalModelsOptions();
 
+    public OllamaOptions Ollama { get; set; } = new OllamaOptions();
+
     public ChatModelsProvider GetChatModelsProvider()
     {
         if (OpenAI.IsConfigured())
@@ -54,6 +56,18 @@ public class ModelsProvidersOptions
     }
 }
 
+
+public class OllamaOptions
+{
+	public string BaseUrl { get; set; } = "";
+    public string[] Models { get; set; } = Array.Empty<string>();
+    public string ChatModel { get; set; }
+
+    public bool IsConfigured()
+    {
+        return !string.IsNullOrEmpty(BaseUrl);
+    }
+}
 public class LocalModelsOptions
 {
     public string LocalModelName { get; set; } = string.Empty;
@@ -74,6 +88,7 @@ public enum ChatModelsProvider
 {
     OpenAI,
     AzureOpenAI,
+    Ollama,
     Local
 }
 
@@ -81,6 +96,7 @@ public enum EmbeddingsModelProvider
 {
     OpenAI,
     AzureOpenAI,
+    Ollama,
     Local
 }
 

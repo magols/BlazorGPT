@@ -1,6 +1,9 @@
 ﻿using System.Globalization;
 using System.Linq;
+using Codeblaze.SemanticKernel.Connectors.Ollama;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -97,6 +100,14 @@ public class KernelService
 #pragma warning restore SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         }
 
+        if (provider == ChatModelsProvider.Ollama)
+        {
+	        builder.Services.AddTransient<HttpClient>();
+			model ??= _options.Providers.Local.ChatModel;
+			builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl);
+
+        }
+
         return builder.Build();
     }
 
@@ -118,7 +129,12 @@ public class KernelService
             {
                 provider = EmbeddingsModelProvider.AzureOpenAI;
             }
-            else if (_options.Providers.Local.IsConfigured())
+            else if (_options.Providers.Ollama.IsConfigured())
+            {
+	            provider = EmbeddingsModelProvider.Ollama;
+            }
+
+			else if (_options.Providers.Local.IsConfigured())
             {
                 provider = EmbeddingsModelProvider.Local;
             }
@@ -168,7 +184,19 @@ public class KernelService
         }
 
         // todo: add local embeddings
-        throw new InvalidOperationException("No embeddings provider is configured");
+
+        if (provider == EmbeddingsModelProvider.Local)
+        {
+            
+            var httpClient = new HttpClient();
+           var generation = new OllamaTextEmbeddingGeneration("phi", "", httpClient, null);
+			var mem = new MemoryBuilder()
+				
+				//.WithTextEmbeddingGeneration(generation)
+				.WithMemoryStore(memoryStore)
+				.Build();
+			return mem;
+		}
 
         return new MemoryBuilder()
             .WithMemoryStore(memoryStore)
@@ -208,7 +236,39 @@ public class KernelService
         return chatHistory.ToConversation();
     }
 
-    public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
+
+    public async Task<Conversation> OllamaChatCompletion(Kernel kernel,
+	    Conversation conversation,
+	    PromptExecutionSettings? requestSettings = default,
+	    CancellationToken cancellationToken = default)
+    {
+	    requestSettings ??= new ChatRequestSettings();
+
+	    var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
+
+        //todo: now we have to recreate sttings, Ollama does't like the max_tokens parameter
+	    var settings = new PromptExecutionSettings
+	    {
+		    ExtensionData = new Dictionary<string, object>
+		    {
+			    { "temperature", requestSettings?.ExtensionData!["temperature"] ?? 0 }
+		    }
+	    };
+
+	    var completion = await chatCompletion.GetChatMessageContentsAsync(conversation.ToChatHistory(), settings, kernel, cancellationToken);
+
+	    var content = "";
+	    foreach (var chatMessageContent in completion)
+	    {
+		    content += chatMessageContent.Content;
+	    }
+
+	    conversation.Messages.Last().Content = content;
+	    return conversation;
+    }
+
+
+	public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
         Conversation conversation,
         PromptExecutionSettings? requestSettings = default,
         Func<string, Task<string>>? onStreamCompletion = null,
@@ -217,8 +277,15 @@ public class KernelService
         requestSettings ??= new ChatRequestSettings();
 
         var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
-        var fullMessage = string.Empty;
 
+
+        if (chatCompletion is OllamaChatCompletionService)
+        {
+	        return await OllamaChatCompletion(kernel, conversation, requestSettings, cancellationToken);
+        }
+
+
+        var fullMessage = string.Empty;
         var history = conversation.ToChatHistory();
 
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(history,

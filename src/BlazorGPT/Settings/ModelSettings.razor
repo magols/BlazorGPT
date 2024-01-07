@@ -8,6 +8,7 @@
         <Items>
             <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI" />
             <RadzenRadioButtonListItem Text="AzureOpenAI" Value="ChatModelsProvider.AzureOpenAI" />
+            <RadzenRadioButtonListItem Text="Ollama" Value="ChatModelsProvider.Ollama" />
             <RadzenRadioButtonListItem Text="Local" Value="ChatModelsProvider.Local" />
         </Items>
     </RadzenRadioButtonList>
@@ -76,6 +77,12 @@
                 if (setDefault) model.Model = PipelineOptions.Value.Providers.AzureOpenAI.ChatModel;
                 _models = PipelineOptions.Value.Providers.AzureOpenAI.ChatModels.Select(o => o.Value).ToArray();
                 break;
+
+            case ChatModelsProvider.Ollama:
+                if (setDefault) model.Model = PipelineOptions.Value.Providers.Ollama.ChatModel;
+                _models = PipelineOptions.Value.Providers.Ollama.Models;
+                break;
+
             case ChatModelsProvider.Local:
                 if (setDefault) model.Model = PipelineOptions.Value.Providers.Local.ChatModel;
                 _models = PipelineOptions.Value.Providers.Local.ChatModels;
