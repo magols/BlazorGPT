@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq;
+using BlazorGPT.Embeddings;
+using BlazorGPT.Ollama;
 using Codeblaze.SemanticKernel.Connectors.Ollama;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -104,8 +106,7 @@ public class KernelService
         {
 	        builder.Services.AddTransient<HttpClient>();
 			model ??= _options.Providers.Local.ChatModel;
-			builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl);
-
+			builder.AddCustomOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl);
         }
 
         return builder.Build();
@@ -113,11 +114,11 @@ public class KernelService
 
     public async Task<ISemanticTextMemory> GetMemoryStore()
     {
-        return await GetMemoryStore(null);
+        return await GetMemoryStore(null, null);
     }
 
 
-    public async Task<ISemanticTextMemory> GetMemoryStore(EmbeddingsModelProvider? provider)
+    public async Task<ISemanticTextMemory> GetMemoryStore(EmbeddingsModelProvider? provider, string? model)
     {
         if (provider == null)
         {
@@ -185,14 +186,17 @@ public class KernelService
 
         // todo: add local embeddings
 
-        if (provider == EmbeddingsModelProvider.Local)
+        if (provider == EmbeddingsModelProvider.Ollama)
         {
             
             var httpClient = new HttpClient();
-           var generation = new OllamaTextEmbeddingGeneration("phi", "", httpClient, null);
-			var mem = new MemoryBuilder()
-				
-				//.WithTextEmbeddingGeneration(generation)
+           var generation = new OllamaTextEmbeddingGenerationService(model ?? _options.Providers.Ollama.ChatModel,
+               _options.Providers.Ollama.BaseUrl,
+               httpClient,
+               null);
+
+            var mem = new MemoryBuilder()
+				.WithTextEmbeddingGeneration(generation)
 				.WithMemoryStore(memoryStore)
 				.Build();
 			return mem;
@@ -254,8 +258,10 @@ public class KernelService
 			    { "temperature", requestSettings?.ExtensionData!["temperature"] ?? 0 }
 		    }
 	    };
+            
+        var history = conversation.ToChatHistory();
 
-	    var completion = await chatCompletion.GetChatMessageContentsAsync(conversation.ToChatHistory(), settings, kernel, cancellationToken);
+	    var completion = await chatCompletion.GetChatMessageContentsAsync(history, settings, kernel, cancellationToken);
 
 	    var content = "";
 	    foreach (var chatMessageContent in completion)
@@ -279,7 +285,7 @@ public class KernelService
         var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
 
 
-        if (chatCompletion is OllamaChatCompletionService)
+        if (chatCompletion is OllamaChatCompletion)
         {
 	        return await OllamaChatCompletion(kernel, conversation, requestSettings, cancellationToken);
         }
