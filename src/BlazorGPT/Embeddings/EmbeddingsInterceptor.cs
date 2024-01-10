@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
+using BlazorGPT.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using SharpToken;
@@ -13,11 +14,13 @@ public class EmbeddingsInterceptor : IInterceptor
     private readonly PipelineOptions _options;
     private readonly string IndexName = "blazorgpt";
     private readonly KernelService _kernelService;
+    private ModelConfigurationService _modelConfigurationService;
 
 
     public EmbeddingsInterceptor(IOptions<PipelineOptions> options,
-        KernelService kernelService)
+        KernelService kernelService, ModelConfigurationService modelConfigurationService)
     {
+        _modelConfigurationService = modelConfigurationService;
         _kernelService = kernelService;
         _options = options.Value;
 
@@ -38,9 +41,11 @@ public class EmbeddingsInterceptor : IInterceptor
     {
         if (conversation.Messages.Count == 2)
         {
+            var modelConfig = await _modelConfigurationService.GetConfig();
+
             var prompt = conversation.Messages.First(m => m.Role == "user");
 
-            var memStore = await _kernelService.GetMemoryStore();
+            var memStore = await _kernelService.GetMemoryStore(modelConfig.EmbeddingsProvider, modelConfig.EmbeddingsModel);
             var searchResult = memStore.SearchAsync(IndexName, prompt.Content, 10, 0.75d, cancellationToken: cancellationToken);
             var maxTokens = _options.Embeddings.MaxTokensToIncludeAsContext;
             var tokens = 0;

@@ -63,6 +63,9 @@ public class OllamaOptions
     public string[] Models { get; set; } = Array.Empty<string>();
     public string ChatModel { get; set; }
 
+    public string[] EmbeddingsModels { get; set; } = Array.Empty<string>();
+    public string EmbeddingsModel { get; set; }
+
     public bool IsConfigured()
     {
         return !string.IsNullOrEmpty(BaseUrl);
@@ -76,7 +79,7 @@ public class LocalModelsOptions
     public string[] ChatModels { get; set; } = Array.Empty<string>();
 
     public string EmbeddingsModel { get; set; } = string.Empty;
-    public string[]? EmbeddingsModels { get; set; } = Array.Empty<string>();
+    public string[] EmbeddingsModels { get; set; } = Array.Empty<string>();
 
     public bool IsConfigured()
     {
@@ -109,7 +112,7 @@ public class OpenAIModelsOptions
     public string[] ChatModels { get; set; } = Array.Empty<string>();
 
     public string EmbeddingsModel { get; set; } = string.Empty;
-    public string[]? EmbeddingsModels { get; set; } = Array.Empty<string>();
+    public string[] EmbeddingsModels { get; set; } = Array.Empty<string>();
 
     public bool IsConfigured()
     {

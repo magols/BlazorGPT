@@ -8,4 +8,9 @@ public class ModelConfiguration
     public string Model { get; set; }
     public int MaxTokens { get; set; }
     public float Temperature { get; set; }
+
+    public EmbeddingsModelProvider EmbeddingsProvider { get; set; }
+    public string EmbeddingsModel { get; set; }
+
+
 }

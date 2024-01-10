@@ -1,15 +1,20 @@
 @using BlazorGPT.Pipeline
 @using Microsoft.Extensions.Options
-@using Blazored.LocalStorage
 
 @inject IOptions<PipelineOptions> PipelineOptions
-<div class="container">
+<div class="container border p-3 m-0">
+    <div class="row">
+
+        <div class="col">
+            <strong>Chatmodel</strong>
+        </div>        
+    </div>
     <RadzenRadioButtonList TValue="ChatModelsProvider" @bind-Value=@model.Provider Change="OnModelsProviderChange">
         <Items>
-            <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI" />
-            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="ChatModelsProvider.AzureOpenAI" />
-            <RadzenRadioButtonListItem Text="Ollama" Value="ChatModelsProvider.Ollama" />
-            <RadzenRadioButtonListItem Text="Local" Value="ChatModelsProvider.Local" />
+            <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI"/>
+            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="ChatModelsProvider.AzureOpenAI"/>
+            <RadzenRadioButtonListItem Text="Ollama" Value="ChatModelsProvider.Ollama"/>
+            <RadzenRadioButtonListItem Text="Local" Value="ChatModelsProvider.Local"/>
         </Items>
     </RadzenRadioButtonList>
     <div class="row m-3">
@@ -21,7 +26,7 @@
                             Change="Save"
                             Style="font-size: small;"
                             TValue="string"
-                            Data="_models "@bind-Value="@model.Model"/>
+                            Data="_models"@bind-Value="@model.Model"/>
         </div>
     </div>
 
@@ -47,6 +52,35 @@
     </div>
 </div>
 
+<div class="container border p-3 m-0">
+    <div class="row">
+
+        <div class="col">
+            <strong>Embeddings</strong>
+        </div>        
+    </div>
+    <RadzenRadioButtonList TValue="EmbeddingsModelProvider" @bind-Value=@model.EmbeddingsProvider Change="OnEmbeddingsModelsProviderChange">
+        <Items>
+            <RadzenRadioButtonListItem Text="OpenAI" Value="@EmbeddingsModelProvider.OpenAI" />
+            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="EmbeddingsModelProvider.AzureOpenAI" />
+            <RadzenRadioButtonListItem Text="Ollama" Value="EmbeddingsModelProvider.Ollama" />
+            <RadzenRadioButtonListItem Text="Local" Value="EmbeddingsModelProvider.Local" />
+        </Items>
+    </RadzenRadioButtonList>
+    <div class="row m-3">
+        <div class="col-3">
+            <RadzenText Class="mt-3">Model</RadzenText>
+        </div>
+        <div class="col-9">
+            <RadzenDropDown TValue="string"
+                            Change="Save"
+                            Style="font-size: small;"
+                            TValue="string"
+                            Data="_embeddingsModels"@bind-Value="@model.EmbeddingsModel"/>
+        </div>
+    </div>
+</div>
+
 @code {
 
 
@@ -63,6 +97,7 @@
     
  
     string[] _models;
+    private string[]? _embeddingsModels;
 
 
     private void SetModels(bool setDefault = false)
@@ -108,6 +143,7 @@
         {
             model =  await ModelConfigurationService!.GetConfig();
             SetModels();
+            SetEmbeddingsModels();
         }
     }
 
@@ -115,4 +151,44 @@
     {
         await ModelConfigurationService?.SaveConfig(model)!;
     }
+
+    private async Task OnEmbeddingsModelsProviderChange(EmbeddingsModelProvider arg)
+    {
+
+        SetEmbeddingsModels(true);
+        await Save();
+    }
+
+    public string? SelectedEmbeddingsModel { get; set; }
+
+    private void SetEmbeddingsModels(bool setDefault = false)
+    {
+        switch (model.EmbeddingsProvider)
+        {
+            case EmbeddingsModelProvider.OpenAI:
+                if (setDefault) model.EmbeddingsModel = PipelineOptions.Value.Providers.OpenAI.EmbeddingsModel;
+                _embeddingsModels = PipelineOptions.Value.Providers.OpenAI.EmbeddingsModels;
+                break;
+            case EmbeddingsModelProvider.AzureOpenAI:
+                if (setDefault) model.EmbeddingsModel = PipelineOptions.Value.Providers.AzureOpenAI.EmbeddingsModel;
+                _embeddingsModels = PipelineOptions.Value.Providers.AzureOpenAI.EmbeddingsModels.Select(o => o.Value).ToArray();
+                break;
+
+            case EmbeddingsModelProvider.Ollama:
+                if (setDefault) model.EmbeddingsModel = PipelineOptions.Value.Providers.Ollama.EmbeddingsModel;
+                _embeddingsModels = PipelineOptions.Value.Providers.Ollama.EmbeddingsModels;
+                break;
+
+            case EmbeddingsModelProvider.Local:
+                if (setDefault) model.EmbeddingsModel = PipelineOptions.Value.Providers.Local.EmbeddingsModel;
+                _embeddingsModels = PipelineOptions.Value.Providers.Local.EmbeddingsModels;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+            
+        }
+        SelectedEmbeddingsModel = model.EmbeddingsModel;
+        StateHasChanged();
+    }
+
 }

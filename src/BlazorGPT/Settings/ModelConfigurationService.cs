@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using BlazorGPT.Pipeline;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel.Memory;
 
 namespace BlazorGPT.Settings;
 
@@ -34,7 +35,17 @@ public class ModelConfigurationService
         if (_userConfig != null) 
             return _userConfig;
 
-        var model = await _localStorageService!.GetItemAsync<ModelConfiguration?>(StorageKey);
+        ModelConfiguration? model = null;
+        try
+        {
+            model = await _localStorageService!.GetItemAsync<ModelConfiguration?>(StorageKey);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
         if (model == null)
         {
             model = GetDefaultConfig();
