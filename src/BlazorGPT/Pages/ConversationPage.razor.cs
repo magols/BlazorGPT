@@ -110,8 +110,7 @@ namespace BlazorGPT.Pages
          protected override async Task OnInitializedAsync()
          {
 
-
-            if (UserId == null && AuthenticationState != null)
+             if (UserId == null && AuthenticationState != null)
             {
                 var authState = await AuthenticationState;
                 var user = authState?.User;
@@ -125,6 +124,8 @@ namespace BlazorGPT.Pages
 
 
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
+
+            _cancellationTokenSource = new CancellationTokenSource(2 * 60 * 1000);
         }
 
         private async Task  UpdateAndRedraw()
@@ -256,9 +257,6 @@ namespace BlazorGPT.Pages
 
             await semaphoreSlim.WaitAsync();
 
-            _cancellationTokenSource = new CancellationTokenSource(2*60*1000);
-
-
             if ( BotMode)
             {
                 _modelConfiguration =   _modelConfigurationService.GetDefaultConfig();
@@ -329,6 +327,8 @@ namespace BlazorGPT.Pages
             {
                 if (!Conversation.StopRequested)
                 {
+                    _modelConfiguration ??= await _modelConfigurationService.GetConfig();
+                    
                     Conversation.AddMessage("assistant", "");
 
                     StateHasChanged();
@@ -336,11 +336,6 @@ namespace BlazorGPT.Pages
                     var chatRequestSettings = new ChatRequestSettings();
                     chatRequestSettings.ExtensionData["max_tokens"] = _modelConfiguration!.MaxTokens;
                     chatRequestSettings.ExtensionData["temperature"] = _modelConfiguration!.Temperature;
-
-                    if (_modelConfiguration.Provider == ChatModelsProvider.Ollama)
-                    {
-                        chatRequestSettings.ModelId = _modelConfiguration!.Model;
-					}
 
                     Conversation = await
                         KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, chatRequestSettings, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
@@ -482,6 +477,9 @@ namespace BlazorGPT.Pages
         {
             IsBusy = true;
             Conversation.Messages.Clear();
+
+            _modelConfiguration = await _modelConfigurationService.GetConfig();
+            _kernel = await KernelService.CreateKernelAsync(_modelConfiguration.Provider, _modelConfiguration.Model);
 
             loadedScript = await ScriptRepository.GetScript(guid);
 
