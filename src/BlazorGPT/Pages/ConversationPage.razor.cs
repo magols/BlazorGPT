@@ -383,7 +383,7 @@ namespace BlazorGPT.Pages
 
                 Conversation =
                     await InterceptorHandler.Receive(_kernel, Conversation,
-                        await LocalStorageService.GetItemAsync<List<string>>("bgtpc_interceptors"));
+                        await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors"));
 
                 if (!BotMode  && wasSummarized)
                 {
