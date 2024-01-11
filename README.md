@@ -36,7 +36,7 @@ Extensible. Create your own plugins in the form of IInterceptors that intercepts
   ![](docs/images/branched.png)
 
 - Select which interceptors to run in pipeline
-![](config_interceptors.png)
+![](docs/images/config_interceptors.png)
 
 - Select which plugins to run in pipeline
   ![](docs/images/config_plugins.png)
