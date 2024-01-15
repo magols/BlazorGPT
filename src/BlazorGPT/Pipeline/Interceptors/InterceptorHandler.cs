@@ -1,7 +1,6 @@
-﻿using System.Collections;
+﻿using BlazorGPT.Settings;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 
@@ -14,7 +13,7 @@ public class InterceptorHandler : IInterceptorHandler
 
     private PipelineOptions? pipelineOptions = null;
     private readonly PipelineOptions _options;
-
+    private InterceptorRepository _interceptorRepository;
 
 
     public Func<Task>? OnUpdate { get; set; }
@@ -22,23 +21,29 @@ public class InterceptorHandler : IInterceptorHandler
     [Inject]
     public IServiceProvider ServiceProvider { get; set; } = null!;
 
-    public InterceptorHandler(IServiceProvider serviceProvider, IConfiguration configuration, IOptions<PipelineOptions> options)
+    public InterceptorHandler(IServiceProvider serviceProvider, IConfiguration configuration, IOptions<PipelineOptions> options, InterceptorRepository interceptorRepository)
     {
+        _interceptorRepository = interceptorRepository;
         _options = options.Value;
         _configuration = configuration;
         _serviceProvider = serviceProvider;
         _configuration.Bind("PipelineOptions", pipelineOptions);
     }
 
-    private IEnumerable<IInterceptor> Interceptors => _serviceProvider.GetServices<IInterceptor>();
+    private IEnumerable<IInterceptor> InternalInterceptors =>_interceptorRepository.LoadInternal();
 
-    private IEnumerable<IInterceptor> EnabledInterceptors => Interceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
-        
+    private IEnumerable<IInterceptor> ExternalInterceptors => _interceptorRepository.LoadExternal();
+
+
+    private IEnumerable<IInterceptor> EnabledInterceptors => InternalInterceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
+            
     public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
     {
 
-        IEnumerable<IInterceptor> enabled = enabledInterceptors?.ToList() ?? EnabledInterceptors;
+        List<IInterceptor> enabled = enabledInterceptors?.ToList() ?? EnabledInterceptors.ToList();
+
+        enabled.AddRange(ExternalInterceptors);
 
         foreach (var interceptor in enabled)
         {
@@ -67,7 +72,7 @@ public class InterceptorHandler : IInterceptorHandler
     {
         if (enabledInterceptors == null)
             enabledInterceptors = Enumerable.Empty<string>();
-        var interceptors = Interceptors.Where(i => enabledInterceptors.Contains(i.Name));
+        var interceptors = InternalInterceptors.Where(i => enabledInterceptors.Contains(i.Name));
         return await Send(kernel, conversation, interceptors, cancellationToken);
 
     }
@@ -77,14 +82,15 @@ public class InterceptorHandler : IInterceptorHandler
     {
         if (enabledInterceptors == null)
             enabledInterceptors = Enumerable.Empty<string>();
-        var interceptors = Interceptors.Where(i => enabledInterceptors.Contains(i.Name));
+        var interceptors = InternalInterceptors.Where(i => enabledInterceptors.Contains(i.Name));
         return await Receive(kernel, conversation, interceptors, cancellationToken);
     }
 
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors, CancellationToken cancellationToken = default)
     {
-        IEnumerable<IInterceptor> enabled = enabledInterceptors != null ? Interceptors.Where(enabledInterceptors.Contains) : EnabledInterceptors;
+        List<IInterceptor> enabled = enabledInterceptors?.ToList() ?? EnabledInterceptors.ToList();
+
 
         // if the StateFileSaveInterceptor is enabled Recieve with that one first
         if (enabled.Any(i => i.Name == "Save file"))
@@ -102,6 +108,7 @@ public class InterceptorHandler : IInterceptorHandler
                 await OnUpdate();
             }
         }
+
 
         return conversation;
     }

@@ -1,15 +1,17 @@
 ﻿using Microsoft.SemanticKernel;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
 public class StateHasChangedInterceptor : InterceptorBase, IInterceptor
 {
-    private StateHasChangedInterceptorService _stateHasChangedInterceptorService;
+    private readonly StateHasChangedInterceptorService _stateHasChangedInterceptorService;
 
-    public StateHasChangedInterceptor(StateHasChangedInterceptorService stateHasChangedInterceptorService, IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository) : base(context, conversationsRepository)
+    public StateHasChangedInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        _stateHasChangedInterceptorService = stateHasChangedInterceptorService;
+
+        _stateHasChangedInterceptorService = serviceProvider.GetRequiredService<StateHasChangedInterceptorService>();
     }
 
     public bool Internal { get; } = true;

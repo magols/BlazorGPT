@@ -96,7 +96,7 @@ builder.Services.AddSingleton<StateHasChangedInterceptorService>();
 builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
 builder.Services.AddScoped<PluginsRepository>();
-
+builder.Services.AddScoped<InterceptorRepository>();
 builder.Services.AddScoped<IInterceptor, PluginInterceptor>();
 
 

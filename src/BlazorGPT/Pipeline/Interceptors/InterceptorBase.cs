@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Pipeline.Interceptors;
@@ -9,6 +10,15 @@ public abstract class InterceptorBase: IInterceptor
     private ConversationsRepository _conversationsRepository;
     protected CancellationToken Cts;
     public Func<Task>? OnUpdate;
+    protected IServiceProvider ServiceProvider;
+
+    public InterceptorBase(IServiceProvider serviceProvider)
+    {
+        ServiceProvider = serviceProvider;
+        _conversationsRepository = serviceProvider.GetRequiredService<ConversationsRepository>();
+
+        _context = serviceProvider.GetRequiredService<IDbContextFactory<BlazorGptDBContext>>();
+    }
 
     public InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
     {

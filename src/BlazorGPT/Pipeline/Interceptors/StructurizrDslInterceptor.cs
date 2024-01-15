@@ -9,17 +9,12 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
     private readonly ConversationsRepository _conversationsRepository;
     private readonly IDbContextFactory<BlazorGptDBContext> _context;
 
-    public StructurizrDslInterceptor(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository) : base(context, conversationsRepository)
+    public StructurizrDslInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        _conversationsRepository = conversationsRepository;
-        _context = context;
     }
-    
 
     public async Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
-
-
         if (conversation.Messages.Count() == 2)
         {
             await AppendInstruction(conversation);

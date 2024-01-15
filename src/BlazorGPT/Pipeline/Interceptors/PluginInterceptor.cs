@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using BlazorGPT.Shared.PluginSelector;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planning.Handlebars;
 
@@ -13,17 +14,12 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     private KernelService _kernelService;
     private IServiceProvider _serviceProvider;
 
-    public PluginInterceptor(IDbContextFactory<BlazorGptDBContext> context,
-        ConversationsRepository conversationsRepository,
-        PluginsRepository pluginsRepository,
-            ILocalStorageService localStorageService,
-        KernelService kernelService,
-        IServiceProvider serviceProvider) : base(context, conversationsRepository)
+    public PluginInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _kernelService = kernelService;
-        _localStorageService = localStorageService;
-        _pluginsRepository = pluginsRepository;
+        _kernelService = _serviceProvider.GetRequiredService<KernelService>();
+        _localStorageService = _serviceProvider.GetRequiredService<ILocalStorageService>();
+        _pluginsRepository = _serviceProvider.GetRequiredService<PluginsRepository>();
     }
 
     public string Name { get; } = "Plugins";

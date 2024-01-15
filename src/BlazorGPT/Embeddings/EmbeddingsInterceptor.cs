@@ -2,6 +2,7 @@
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using SharpToken;
@@ -9,20 +10,18 @@ using SharpToken;
 
 namespace BlazorGPT.Embeddings;
 
-public class EmbeddingsInterceptor : IInterceptor
+public class EmbeddingsInterceptor : InterceptorBase, IInterceptor
 {
     private readonly PipelineOptions _options;
     private readonly string IndexName = "blazorgpt";
     private readonly KernelService _kernelService;
     private ModelConfigurationService _modelConfigurationService;
 
-
-    public EmbeddingsInterceptor(IOptions<PipelineOptions> options,
-        KernelService kernelService, ModelConfigurationService modelConfigurationService)
+    public EmbeddingsInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        _modelConfigurationService = modelConfigurationService;
-        _kernelService = kernelService;
-        _options = options.Value;
+        _modelConfigurationService = serviceProvider.GetRequiredService<ModelConfigurationService>();
+        _kernelService = serviceProvider.GetRequiredService<KernelService>();
+        _options = serviceProvider.GetRequiredService<IOptions<PipelineOptions>>().Value;
 
         if (!string.IsNullOrEmpty(_options.Embeddings.RedisIndexName)) IndexName = _options.Embeddings.RedisIndexName;
     }
