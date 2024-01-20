@@ -1,14 +1,11 @@
 ﻿using System.Text;
-using BlazorGPT.Pipeline;
-using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using SharpToken;
 
-
-namespace BlazorGPT.Embeddings;
+namespace BlazorGPT.Pipeline.Interceptors;
 
 public class EmbeddingsInterceptor : InterceptorBase, IInterceptor
 {

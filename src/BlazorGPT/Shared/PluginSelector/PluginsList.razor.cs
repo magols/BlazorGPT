@@ -46,37 +46,32 @@ public partial class PluginsList
 
     protected override async Task OnInitializedAsync()
     {
-        var plugins = new List<Plugin>();
-
-
+     
         foreach (var plugin in await PluginsRepository.All())
         {
-            plugins.Add(plugin);
+            _plugins.Add(plugin);
             _model.SelectedPlugins.Add(new PluginSelection { Name = plugin.Name });
             _modelOrig.OriginalPlugins.Add(new PluginSelection { Name = plugin.Name });
         }
 
-        var nativePlugins = FindTypesWithKernelFunctionAttribute();
-        foreach (var (type, method, desc) in nativePlugins)
-        {
-            var plugin = new Plugin
-            {
-                Name = type,
-                Functions = new List<Function>()
-            };
-            var f = new Function
-            {
-                Name = method,
-                Description = desc
-            };
-            plugin.Functions.Add(f);
-            plugins.Add(plugin);
-            _model.SelectedPlugins.Add(new PluginSelection { Name = plugin.Name });
-            _modelOrig.OriginalPlugins.Add(new PluginSelection { Name = plugin.Name });
-        }
-
-        _plugins = plugins;
-
+        //var nativePlugins = FindTypesWithKernelFunctionAttribute();
+        //foreach (var (type, method, desc) in nativePlugins)
+        //{
+        //    var plugin = new Plugin
+        //    {
+        //        Name = type,
+        //        Functions = new List<Function>()
+        //    };
+        //    var f = new Function
+        //    {
+        //        Name = method,
+        //        Description = desc
+        //    };
+        //    plugin.Functions.Add(f);
+        //    _plugins.Add(plugin);
+        //    _model.SelectedPlugins.Add(new PluginSelection { Name = plugin.Name });
+        //    _modelOrig.OriginalPlugins.Add(new PluginSelection { Name = plugin.Name });
+        //}
 
     }
 

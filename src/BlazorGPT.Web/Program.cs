@@ -3,7 +3,6 @@ using BlazorGPT;
 using BlazorGPT.Components.Account;
 using BlazorGPT.Components.FileUpload;
 using BlazorGPT.Data;
-using BlazorGPT.Embeddings;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web;

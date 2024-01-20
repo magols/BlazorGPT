@@ -43,34 +43,6 @@ namespace BlazorGPT.Shared.PluginSelector
             return plugins;
         }
 
-        //public List<(string, string, string)> GetAllInternalNative()
-        //{
-        //    Assembly assembly = Assembly.GetExecutingAssembly(); // Replace with the desired assembly
-
-        //    var typesWithKernelFunctionAttribute = assembly.GetTypes()
-        //        .Where(type => type.GetMethods()
-        //            .Any(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any()))
-        //        .ToList();
-        //    List<(string, string, string)> types = new List<(string, string, string)>();
-        //    foreach (var type in typesWithKernelFunctionAttribute)
-        //    {
-        //        foreach (var method in type.GetMethods())
-        //        {
-        //            var attr = method.GetCustomAttribute<KernelFunctionAttribute>();
-        //            if (attr != null)
-        //            {
-        //                var descAttr = method.GetCustomAttribute<DescriptionAttribute>();
-        //                string desc = descAttr?.Description ?? "";
-        //                // desc should be set to the DescriptionAttribute of the method
-
-        //                types.Add((type.FullName, method.Name, desc));
-        //            }
-        //        }
-        //    }
-
-        //    return types;
-        //}
-
         public List<Plugin> GetCoreNative()
         {
             var plugins = new List<Plugin>();
