@@ -10,7 +10,7 @@ public abstract class InterceptorBase: IInterceptor
     private ConversationsRepository _conversationsRepository;
     protected CancellationToken Cts;
     public Func<Task>? OnUpdate;
-    protected IServiceProvider ServiceProvider;
+    protected IServiceProvider? ServiceProvider;
 
     public InterceptorBase(IServiceProvider serviceProvider)
     {
@@ -20,7 +20,7 @@ public abstract class InterceptorBase: IInterceptor
         _context = serviceProvider.GetRequiredService<IDbContextFactory<BlazorGptDBContext>>();
     }
 
-    public InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
+    protected InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
     {
         _conversationsRepository = conversationsRepository;
         _context = context;
@@ -100,25 +100,16 @@ public abstract class InterceptorBase: IInterceptor
     }
 
 
-    public virtual string Name { get; }
+    public abstract string Name { get; }
     public virtual bool Internal { get; }
+
     public virtual Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(conversation);
     }
 
-    public async virtual Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public virtual Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
-        if (cancellationToken != default)
-        {
-            Cts = cancellationToken;
-        }
-
-        return conversation;
-    }
-
-    protected void Cancel()
-    {
-
+        return Task.FromResult(conversation);
     }
 }

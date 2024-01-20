@@ -1,5 +1,6 @@
 ﻿using BlazorGPT.Settings;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
@@ -18,6 +19,92 @@ public class InterceptorHandler : IInterceptorHandler
 
     public Func<Task>? OnUpdate { get; set; }
 
+
+
+    public async Task<Conversation> Send(Kernel kernel, Conversation conversation, IEnumerable<IInterceptor>? enabledInterceptors = null,
+        List<string>? enabledInterceptorNames = null, 
+        CancellationToken? cancellationToken = default)
+    {
+
+        CancellationToken ct = cancellationToken ?? CancellationToken.None;
+        if (enabledInterceptors == null) enabledInterceptors = new List<IInterceptor>();
+        if (enabledInterceptorNames == null) enabledInterceptorNames = new List<string>();
+
+        List<IInterceptor> all = new List<IInterceptor>();
+        all.AddRange(InternalInterceptors);
+        all.AddRange(ExternalInterceptors);
+
+        List<IInterceptor> selected = new List<IInterceptor>();
+
+        selected = all.Where(i => enabledInterceptors.Contains(i)
+        || enabledInterceptorNames.Contains(i.Name)
+        || (_options.EnabledInterceptors != null &&_options.EnabledInterceptors.Contains(i.Name))
+        ).ToList();
+
+
+        foreach (var interceptor in selected)
+        {
+            if (interceptor is InterceptorBase interceptorBase)
+            {
+                interceptorBase.OnUpdate = OnUpdate;
+            }
+
+            conversation = await interceptor.Send(kernel, conversation, ct);
+
+            if (OnUpdate != null)
+            {
+                await OnUpdate();
+            }
+        }
+        return conversation;
+    }
+
+
+    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, IEnumerable<IInterceptor>? enabledInterceptors = null,
+        List<string>? enabledInterceptorNames = null,
+        CancellationToken? cancellationToken = default)
+    {
+
+        CancellationToken ct = cancellationToken ?? CancellationToken.None;
+
+        List<IInterceptor> all = new List<IInterceptor>();
+        all.AddRange(InternalInterceptors);
+        all.AddRange(ExternalInterceptors);
+
+        if (enabledInterceptorNames != null)
+        {
+            var interceptorNames = enabledInterceptorNames.ToList();
+            if (interceptorNames.Any())
+            {
+                all = all.Where(i => interceptorNames.Contains(i.Name)).ToList();
+            }
+        }
+
+        if (enabledInterceptors != null)
+        {
+            var interceptors = enabledInterceptors as IInterceptor[] ?? Enumerable.Empty<IInterceptor>();
+
+            all = all.Intersect(interceptors.ToArray()).ToList();
+        }
+
+        foreach (var interceptor in all)
+        {
+            if (interceptor is InterceptorBase interceptorBase)
+            {
+                interceptorBase.OnUpdate = OnUpdate;
+            }
+
+            conversation = await interceptor.Receive(kernel, conversation, ct);
+
+            if (OnUpdate != null)
+            {
+                await OnUpdate();
+            }
+        }
+        return conversation;
+
+    }
+
     [Inject]
     public IServiceProvider ServiceProvider { get; set; } = null!;
 
@@ -35,82 +122,6 @@ public class InterceptorHandler : IInterceptorHandler
     private IEnumerable<IInterceptor> ExternalInterceptors => _interceptorRepository.LoadExternal();
 
 
-    private IEnumerable<IInterceptor> EnabledInterceptors => InternalInterceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
-            
-    public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
-        IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
-    {
-
-        List<IInterceptor> enabled = enabledInterceptors?.ToList() ?? EnabledInterceptors.ToList();
-
-        enabled.AddRange(ExternalInterceptors);
-
-        foreach (var interceptor in enabled)
-        {
-            // check if the interceptor iinherits the abstract class InterceptorBase and if so set the OnUpdate function
-            if (interceptor is InterceptorBase interceptorBase)
-            {
-                interceptorBase.OnUpdate = OnUpdate;
-            }
-
-            conversation = await interceptor.Send(kernel, conversation, cancellationToken);
-
-            if (OnUpdate != null)
-            {
-                await OnUpdate();
-            }
-        }
-        return conversation;
-
-    }
-
-
- 
-
-    public async Task<Conversation> Send(Kernel kernel, Conversation conversation, IEnumerable<string>? enabledInterceptors,
-        CancellationToken cancellationToken = default)
-    {
-        if (enabledInterceptors == null)
-            enabledInterceptors = Enumerable.Empty<string>();
-        var interceptors = InternalInterceptors.Where(i => enabledInterceptors.Contains(i.Name));
-        return await Send(kernel, conversation, interceptors, cancellationToken);
-
-    }
-
-    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, IEnumerable<string>? enabledInterceptors,
-        CancellationToken cancellationToken = default)
-    {
-        if (enabledInterceptors == null)
-            enabledInterceptors = Enumerable.Empty<string>();
-        var interceptors = InternalInterceptors.Where(i => enabledInterceptors.Contains(i.Name));
-        return await Receive(kernel, conversation, interceptors, cancellationToken);
-    }
-
-    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation,
-        IEnumerable<IInterceptor>? enabledInterceptors, CancellationToken cancellationToken = default)
-    {
-        List<IInterceptor> enabled = enabledInterceptors?.ToList() ?? EnabledInterceptors.ToList();
-
-
-        // if the StateFileSaveInterceptor is enabled Recieve with that one first
-        if (enabled.Any(i => i.Name == "Save file"))
-        {
-            var stateFileSaveInterceptor = enabled.First(i => i.Name == "Save file");
-
-            await stateFileSaveInterceptor.Receive(kernel, conversation);
-        }
-
-        foreach (var interceptor in enabled.Where(e => e.Name != "Save File"))
-        {
-            conversation = await interceptor.Receive(kernel, conversation);
-            if (OnUpdate != null)
-            {
-                await OnUpdate();
-            }
-        }
-
-
-        return conversation;
-    }
+    private IEnumerable<IInterceptor> InterceptorsFromOptions => InternalInterceptors.Where(i => _options.EnabledInterceptors != null && _options.EnabledInterceptors.Contains(i.Name));
 
 }

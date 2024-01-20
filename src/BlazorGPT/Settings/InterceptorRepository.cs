@@ -15,6 +15,8 @@ namespace BlazorGPT.Settings
         public IEnumerable<IInterceptor> LoadAll()
         {
             var internalInterceptors = LoadInternal();
+
+
             var externalInterceptors = LoadExternal();
             return internalInterceptors.Concat(externalInterceptors);
         }
@@ -53,5 +55,7 @@ namespace BlazorGPT.Settings
             }
             return interceptors;
         }
+
+
     }
 }

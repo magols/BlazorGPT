@@ -21,6 +21,8 @@ public partial class PluginsList
     [Inject] 
     private ILocalStorageService? LocalStorage { get; set; }
 
+    [Inject]
+    PluginsRepository PluginsRepository { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -45,40 +47,48 @@ public partial class PluginsList
     protected override async Task OnInitializedAsync()
     {
         var plugins = new List<Plugin>();
-        // get the main directory which is the Plugins folder in the systems current directory
-        _pluginsDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Plugins"));
 
 
-        foreach (var pluginDirectory in _pluginsDirectory.EnumerateDirectories())
+        foreach (var plugin in await PluginsRepository.GetAll())
         {
-            var plugin = new Plugin
-            {
-                Name = pluginDirectory.Name,
-                Functions = new List<Function>()
-            };
-            // iterate the plugin directories to get the functions and their descriptions
-            foreach (var pluginFile in pluginDirectory.EnumerateDirectories())
-            {
-
-                var configString = await File.ReadAllTextAsync(Path.Join(pluginFile.FullName, "config.json"));
-
-                SemanticPluginConfig? 
-                    config = JsonSerializer.Deserialize<SemanticPluginConfig>(configString);
-            
-
-                var f = new Function
-                {
-                    Name = pluginFile.Name,
-                    Description = @config?.description
-                
-                };
-                plugin.Functions.Add(f);
-            }
-
             plugins.Add(plugin);
             _model.SelectedPlugins.Add(new PluginSelection { Name = plugin.Name });
             _modelOrig.OriginalPlugins.Add(new PluginSelection { Name = plugin.Name });
         }
+
+
+
+        //foreach (var pluginDirectory in _pluginsDirectory.EnumerateDirectories())
+        //{
+        //    var plugin = new Plugin
+        //    {
+        //        Name = pluginDirectory.Name,
+        //        Functions = new List<Function>()
+        //    };
+        //    // iterate the plugin directories to get the functions and their descriptions
+        //    foreach (var pluginFile in pluginDirectory.EnumerateDirectories())
+        //    {
+
+        //        var configString = await File.ReadAllTextAsync(Path.Join(pluginFile.FullName, "config.json"));
+
+        //        SemanticPluginConfig? 
+        //            config = JsonSerializer.Deserialize<SemanticPluginConfig>(configString);
+
+
+        //        var f = new Function
+        //        {
+        //            Name = pluginFile.Name,
+        //            Description = @config?.description
+
+        //        };
+        //        plugin.Functions.Add(f);
+        //    }
+
+        //    plugins.Add(plugin);
+        //    _model.SelectedPlugins.Add(new PluginSelection { Name = plugin.Name });
+        //    _modelOrig.OriginalPlugins.Add(new PluginSelection { Name = plugin.Name });
+        //}
+
 
 
         var nativePlugins = FindTypesWithKernelFunctionAttribute();

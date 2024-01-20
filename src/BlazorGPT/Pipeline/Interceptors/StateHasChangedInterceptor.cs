@@ -16,7 +16,7 @@ public class StateHasChangedInterceptor : InterceptorBase, IInterceptor
 
     public bool Internal { get; } = true;
 
-    public string Name { get; } = "State has changed";
+    public override string Name { get; } = "State has changed";
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
         await ParseAndSendNotification(conversation.Messages.Last());

@@ -22,7 +22,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         _pluginsRepository = _serviceProvider.GetRequiredService<PluginsRepository>();
     }
 
-    public string Name { get; } = "Plugins";
+    public override string Name { get; } = "Plugins";
     public bool Internal { get; } = false;
 
     public Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
@@ -77,10 +77,13 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     }
     private async Task LoadPluginsAsync(Kernel kernel)
     {
-        var semanticPlugins = await  _pluginsRepository.GetFromDiskAsync();
+        var semanticPlugins = await  _pluginsRepository.GetSemanticPlugins();
 
         List<string> nativePlugins = new List<string>();
-        // todo: bad to read from browser here but here we are
+
+
+        var allPlugins  = await _pluginsRepository.GetAll();
+
         if (_localStorageService != null)
         {
           var enabledPlugins = await _localStorageService.GetItemAsync<List<Plugin>>("bgpt_plugins", _cancellationToken);
@@ -107,7 +110,10 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
                 var instance = Activator.CreateInstance(type, _serviceProvider );
                 try
                 {
+
                     var pluginName = className.Substring(className.LastIndexOf(".") + 1);
+                    Plugin p = new Plugin() { IsNative = true, Name = pluginName };
+
                     kernel.ImportPluginFromObject(instance, pluginName);
                 }
                 catch (Exception e)

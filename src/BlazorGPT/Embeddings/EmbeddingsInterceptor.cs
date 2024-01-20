@@ -26,7 +26,7 @@ public class EmbeddingsInterceptor : InterceptorBase, IInterceptor
         if (!string.IsNullOrEmpty(_options.Embeddings.RedisIndexName)) IndexName = _options.Embeddings.RedisIndexName;
     }
 
-    public string Name { get; } = "Embeddings";
+    public override string Name { get; } = "Embeddings";
     public bool Internal { get; } = false;
 
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation,

@@ -11,7 +11,7 @@ public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWriting
 
     public bool Internal => false;
 
-    public string Name { get; } = "Json Hive State";
+    public override string Name { get; } = "Json Hive State";
 
 
     public async Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)

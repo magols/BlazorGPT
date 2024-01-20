@@ -16,7 +16,7 @@ public class StateFileSaveInterceptor : InterceptorBase, IInterceptor
         _path = options.StateFileSaveInterceptorPath;
     }
 
-    public string Name { get; } = "Save file";
+    public override string Name { get; } = "Save file";
     public bool Internal { get; } = true;
 
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)

@@ -5,7 +5,7 @@ namespace BlazorGPT.Pipeline.Interceptors;
 
 public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWritingInterceptor
 {
-
+ 
     private readonly ConversationsRepository _conversationsRepository;
     private readonly IDbContextFactory<BlazorGptDBContext> _context;
 
@@ -101,7 +101,7 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
     }
 
 
-    public string Name { get; } = "Structurizr Hive DSL";
+    public override string Name { get; } = "Structurizr Hive DSL";
 
     public static string DecodeStringFromCSharp(string input)
     {
