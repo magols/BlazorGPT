@@ -16,95 +16,108 @@ namespace BlazorGPT.Shared.PluginSelector
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<List<Plugin>> GetAll()
+        public async Task<List<Plugin>> All()
         {
-            var internalNative = GetAllInternalNative();
+            var coreNative = GetCoreNative();
             var semanticPlugins = await GetSemanticPlugins();
             var externalNative = GetExternalNative();
 
             var plugins = new List<Plugin>();
-            foreach (var type in internalNative)
-            {
-                var plugin = new Plugin
-                {
-                    Name = type.Item1,
-                    Functions = new List<Function>(),
-                    IsNative = true
-                };
-                var f = new Function
-                {
-                    Name = type.Item2,
-                    Description = type.Item3
-
-                };
-                plugin.Functions.Add(f);
-                plugins.Add(plugin);
-            }
- 
+            plugins.AddRange(coreNative);
             plugins.AddRange(externalNative);
-
             plugins.AddRange(semanticPlugins);
 
             return plugins;
         }
 
-        public  async Task<List<Plugin>> GetAllInternal()
+        public  async Task<List<Plugin>> GetCore()
         {
-            var internalNative = GetAllInternalNative();
+            var internalNative = GetCoreNative();
             var semanticPlugins =  await  GetSemanticPlugins();
 
             var plugins = new List<Plugin>();
-            foreach (var type in internalNative)
-            {
-                var plugin = new Plugin
-                {
-                    Name = type.Item1,
-                    Functions = new List<Function>(),
-                    IsNative = true
-                };
-                var f = new Function
-                {
-                    Name = type.Item2,
-                    Description = type.Item3
-
-                };
-                plugin.Functions.Add(f);
-                plugins.Add(plugin);
-            }
+        
+            plugins.AddRange(internalNative);
 
             plugins.AddRange(semanticPlugins);
             return plugins;
         }
 
-        public List<(string, string, string)> GetAllInternalNative()
+        //public List<(string, string, string)> GetAllInternalNative()
+        //{
+        //    Assembly assembly = Assembly.GetExecutingAssembly(); // Replace with the desired assembly
+
+        //    var typesWithKernelFunctionAttribute = assembly.GetTypes()
+        //        .Where(type => type.GetMethods()
+        //            .Any(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any()))
+        //        .ToList();
+        //    List<(string, string, string)> types = new List<(string, string, string)>();
+        //    foreach (var type in typesWithKernelFunctionAttribute)
+        //    {
+        //        foreach (var method in type.GetMethods())
+        //        {
+        //            var attr = method.GetCustomAttribute<KernelFunctionAttribute>();
+        //            if (attr != null)
+        //            {
+        //                var descAttr = method.GetCustomAttribute<DescriptionAttribute>();
+        //                string desc = descAttr?.Description ?? "";
+        //                // desc should be set to the DescriptionAttribute of the method
+
+        //                types.Add((type.FullName, method.Name, desc));
+        //            }
+        //        }
+        //    }
+
+        //    return types;
+        //}
+
+        public List<Plugin> GetCoreNative()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly(); // Replace with the desired assembly
-
-            var typesWithKernelFunctionAttribute = assembly.GetTypes()
-                .Where(type => type.GetMethods()
-                    .Any(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any()))
-                .ToList();
-            List<(string, string, string)> types = new List<(string, string, string)>();
-            foreach (var type in typesWithKernelFunctionAttribute)
+            var plugins = new List<Plugin>();
             {
-                foreach (var method in type.GetMethods())
-                {
-                    var attr = method.GetCustomAttribute<KernelFunctionAttribute>();
-                    if (attr != null)
-                    {
-                        var descAttr = method.GetCustomAttribute<DescriptionAttribute>();
-                        string desc = descAttr?.Description ?? "";
-                        // desc should be set to the DescriptionAttribute of the method
+                Assembly assembly = Assembly.GetAssembly(typeof(Plugin))!;
+                var types = assembly.GetTypes()
+                    .Where(type => type.GetMethods()
+                                           .Any(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any()))
+                    .ToList();
 
-                        types.Add((type.FullName, method.Name, desc));
+
+                foreach (var type in types)
+                {
+                    var instance = Activator.CreateInstance(type, _serviceProvider);
+                    Plugin p = new Plugin() { Name = type.ToString(), IsNative = true };
+                    p.Instance = instance;
+
+
+                    var methods = type.GetMethods()
+                        .Where(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any())
+                        .ToList();
+
+                    foreach (var method in methods)
+                    {
+                        var attr = method.GetCustomAttribute<KernelFunctionAttribute>();
+                        if (attr != null)
+                        {
+                            var descAttr = method.GetCustomAttribute<DescriptionAttribute>();
+                            string desc = descAttr?.Description ?? "";
+                            // desc should be set to the DescriptionAttribute of the method
+
+                            var f = new Function
+                            {
+                                Name = method.Name,
+                                Description = desc
+                            };
+                            p.Functions.Add(f);
+                        }
                     }
+
+                    plugins.Add(p);
                 }
             }
 
-            return types;
+            return plugins;
         }
 
-        // get all native plugins from all the assemblies in the Plugins subfolder and scan them for KernelFuntion methods. If these funtion methods are found, add a plugin to the list of plugins that is to be returned
         public List<Plugin> GetExternalNative()
         {
             var plugins = new List<Plugin>();
@@ -169,7 +182,7 @@ namespace BlazorGPT.Shared.PluginSelector
                     Name = pluginDirectory.Name,
                     Functions = new List<Function>()
                 };
-                // iterate the plugin directories to get the functions and their descriptions
+
                 foreach (var pluginFile in pluginDirectory.EnumerateDirectories())
                 {
                     var configString = await File.ReadAllTextAsync(Path.Join(pluginFile.FullName, "config.json"));
