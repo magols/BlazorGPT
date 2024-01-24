@@ -39,7 +39,8 @@ public class ChatWrapper
         ChatRequestSettings? requestSettings = default,
         Func<string, Task<string>>? callback = null,
         IEnumerable<QuickProfile>? quickProfiles = null,
-        IEnumerable<IInterceptor>? enabledInterceptors = null, CancellationToken cancellationToken = default)
+        IEnumerable<IInterceptor>? enabledInterceptors = null, 
+        CancellationToken cancellationToken = default)
     {
         var profiles = quickProfiles?.ToArray() ?? Array.Empty<QuickProfile>();
         var interceptors = enabledInterceptors?.ToArray() ?? Array.Empty<IInterceptor>();
@@ -48,15 +49,15 @@ public class ChatWrapper
             await _quickProfileHandler.Send(kernel, conversation, profiles.Where(p => p.InsertAt == InsertAt.Before));
 
         if (interceptors.Any())
-            conversation = await _interceptorHandler.Send(kernel, conversation, interceptors, cancellationToken);
+            conversation = await _interceptorHandler.Send(kernel, conversation, enabledInterceptors: interceptors, cancellationToken: cancellationToken);
 
-        conversation = await Send(kernel, requestSettings, conversation, profiles, callback, cancellationToken);
+        conversation = await Send(kernel, requestSettings, conversation, profiles, callback, cancellationToken: cancellationToken);
 
         conversation = await _quickProfileHandler.Receive(kernel, this, conversation,
             profiles.Where(p => p.InsertAt == InsertAt.After));
 
         if (interceptors.Any())
-            conversation = await _interceptorHandler.Receive(kernel, conversation, interceptors, cancellationToken);
+            conversation = await _interceptorHandler.Receive(kernel, conversation, interceptors, cancellationToken: cancellationToken);
 
         return conversation;
     }
@@ -72,7 +73,8 @@ public class ChatWrapper
         
         var conversationMessage = new ConversationMessage("assistant", "");
         conversation.AddMessage(conversationMessage);
-        await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, requestSettings: requestSettings, callback, cancellationToken);
+        await _kernelService.ChatCompletionAsStreamAsync(kernel, conversation, requestSettings: requestSettings, callback, 
+            cancellationToken: cancellationToken);
 
         await using var ctx = await _contextFactory.CreateDbContextAsync(cancellationToken);
 

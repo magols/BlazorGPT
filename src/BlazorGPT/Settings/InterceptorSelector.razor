@@ -30,20 +30,23 @@
 
     [Inject] 
     private ILocalStorageService? LocalStorage { get; set; }
+
+    [Inject]
+    public required InterceptorRepository InterceptorRepository { get; set; }
     
     public IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
 
     private readonly object _model = new();
 
 
-    IEnumerable<IInterceptor> Interceptors => ServiceProvider.GetServices<IInterceptor>();
-    private IEnumerable<IInterceptor> EnabledInterceptors => Interceptors.Where(i => Options.Value.EnabledInterceptors != null && Options.Value.EnabledInterceptors.Contains(i.Name));
+    IEnumerable<IInterceptor> Interceptors;
     IEnumerable<string> Selected = new List<string>();
-    public IEnumerable<IInterceptor>? SelectedInterceptors => EnabledInterceptors.Where(i => Selected.Contains(i.Name) || i.Internal);
+    public IEnumerable<IInterceptor>? SelectedInterceptors => Interceptors.Where(i => Selected.Contains(i.Name) || i.Internal);
 
     protected override void OnInitialized()
     {
-        Selected = EnabledInterceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
+        Interceptors = InterceptorRepository.LoadAll().ToList();
+        Selected = Interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

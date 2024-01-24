@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Pipeline.Interceptors;
@@ -9,8 +10,17 @@ public abstract class InterceptorBase: IInterceptor
     private ConversationsRepository _conversationsRepository;
     protected CancellationToken Cts;
     public Func<Task>? OnUpdate;
+    protected IServiceProvider? ServiceProvider;
 
-    public InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
+    public InterceptorBase(IServiceProvider serviceProvider)
+    {
+        ServiceProvider = serviceProvider;
+        _conversationsRepository = serviceProvider.GetRequiredService<ConversationsRepository>();
+
+        _context = serviceProvider.GetRequiredService<IDbContextFactory<BlazorGptDBContext>>();
+    }
+
+    protected InterceptorBase(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository)
     {
         _conversationsRepository = conversationsRepository;
         _context = context;
@@ -90,25 +100,16 @@ public abstract class InterceptorBase: IInterceptor
     }
 
 
-    public virtual string Name { get; }
+    public abstract string Name { get; }
     public virtual bool Internal { get; }
+
     public virtual Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(conversation);
     }
 
-    public async virtual Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public virtual Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
-        if (cancellationToken != default)
-        {
-            Cts = cancellationToken;
-        }
-
-        return conversation;
-    }
-
-    protected void Cancel()
-    {
-
+        return Task.FromResult(conversation);
     }
 }

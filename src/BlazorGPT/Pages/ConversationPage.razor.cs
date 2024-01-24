@@ -251,10 +251,7 @@ namespace BlazorGPT.Pages
                 StateHasChanged();  
 
             }
-
-            // add images if user has uploaded
-
-
+            
             await semaphoreSlim.WaitAsync();
 
             if ( BotMode)
@@ -272,8 +269,9 @@ namespace BlazorGPT.Pages
                 var strs = await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors");
 
                 Conversation = await InterceptorHandler.Send(_kernel,
-                    Conversation, strs
-                    ,
+                    Conversation, 
+                    enabledInterceptors:null,
+                    enabledInterceptorNames: strs,
                     _cancellationTokenSource.Token);
 
 
@@ -383,7 +381,7 @@ namespace BlazorGPT.Pages
 
                 Conversation =
                     await InterceptorHandler.Receive(_kernel, Conversation,
-                        await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors"));
+                       enabledInterceptorNames: await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors"));
 
                 if (!BotMode  && wasSummarized)
                 {

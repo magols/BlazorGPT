@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using System.Linq;
-using BlazorGPT.Embeddings;
-using BlazorGPT.Ollama;
+﻿using BlazorGPT.Ollama;
 using Codeblaze.SemanticKernel.Connectors.Ollama;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -5,15 +5,13 @@ namespace BlazorGPT.Pipeline.Interceptors;
 
 public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWritingInterceptor
 {
-
-    public JsonStateInterceptor(IDbContextFactory<BlazorGptDBContext> context, ConversationsRepository conversationsRepository) : base(context, conversationsRepository)
+    public JsonStateInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        Name = "Json Hive State";
     }
 
     public bool Internal => false;
 
-    public string Name { get; }  
+    public override string Name { get; } = "Json Hive State";
 
 
     public async Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)

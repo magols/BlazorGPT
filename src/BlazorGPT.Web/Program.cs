@@ -3,7 +3,6 @@ using BlazorGPT;
 using BlazorGPT.Components.Account;
 using BlazorGPT.Components.FileUpload;
 using BlazorGPT.Data;
-using BlazorGPT.Embeddings;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web;
@@ -96,7 +95,7 @@ builder.Services.AddSingleton<StateHasChangedInterceptorService>();
 builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
 builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
 builder.Services.AddScoped<PluginsRepository>();
-
+builder.Services.AddScoped<InterceptorRepository>();
 builder.Services.AddScoped<IInterceptor, PluginInterceptor>();
 
 
