@@ -143,9 +143,9 @@ namespace BlazorGPT.Shared.PluginSelector
 
         public async Task <List<Plugin>> GetSemanticPlugins()
         {
-            var pluginsDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Plugins"));
 
             var plugins = new List<Plugin>();
+            var pluginsDirectory = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
 
             foreach (var pluginDirectory in pluginsDirectory.EnumerateDirectories())
             {

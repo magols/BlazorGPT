@@ -89,7 +89,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
 
         foreach (var plugin in semanticPlugins)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Plugins", plugin.Name);
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins", plugin.Name);
             kernel.ImportPluginFromPromptDirectory(path, plugin.Name);
         }
 
