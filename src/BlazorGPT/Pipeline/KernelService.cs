@@ -162,7 +162,7 @@ public class KernelService
             var mem = new MemoryBuilder()
             .WithAzureOpenAITextEmbeddingGeneration(
                 deploymentName: _options.Providers.AzureOpenAI.EmbeddingsModels.First(o => o.Value == _options.Providers.AzureOpenAI.EmbeddingsModel).Key,
-                modelId: _options.Providers.AzureOpenAI.EmbeddingsModel,
+                modelId: model ?? _options.Providers.AzureOpenAI.EmbeddingsModel,
                 endpoint: _options.Providers.AzureOpenAI.Endpoint,
                 apiKey: _options.Providers.AzureOpenAI.ApiKey
             )
@@ -175,7 +175,8 @@ public class KernelService
         if (provider == EmbeddingsModelProvider.OpenAI)
         {
             var mem = new MemoryBuilder()
-                .WithOpenAITextEmbeddingGeneration(modelId:_options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
+                .WithOpenAITextEmbeddingGeneration(
+                    modelId: model ?? _options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
                 .WithMemoryStore(memoryStore)
                 .Build();
             return mem;
