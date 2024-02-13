@@ -54,6 +54,58 @@ public class ModelsProvidersOptions
 
         return string.Empty;
     }
+
+    public string GetEmbeddingsModel()
+    {
+        if (OpenAI.IsConfigured())
+        {
+            return OpenAI.EmbeddingsModel;
+        }
+
+        if (AzureOpenAI.IsConfigured())
+        {
+            return AzureOpenAI.EmbeddingsModel;
+        }
+
+        if (Ollama.IsConfigured())
+        {
+            return Ollama.EmbeddingsModel;
+        }
+
+        if (Local.IsConfigured())
+        {
+            return Local.EmbeddingsModel;
+        }
+
+        return string.Empty;
+    }
+
+    public EmbeddingsModelProvider GetEmbeddingsModelProvider()
+    {
+
+        if (OpenAI.IsConfigured())
+        {
+            return EmbeddingsModelProvider.OpenAI;
+        }
+
+        if (AzureOpenAI.IsConfigured())
+        {
+            return EmbeddingsModelProvider.AzureOpenAI;
+        }
+
+        if (Ollama.IsConfigured())
+        {
+            return EmbeddingsModelProvider.Ollama;
+        }
+
+        if (Local.IsConfigured())
+        {
+            return EmbeddingsModelProvider.Local;
+        }
+
+        return EmbeddingsModelProvider.Local;
+
+    }
 }
 
 
