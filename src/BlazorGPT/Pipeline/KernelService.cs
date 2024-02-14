@@ -103,7 +103,7 @@ public class KernelService
         {
 	        builder.Services.AddTransient<HttpClient>();
 			model ??= _options.Providers.Local.ChatModel;
-			builder.AddCustomOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl);
+            builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl); 
         }
 
         return builder.Build();
@@ -242,6 +242,7 @@ public class KernelService
     public async Task<Conversation> OllamaChatCompletion(Kernel kernel,
 	    Conversation conversation,
 	    PromptExecutionSettings? requestSettings = default,
+        Func<string, string>? onCompletion = null,
 	    CancellationToken cancellationToken = default)
     {
 	    requestSettings ??= new ChatRequestSettings();
@@ -261,14 +262,15 @@ public class KernelService
 
 	    var completion = await chatCompletion.GetChatMessageContentsAsync(history, settings, kernel, cancellationToken);
 
-	    var content = "";
-	    foreach (var chatMessageContent in completion)
-	    {
-		    content += chatMessageContent.Content;
-	    }
+        var content = "";
+        foreach (var chatMessageContent in completion)
+        {
+            content += chatMessageContent.Content;
+        }
 
-	    conversation.Messages.Last().Content = content;
-	    return conversation;
+        conversation.Messages.Last().Content = content;
+        onCompletion?.Invoke(content);
+        return conversation;
     }
 
 
@@ -283,9 +285,9 @@ public class KernelService
         var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
 
 
-        if (chatCompletion is OllamaChatCompletion)
+        if (chatCompletion is OllamaChatCompletionService)
         {
-	        return await OllamaChatCompletion(kernel, conversation, requestSettings, cancellationToken);
+            return await OllamaChatCompletion(kernel, conversation, requestSettings, cancellationToken: cancellationToken);
         }
 
 
