@@ -54,7 +54,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
 
         try
         {
-            var plan = await planner.CreatePlanAsync(kernel, ask, _cancellationToken);
+            var plan = await planner.CreatePlanAsync(kernel, ask, cancellationToken: _cancellationToken);
             conversation.SKPlan = plan.ToString();
 
             lastMsg.Content = "Executing plan...";
