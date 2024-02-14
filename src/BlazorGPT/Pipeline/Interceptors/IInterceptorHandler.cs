@@ -12,11 +12,13 @@ public interface IInterceptorHandler
         Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors = null,
         List<string>? enabledInterceptorNames = null,
+        Func<string, Task<string>>? onComplete = null,
         CancellationToken? cancellationToken = default);
 
     Task<Conversation> Send(Kernel kernel, 
         Conversation conversation,
         IEnumerable<IInterceptor>? enabledInterceptors = null,
-        List<string>? enabledInterceptorNames = null, 
+        List<string>? enabledInterceptorNames = null,
+        Func<string, Task<string>>? onComplete = null,
         CancellationToken? cancellationToken = default);
 }

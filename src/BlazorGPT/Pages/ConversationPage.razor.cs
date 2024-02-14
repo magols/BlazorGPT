@@ -272,7 +272,8 @@ namespace BlazorGPT.Pages
                     Conversation, 
                     enabledInterceptors:null,
                     enabledInterceptorNames: strs,
-                    _cancellationTokenSource.Token);
+                    OnStreamCompletion,
+                    cancellationToken: _cancellationTokenSource.Token);
 
 
                 await Send();

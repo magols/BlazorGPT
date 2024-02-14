@@ -99,16 +99,22 @@ public abstract class InterceptorBase: IInterceptor
         }
     }
 
-
+    
     public abstract string Name { get; }
     public virtual bool Internal { get; }
 
-    public virtual Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public virtual Task<Conversation> Receive(Kernel kernel, 
+        Conversation conversation,
+        Func<string, Task<string>>? onComplete = null,
+        CancellationToken cancellationToken = default)
     {
         return Task.FromResult(conversation);
     }
 
-    public virtual Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public virtual Task<Conversation> Send(Kernel kernel,
+        Conversation conversation,
+        Func<string, Task<string>>? onComplete = null,
+        CancellationToken cancellationToken = default)
     {
         return Task.FromResult(conversation);
     }

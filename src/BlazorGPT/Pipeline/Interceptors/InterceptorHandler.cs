@@ -22,7 +22,8 @@ public class InterceptorHandler : IInterceptorHandler
 
 
     public async Task<Conversation> Send(Kernel kernel, Conversation conversation, IEnumerable<IInterceptor>? enabledInterceptors = null,
-        List<string>? enabledInterceptorNames = null, 
+        List<string>? enabledInterceptorNames = null,
+        Func<string, Task<string>>? onComplete = null,
         CancellationToken? cancellationToken = default)
     {
 
@@ -49,7 +50,7 @@ public class InterceptorHandler : IInterceptorHandler
                 interceptorBase.OnUpdate = OnUpdate;
             }
 
-            conversation = await interceptor.Send(kernel, conversation, ct);
+            conversation = await interceptor.Send(kernel, conversation, onComplete, ct);
 
             if (OnUpdate != null)
             {
@@ -62,6 +63,8 @@ public class InterceptorHandler : IInterceptorHandler
 
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, IEnumerable<IInterceptor>? enabledInterceptors = null,
         List<string>? enabledInterceptorNames = null,
+        Func<string, Task<string>>? onComplete = null,
+
         CancellationToken? cancellationToken = default)
     {
 
@@ -94,7 +97,7 @@ public class InterceptorHandler : IInterceptorHandler
                 interceptorBase.OnUpdate = OnUpdate;
             }
 
-            conversation = await interceptor.Receive(kernel, conversation, ct);
+            conversation = await interceptor.Receive(kernel, conversation, onComplete, ct);
 
             if (OnUpdate != null)
             {
