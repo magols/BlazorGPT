@@ -32,6 +32,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     }
 
     public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
+        Func<string, Task<string>>? onComplete = null,
         CancellationToken cancellationToken = default)
     {
         _cancellationToken = cancellationToken;
