@@ -10,10 +10,19 @@ namespace BlazorGPT.Shared.PluginSelector
     public class PluginsRepository
     {
         private IServiceProvider _serviceProvider;
+        private readonly string _pluginsDirectory;
+
+        public PluginsRepository(IServiceProvider serviceProvider, string pluginsDirectory)
+        {
+            _serviceProvider = serviceProvider;
+            _pluginsDirectory = pluginsDirectory;
+        }
 
         public PluginsRepository(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            _pluginsDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+
         }
 
         public async Task<List<Plugin>> All()
@@ -93,8 +102,7 @@ namespace BlazorGPT.Shared.PluginSelector
         public List<Plugin> GetExternalNative()
         {
             var plugins = new List<Plugin>();
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-            var files = Directory.GetFiles(path, "*.dll");
+            var files = Directory.GetFiles(_pluginsDirectory, "*.dll");
 
             foreach (var file in files)
             {
@@ -145,7 +153,7 @@ namespace BlazorGPT.Shared.PluginSelector
         {
 
             var plugins = new List<Plugin>();
-            var pluginsDirectory = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
+            var pluginsDirectory = new DirectoryInfo(_pluginsDirectory);
 
             foreach (var pluginDirectory in pluginsDirectory.EnumerateDirectories())
             {
@@ -175,6 +183,13 @@ namespace BlazorGPT.Shared.PluginSelector
             }
 
             return plugins;
+        }
+
+        public async Task<List<Plugin>> GetByNames(IEnumerable<string> pluginsNames)
+        {
+            var allPlugins = await All();
+            return allPlugins.Where(p => pluginsNames.Contains(p.Name)).ToList();
+
         }
     }
 }
