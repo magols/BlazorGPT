@@ -151,7 +151,10 @@ public class KernelService
         {
             var redis = ConnectionMultiplexer.Connect(_options.Embeddings.RedisConfigurationString);
             var _db = redis.GetDatabase();
-            memoryStore = new RedisMemoryStore(_db);
+
+            // local use would indicate nomic-embed, so adjust vectors
+            var vectorSize = provider == EmbeddingsModelProvider.Ollama ? 768 : 1536;
+            memoryStore = new RedisMemoryStore(_db, vectorSize);
         }
 
         if (provider == EmbeddingsModelProvider.AzureOpenAI)
