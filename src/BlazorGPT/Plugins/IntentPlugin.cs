@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Plugins;
-#pragma warning disable SKEXP0003
+
 public class IntentPlugin
 {
     private Kernel _kernel;

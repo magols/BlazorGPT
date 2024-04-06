@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Plugins;
-#pragma warning disable SKEXP0003
+
 public class SamplesNativePlugin
 {
 

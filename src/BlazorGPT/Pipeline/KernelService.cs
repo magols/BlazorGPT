@@ -2,7 +2,6 @@
 using Codeblaze.SemanticKernel.Connectors.Ollama;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -10,13 +9,7 @@ using Microsoft.SemanticKernel.Connectors.Redis;
 using Microsoft.SemanticKernel.Connectors.Sqlite;
 using Microsoft.SemanticKernel.Memory;
 using StackExchange.Redis;
-#pragma warning disable SKEXP0003
-#pragma warning disable SKEXP0011
-#pragma warning disable SKEXP0052
-#pragma warning disable SKEXP0012
 
-#pragma warning disable SKEXP0027
-#pragma warning disable SKEXP0028
 namespace BlazorGPT.Pipeline;
 
 public class KernelService
@@ -159,8 +152,6 @@ public class KernelService
 
         if (provider == EmbeddingsModelProvider.AzureOpenAI)
         {
-#pragma warning disable SKEXP0011
-#pragma warning disable SKEXP0052
 
             var mem = new MemoryBuilder()
             .WithAzureOpenAITextEmbeddingGeneration(

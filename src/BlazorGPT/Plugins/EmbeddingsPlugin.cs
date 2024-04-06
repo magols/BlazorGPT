@@ -4,14 +4,12 @@ using BlazorGPT.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 
-#pragma warning disable SKEXP0003
-
 namespace BlazorGPT.Plugins;
 
 public class EmbeddingsPlugin
 {
     private readonly IServiceProvider _serviceProvider;
-    private ModelConfigurationService _modelConfigurationService;
+    private readonly ModelConfigurationService _modelConfigurationService;
 
 
     public EmbeddingsPlugin(IServiceProvider serviceProvider)
@@ -34,7 +32,7 @@ public class EmbeddingsPlugin
         int limit = 10
     )
     {
-        ModelConfiguration model = _modelConfigurationService.GetDefaultConfig();
+        var model = _modelConfigurationService.GetDefaultConfig();
 
         var kernelService =
             _serviceProvider.GetRequiredService<KernelService>();

@@ -4,11 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>2.0.1.1</AssemblyVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
   </PropertyGroup>
   
   <PropertyGroup>
-    <NoWarn>SKEXP0001,SKEXP0011,SKEXP0060</NoWarn>
+    <NoWarn>SKEXP0001,SKEXP0060, SKEXP0010, SKEXP0011, SKEXP0020, SKEXP0027, SKEXP0028</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,35 +17,35 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
 
     <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.2" />
 
     <PackageReference Include="Codeblaze.SemanticKernel.Connectors.Ollama" Version="1.3.0" />
-    <PackageReference Include="Markdig" Version="0.34.0" />
-    <PackageReference Include="Markdown.ColorCode" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1" />
+    <PackageReference Include="Markdig" Version="0.36.2" />
+    <PackageReference Include="Markdown.ColorCode" Version="2.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
 
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.4.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.4.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.4.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.4.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.4.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.7.1" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.7.1-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.7.1-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.7.1-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.7.1-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NRedisStack" Version="0.11.0" />
-    <PackageReference Include="Radzen.Blazor" Version="4.24.6" />
-    <PackageReference Include="SharpToken" Version="1.2.15" />
+    <PackageReference Include="NRedisStack" Version="0.12.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.29.2" />
+    <PackageReference Include="SharpToken" Version="2.0.1" />
 
   </ItemGroup>
 
