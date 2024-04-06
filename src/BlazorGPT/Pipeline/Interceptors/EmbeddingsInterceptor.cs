@@ -23,16 +23,10 @@ public class EmbeddingsInterceptor : InterceptorBase, IInterceptor
         if (!string.IsNullOrEmpty(_options.Embeddings.RedisIndexName)) IndexName = _options.Embeddings.RedisIndexName;
     }
 
-    public override string Name { get; } = "Embeddings";
+    public override string Name { get; } = "Embeddings (gpt-4 encoding)";
     public bool Internal { get; } = false;
 
-    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation,
-        CancellationToken cancellationToken = default)
-    {
-        return conversation;
-    }
-
-    public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
+    public override async Task<Conversation> Send(Kernel kernel, Conversation conversation, Func<string, Task<string>>? onComplete = null,
         CancellationToken cancellationToken = default)
     {
         if (conversation.Messages.Count == 2)
