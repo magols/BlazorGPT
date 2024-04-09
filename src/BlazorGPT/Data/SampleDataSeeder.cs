@@ -1,5 +1,4 @@
-﻿using BlazorGPT.Data.Model;
-using BlazorGPT.Pipeline;
+﻿using BlazorGPT.Pipeline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

@@ -1,5 +1,4 @@
-﻿using BlazorGPT.Data.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BlazorGPT.Data;
 
@@ -12,16 +11,14 @@ public class BlazorGptDBContext : DbContext
 
     public DbSet<Conversation> Conversations { get; set; }
     public DbSet<ConversationMessage> Messages { get; set; }
-
     public DbSet<Script> Scripts { get; set; }
-
     public DbSet<ScriptStep> ScriptSteps { get; set; }
-
     public DbSet<QuickProfile> QuickProfiles { get; set; }
     public DbSet<ConversationQuickProfile> ConversationQuickProfiles { get; set; }
     public DbSet<MessageState> StateData { get; set; }
     public DbSet<ConversationTreeState> TreeStateData { get; set; }
 
+    public DbSet<UserSystemPrompt> UserSystemPrompts { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

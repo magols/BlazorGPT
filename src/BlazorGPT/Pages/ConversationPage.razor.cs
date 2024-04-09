@@ -194,6 +194,9 @@ namespace BlazorGPT.Pages
                         }
                     }
                     Conversation = loaded;
+
+
+
                 }
                 else
                 {
@@ -234,11 +237,14 @@ namespace BlazorGPT.Pages
 
             if (!Conversation.HasStarted())
             {
+
+                 
+
                 var selected = _profileSelectorStart != null ? _profileSelectorStart.SelectedProfiles : new List<QuickProfile>();
+                
                 string startMsg = string.Join(" ", selected.Select(p => p.Content));
                 if (!string.IsNullOrEmpty(startMsg))
                     startMsg += "\n\n";
-
                 Conversation.AddMessage(new ConversationMessage("user", startMsg + Model.Prompt));
 
                 Conversation.DateStarted = DateTime.UtcNow;
@@ -448,7 +454,7 @@ namespace BlazorGPT.Pages
 
         private void GoToNew()
         {
-            NavigationManager.NavigateTo("/conversation", false);
+            NavigationManager.NavigateTo("/conversation", true);
         }
 
 
@@ -582,8 +588,8 @@ namespace BlazorGPT.Pages
         //IEnumerable<string> enabledInterceptors = Array.Empty<string>();
 
         private int selectedTabIndex;
+      
 
- 
 
         private async Task HiveStateClicked()
         {

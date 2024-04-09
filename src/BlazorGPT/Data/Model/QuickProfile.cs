@@ -1,6 +1,4 @@
-﻿using BlazorGPT.Data.Model;
-
-namespace BlazorGPT.Data;
+﻿namespace BlazorGPT.Data.Model;
 
 public class QuickProfile
 {

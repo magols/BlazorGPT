@@ -112,6 +112,9 @@
     }
 </SectionContent>
 
+
+<CascadingValue Name="Conversation" Value="Conversation">
+
 <!-- conv page start -->
 <div class="container-fluid demodemo @Class" style="@Style">
     <div class="row">
@@ -122,7 +125,8 @@
             }
             @if (Conversation != null)
             {
-                <ConversationDisplay BotMode="BotMode"
+                <ConversationDisplay  BotMode="BotMode"
+                                     InitialSystemPrompt="@(Conversation.HasStarted() ? Conversation.Messages.FirstOrDefault(o => o.Role == "system")?.Content : null)"
                                      Conversation="Conversation"
                                      ShowBranches="true"
                                      RestartConversation="RestartConversation"
@@ -173,7 +177,7 @@
                         <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
                     </span>
 
-                  </EditForm>
+                </EditForm>
             } 
             else {
             
@@ -205,7 +209,7 @@
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
                                     
-@*                                     <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
+                                    @*                                     <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
                                                            ModelSelectEnabled="@(Conversation.Id == null)"
                                                            PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
                                                            OnResize="@ModelConfigResized" 
@@ -277,3 +281,5 @@
     </div>
 
 </div>
+
+</CascadingValue>

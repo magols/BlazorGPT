@@ -1,0 +1,189 @@
+ @page "/systemprompts"
+
+
+ <RadzenButton ButtonStyle="ButtonStyle.Success" Size="ButtonSize.ExtraSmall" Icon="add_circle_outline" Text="New system prompt" Click="@InsertRow" Disabled="@(_editMode == DataGridEditMode.Single && _userSystemPromptsToInsert.Count() > 0)" />
+ 
+<RadzenDataGrid @ref="_userSystemPromptsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="@_editMode"
+                Data="@_userSystemPrompts" TItem="UserSystemPrompt" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
+    <Columns>
+        <RadzenDataGridColumn TItem="UserSystemPrompt" Property="Name" Title="Name" Width="200px">
+            <EditTemplate Context="userSystemPrompt">
+                <RadzenTextBox @bind-Value="userSystemPrompt.Name" class="textarea-full-width" ></RadzenTextBox>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserSystemPrompt" Property="Text" Title="Text" Width="400px">
+            <Template Context="userSystemPrompt">
+                @userSystemPrompt.Text
+            </Template>
+            <EditTemplate Context="userSystemPrompt">
+                <RadzenTextArea @bind-Value="userSystemPrompt.Text" Name="Text" Class="textarea-full-width"></RadzenTextArea>
+             </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="UserSystemPrompt" Context="UserSystemPrompt" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+            <Template Context="userSystemPrompt">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(userSystemPrompt))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(userSystemPrompt))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="userSystemPrompt">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(userSystemPrompt))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(userSystemPrompt))">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(userSystemPrompt))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<UserSystemPrompt> _userSystemPromptsGrid;
+    List<UserSystemPrompt> _userSystemPrompts;
+
+
+    readonly DataGridEditMode _editMode = DataGridEditMode.Single;
+
+    readonly List<UserSystemPrompt> _userSystemPromptsToInsert = new List<UserSystemPrompt>();
+
+    [Inject]
+    public DialogService DialogService { get; set; } = null!;
+
+    [Inject]
+    public NotificationService NotificationService { get; set; } = null!;
+
+    [Inject]
+    IDbContextFactory<BlazorGptDBContext>? ContextFactory { get; set; }
+
+    [CascadingParameter]
+    Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    string? UserId { get; set; } = null!;  
+
+    void Reset()
+    {
+         _userSystemPromptsToInsert.Clear();
+    }
+
+    void Reset(UserSystemPrompt userSystemPrompt)
+    {
+        _userSystemPromptsToInsert.Remove(userSystemPrompt);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+ 
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState.User;
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
+
+        await using var ctx = await ContextFactory!.CreateDbContextAsync();
+
+        _userSystemPrompts = ctx.UserSystemPrompts.Where(o => o.UserId == UserId).ToList();
+    }
+
+    async Task EditRow(UserSystemPrompt userSystemPrompt)
+    {
+        if (_editMode == DataGridEditMode.Single && _userSystemPromptsToInsert.Count() > 0)
+        {
+            Reset();
+        }
+
+        await _userSystemPromptsGrid.EditRow(userSystemPrompt);
+    }
+
+    async Task OnUpdateRow(UserSystemPrompt userSystemPrompt)
+    {
+        Reset(userSystemPrompt);
+
+        await using var ctx = await ContextFactory!.CreateDbContextAsync();
+
+        ctx.Update(userSystemPrompt);
+
+        ctx.SaveChanges();
+    }
+
+    async Task SaveRow(UserSystemPrompt userSystemPrompt)
+    {
+        await _userSystemPromptsGrid.UpdateRow(userSystemPrompt);
+    }
+
+    async Task CancelEdit(UserSystemPrompt userSystemPrompt)
+    {
+        Reset(userSystemPrompt);
+
+        _userSystemPromptsGrid.CancelEditRow(userSystemPrompt);
+
+        await using var ctx = await ContextFactory!.CreateDbContextAsync();
+
+        var userSystemPromptEntry = ctx.Entry(userSystemPrompt);
+        if (userSystemPromptEntry.State == EntityState.Modified)
+        {
+            userSystemPromptEntry.CurrentValues.SetValues(userSystemPromptEntry.OriginalValues);
+            userSystemPromptEntry.State = EntityState.Unchanged;
+        }
+    }
+
+    async Task DeleteRow(UserSystemPrompt userSystemPrompt)
+    {
+
+        var result = await DialogService.Confirm("Are you sure you want to delete this prompt?", "Delete", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+        if (!result.HasValue ||  !result.Value) return;
+
+      //  Reset(userSystemPrompt);
+
+        if (_userSystemPrompts.Contains(userSystemPrompt))
+        {
+       
+            _userSystemPrompts.Remove(userSystemPrompt);
+
+            await using var ctx = await ContextFactory!.CreateDbContextAsync();
+
+            ctx.Remove(userSystemPrompt);
+
+            await ctx.SaveChangesAsync();
+
+            await _userSystemPromptsGrid.Reload();
+        }
+        else
+        {
+            _userSystemPromptsGrid.CancelEditRow(userSystemPrompt);
+            await _userSystemPromptsGrid.Reload();
+        }
+        StateHasChanged();
+    }
+
+    async Task InsertRow()
+    {
+        if (_editMode == DataGridEditMode.Single)
+        {
+            Reset();
+        }
+
+        var userSystemPrompt = new UserSystemPrompt() {UserId = UserId};
+        await _userSystemPromptsGrid.InsertRow(userSystemPrompt);
+    }
+
+    async Task OnCreateRow(UserSystemPrompt userSystemPrompt)
+    {
+        if (string.IsNullOrEmpty(userSystemPrompt.Text) || string.IsNullOrEmpty(userSystemPrompt.Name))
+        {
+            return;
+        }
+        await using var ctx = await ContextFactory!.CreateDbContextAsync();
+
+        ctx.Add(userSystemPrompt);
+
+        await ctx.SaveChangesAsync();
+
+    }
+}

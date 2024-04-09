@@ -1,0 +1,31 @@
+﻿<div class="row mb-2">
+    <div class="col-4">
+        <RadzenDropDownDataGrid @ref="grid" 
+                                TValue="UserSystemPrompt"
+                                Data=@Prompts 
+                                TextProperty="Name"
+                                AllowColumnResize="true"
+                                AllowFilteringByAllStringColumns="true"
+                                Name="DropDownDataGridColumns"
+                                Density="Density.Compact"
+                                Change="SelectedItemChange"
+                                @bind-Value="SelectedPrompt"
+                                Disabled="Disabled"
+                                >
+            <Columns>
+                <RadzenDropDownDataGridColumn Property="Name" Title="Name" Width="100px"/>
+                <RadzenDropDownDataGridColumn Property="Text" Title="Text"/>
+            </Columns>
+        </RadzenDropDownDataGrid>
+    </div>
+    <div class="col-7">
+        @if (!string.IsNullOrEmpty(InitialSystemPrompt))
+        {
+            SelectedPrompt.Name = "";
+            SelectedPrompt.Text = InitialSystemPrompt;
+        }
+        <RadzenTextBox Disabled="true" @bind-Value="SelectedPrompt.Text" class="mt-2 textarea-full-width"/>
+
+    </div>
+
+</div>

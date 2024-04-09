@@ -70,18 +70,3 @@ public class Conversation
     }
  
 }
-
-public static class ConversationExtensions
-{
-    public static bool IsStarted(this Conversation conversation)
-    {
-        return conversation.Messages.Count > 1;
-    }
-
-    // last message was from assistant
-    public static bool IsAssistantTurn(this ConversationMessage message)
-    {
-        return message.Role == ConversationRole.Assistant;
-    }
-
-}
