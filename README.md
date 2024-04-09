@@ -1,9 +1,10 @@
 # BlazorGPT
 
-A Blazor Server chat application that uses <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview">Semantic Kernel</a> together with the GPT chat completion and embeddings endpoints available from OpenAI and MS Azure OpenAI. 
+A Blazor Server chat Razor class library and application that uses <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview">Semantic Kernel</a> together with the GPT chat completion and embeddings endpoints available from both OpenAI and MS Azure OpenAI. 
 Local model support is provided through [Ollama](https://github.com/jmorganca/ollama).
 
 - Create and manage multiple chat sessions with history. 
+- Define your own custom system prompts and switch easily between them.
 - QuickProfiles for quick access to your favorite text snippet shortcuts. 
 - Scripts with multiple steps for automating a sequence of steps in a conversation. 
 - Branch conversations into side conversations sharing the previous context. Inspired by Git.
@@ -24,6 +25,8 @@ Extensible. Create your own plugins in the form of IInterceptors that intercepts
 - Chat with GPT-3.5 or GPT-4, Ollama. Edit and restart chats from previous steps.
   ![](docs/images/chat_toolbox.png)
   
+- Define your own custom system prompts
+![System prompt dropdown grid](docs/images/syspromptgrid.png)
 
 - QuickProfiles for quick access to your favorite text snippet shortcuts
   ![](docs/images/QP.png)
