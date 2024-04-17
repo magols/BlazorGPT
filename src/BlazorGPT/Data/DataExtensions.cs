@@ -1,12 +1,10 @@
-﻿using BlazorGPT.Data.Model;
-
-namespace BlazorGPT.Data;
+﻿namespace BlazorGPT.Data;
 
 public static class DataExtensions
 {
-    public static bool HasStarted(this Conversation conversation)
+    public static bool HasStarted(this Conversation? conversation)
     {
-        return conversation.Messages.Any(m => m.Role == "assistant");
+        return conversation != null && conversation.Messages.Any(m => m.Role == "assistant");
     }
 
     public static bool InitStage(this Conversation conversation)
