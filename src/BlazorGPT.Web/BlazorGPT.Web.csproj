@@ -40,7 +40,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\state\" />
-    <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 
   <ItemGroup>
