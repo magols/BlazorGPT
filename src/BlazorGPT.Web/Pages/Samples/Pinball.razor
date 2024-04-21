@@ -23,8 +23,7 @@
 
 @code {
 
-    [Inject]
-    public ChatWrapper Chat { get; set; }
+    [Inject] public ChatWrapper? Chat { get; set; }
 
 
     [Parameter]
@@ -34,10 +33,10 @@
     {
         if (firstRender)
         {
-            Chat.OnStreamCompletion += async s =>
+            Chat!.OnStreamCompletion += s =>
             {
                 StateHasChanged();
-                return s;
+                return Task.FromResult(s);
             };
 
             CreateConversation();

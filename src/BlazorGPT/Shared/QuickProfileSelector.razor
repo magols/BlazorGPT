@@ -70,7 +70,7 @@
             }
         }
         _profiles = (List<QuickProfile>?)await QuickProfileRepository!.GetQuickProfiles(UserId, InsertAt);
-        SelectedProfiles = _profiles.Where(p => p.EnabledDefault).ToList();
+        SelectedProfiles = _profiles!.Where(p => p.EnabledDefault).ToList();
     }
 
     [Parameter]

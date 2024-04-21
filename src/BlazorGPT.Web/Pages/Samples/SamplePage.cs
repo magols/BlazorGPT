@@ -7,11 +7,11 @@ namespace BlazorGPT.Web.Pages.Samples
     {
         public Conversation? Conversation { get; set; }
 
-        protected  async Task<string> OnStreamCompletion(string s)
+        protected Task<string> OnStreamCompletion(string s)
         {
             Conversation!.Messages.Last().Content += s;
             StateHasChanged();
-            return s;
+            return Task.FromResult(s);
         }
     }
 }

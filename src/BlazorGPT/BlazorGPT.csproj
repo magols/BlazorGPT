@@ -4,11 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <AssemblyVersion>2.4.0.0</AssemblyVersion>
   </PropertyGroup>
   
   <PropertyGroup>
-    <NoWarn>SKEXP0001,SKEXP0060, SKEXP0010, SKEXP0011, SKEXP0020, SKEXP0027, SKEXP0028</NoWarn>
+    <NoWarn>SKEXP0001,SKEXP0060, SKEXP0010, SKEXP0011, SKEXP0020, SKEXP0027, SKEXP0028, CS8981</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

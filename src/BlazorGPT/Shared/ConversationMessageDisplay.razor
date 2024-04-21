@@ -113,7 +113,7 @@
  
 
     [Parameter]
-    public ConversationMessage? Message { get; set; }
+    public required ConversationMessage Message { get; set; }
 
     [Parameter]
     public int MessagesCount { get; set; }
@@ -294,21 +294,21 @@
         EditMode = false;
     }
 
-    private async Task CancelEdit()
+    private Task CancelEdit()
     {
         EditMode = false;
         Message!.Content = _messageToEdit!;
         StateHasChanged();
         _messageToEdit = null;
+        return Task.CompletedTask;
     }
 
 
-    private async Task EditClicked()
+    private Task EditClicked()
     {
-
-        _messageToEdit = Message!.Content;
-
+        _messageToEdit = Message.Content;
         EditMode = true;
+        return Task.CompletedTask;
     }
 
 

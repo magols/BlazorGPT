@@ -1,28 +1,21 @@
-﻿using System.ComponentModel;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Microsoft.SemanticKernel;
-using Radzen;
 
 namespace BlazorGPT.Shared.PluginSelector;
 
 public partial class PluginsList
 {
     private readonly PluginFormModel _model = new();
-    private readonly PluginFormModel _modelOrig = new();
 
 
     private List<Plugin> _plugins = new();
-    private DirectoryInfo? _pluginsDirectory;
 
     [Inject] 
     private ILocalStorageService? LocalStorage { get; set; }
 
     [Inject]
-    PluginsRepository PluginsRepository { get; set; }
+    PluginsRepository? PluginsRepository { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -89,33 +82,3 @@ public partial class PluginsList
 
 
 
-public class SemanticPluginConfig
-{
-    public int? schema { get; set; }
-    public string type { get; set; }
-    public string description { get; set; }
-    public CompletionConfig completion { get; set; }
-    public InputConfig input { get; set; }
-    public object[] default_backends { get; set; }
-}
-
-public class CompletionConfig
-{
-    public int? max_tokens { get; set; }
-    public decimal temperature { get; set; }
-    public decimal top_p { get; set; }
-    public decimal presence_penalty { get; set; }
-    public decimal frequency_penalty { get; set; }
-}
-
-public class InputConfig
-{
-    public ParameterConfig[] parameters { get; set; }
-}
-
-public class ParameterConfig
-{
-    public string name { get; set; }
-    public string description { get; set; }
-    public string defaultValue { get; set; }
-}

@@ -8,7 +8,7 @@
 
     private async Task CancelSend()
     {
-        _cancellationTokenSource.Cancel();
+        await _cancellationTokenSource.CancelAsync();
     }
 
     [Inject]
@@ -208,14 +208,6 @@
 
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-                                    
-                                    @*                                     <GPTModelConfiguration Class="m-2 border-3" @ref="_modelConfiguration"
-                                                           ModelSelectEnabled="@(Conversation.Id == null)"
-                                                           PreSelectedModel="@(Conversation.Id != null ? Conversation.Model : null)"
-                                                           OnResize="@ModelConfigResized" 
-                                                           Toggled="true"/> *@
-
-
 
                                     <PluginSelectorButton Class="m-1 me-3 p-1 float-end" />
                                     <InterceptorSettingsButton Class="m-1 me-3 p-1  float-end" />
@@ -244,7 +236,7 @@
                             </EditForm>
                         </RadzenTabsItem>
                         <RadzenTabsItem Text="Scripts">
-                            @if (ScriptsDdn?.Scripts.Count() == 0)
+                            @if (ScriptsDdn?.Scripts.Count() == -1)
                             {
                                 <div>
                                     <RadzenText>

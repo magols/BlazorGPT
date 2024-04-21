@@ -4,10 +4,6 @@
         <RadzenTreeItem Text="">
             <ChildContent>
                 <div class="markdown-embeddings">@Value</div>
-                @if (tokens != null && tokens.Any())
-                {
-                    <span>Token count: @tokens.Count()</span>
-                }
             </ChildContent>
             <Template>
                 <RadzenIcon Icon="attachment" IconStyle="IconStyle.Info"></RadzenIcon>
@@ -21,8 +17,6 @@
 
     [Parameter]
     public string? Value { get; set; }
-
-    IEnumerable<int>? tokens;
 
     private void OnExpand(TreeExpandEventArgs arg)
     {

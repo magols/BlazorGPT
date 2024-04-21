@@ -25,7 +25,7 @@ public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWriting
         return conversation;
     }
 
-    private async Task<Conversation> AppendInstruction(Conversation conversation)
+    private Task<Conversation> AppendInstruction(Conversation conversation)
     {
 
         string state = "{\"id\":\"0\"}";
@@ -48,7 +48,7 @@ public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWriting
             Name = "msgstate",
         };
 
-        return conversation;
+        return Task.FromResult(conversation);
     }
 
     private string path = @"C:\source\BlazorGPT\BlazorGPT\wwwroot\state\";

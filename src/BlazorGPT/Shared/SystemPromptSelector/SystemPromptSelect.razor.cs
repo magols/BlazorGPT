@@ -20,7 +20,7 @@ public partial class SystemPromptSelect
 
 
     [CascadingParameter(Name = "Conversation")]
-    public Conversation Conversation { get; set; }
+    public Conversation? Conversation { get; set; }
 
 
     [Inject] private IDbContextFactory<BlazorGptDBContext>? ContextFactory { get; set; }
@@ -32,9 +32,9 @@ public partial class SystemPromptSelect
 
     private IEnumerable<UserSystemPrompt>? Prompts { get; set; }
 
-    public RadzenDropDownDataGrid<UserSystemPrompt>? grid { get; set; }
+    public RadzenDropDownDataGrid<UserSystemPrompt>? grid { get; set; } = null!;
 
-    [Inject] private ILocalStorageService LocalStorage { get; set; }
+    [Inject] private ILocalStorageService? LocalStorage { get; set; }
 
     [Inject]
     IConfiguration Configuration { get; set; } = null!;
@@ -52,7 +52,7 @@ public partial class SystemPromptSelect
 
     protected override Task OnParametersSetAsync()
     {
-        if (Conversation.HasStarted())
+        if (Conversation != null &&  Conversation.HasStarted())
         {
             SelectedPrompt = new UserSystemPrompt
             {
@@ -82,7 +82,7 @@ public partial class SystemPromptSelect
                     { UserId = UserId, Name = DefaultKey, Text = Configuration["PipelineOptions:DefaultSystemPrompt"] ?? "You are a helpful assistant" };
 
 
-                var savedId = await LocalStorage.GetItemAsStringAsync(StoreKey);
+                var savedId = await LocalStorage!.GetItemAsStringAsync(StoreKey);
 
                 if (savedId != null)
                 {
@@ -95,7 +95,10 @@ public partial class SystemPromptSelect
                 }
             }
 
-            Conversation.SetSystemMessage(SelectedPrompt!.Text);
+            if (Conversation != null && SelectedPrompt != null)
+            {
+                Conversation.SetSystemMessage(SelectedPrompt.Text);
+            }
             StateHasChanged();
             grid?.Reload();
         }
@@ -104,8 +107,8 @@ public partial class SystemPromptSelect
     private async Task SelectedItemChange(object selected)
     {
         var prompt = selected as UserSystemPrompt;
-        Conversation.SetSystemMessage(prompt!.Text);
+        if (Conversation != null) Conversation.SetSystemMessage(prompt!.Text);
         StateHasChanged();
-        await LocalStorage.SetItemAsStringAsync(StoreKey, prompt.Id.ToString());
+        await LocalStorage!.SetItemAsStringAsync(StoreKey, prompt!.Id.ToString());
     }
 }

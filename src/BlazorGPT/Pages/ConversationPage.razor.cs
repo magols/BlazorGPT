@@ -63,15 +63,15 @@ namespace BlazorGPT.Pages
         public IOptions<PipelineOptions> PipelineOptions { get; set; } = null!;
 
         [Inject]
-        public QuickProfileRepository QuickProfileRepository { get; set; }
+        public required QuickProfileRepository QuickProfileRepository { get; set; }
 
         [Inject]
-        public IResizeListener ResizeListener { get; set; }
+        public required IResizeListener ResizeListener { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
         
         [Inject]
-        public KernelService KernelService{ get; set; }
+        public required KernelService KernelService{ get; set; }
 
 
         [Inject]
@@ -80,15 +80,15 @@ namespace BlazorGPT.Pages
         public ScriptRepository ScriptRepository { get; set; } = null!;
 
         [Inject]
-        public ConversationsRepository ConversationsRepository { get; set; }
+        public required ConversationsRepository ConversationsRepository { get; set; }
         [Inject]
         public DialogService DialogService { get; set; } = null!;
 
         [Inject]
-        public IInterceptorHandler  InterceptorHandler{ get; set; }
+        public required IInterceptorHandler  InterceptorHandler{ get; set; }
 
         [Inject]
-        public ConversationInterop? Interop { get; set; }
+        public required ConversationInterop Interop { get; set; }
        
         private Conversation Conversation = new();
 
@@ -96,16 +96,15 @@ namespace BlazorGPT.Pages
 
         bool promptIsReady;
         string scriptInput;
-        bool showTokens = false;
 
         private int controlHeight { get; set; }
         private int initialControlHeight = 0;
 
         private Kernel _kernel = null!;
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource _cancellationTokenSource = null!;
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
-        [Inject] private ModelConfigurationService _modelConfigurationService { get; set; }
+        [Inject] private ModelConfigurationService? _modelConfigurationService { get; set; } = null!;
 
          protected override async Task OnInitializedAsync()
          {
@@ -301,13 +300,14 @@ namespace BlazorGPT.Pages
                         }
                 }
             }
-            catch (InvalidOperationException ioe)
+            catch (InvalidOperationException )
             {
                 // todo: handle this
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // todo: handle this
+                throw;
 
             }
             finally
@@ -468,7 +468,7 @@ namespace BlazorGPT.Pages
                 InterceptorHandler.OnUpdate -= UpdateAndRedraw;
         }
 
-        async void WindowResized(object _, BrowserWindowSize window)
+         void WindowResized(object _, BrowserWindowSize window)
         {
             browser = window;
             StateHasChanged();
@@ -580,16 +580,11 @@ namespace BlazorGPT.Pages
         private QuickProfileSelector? _profileSelectorStart;
 
         private QuickProfileSelector? _profileSelectorEnd;
-        private bool useState;
 
         [Inject]
         ILocalStorageService LocalStorageService { get; set; } = null!;
         
-        //IEnumerable<string> enabledInterceptors = Array.Empty<string>();
-
         private int selectedTabIndex;
-      
-
 
         private async Task HiveStateClicked()
         {

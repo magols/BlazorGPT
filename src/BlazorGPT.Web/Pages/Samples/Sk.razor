@@ -3,7 +3,6 @@
 @using BlazorGPT.Pipeline
 @using Microsoft.SemanticKernel
 @using Microsoft.SemanticKernel.Plugins.Core
-@inject IOptions<PipelineOptions> PipelineOptions
 @layout EmptyLayout
 <h3>Semantic Kernel</h3>
 
@@ -14,10 +13,10 @@
 @code {
 #pragma warning disable SKEXP0050
     [Inject]
-    public ChatWrapper Chat { get; set; }
+    public ChatWrapper? Chat { get; set; }
 
     [Inject]
-    public KernelService KernelService { get; set; }
+    public KernelService? KernelService { get; set; }
 
     
 
@@ -28,14 +27,14 @@
 
             Conversation = new Conversation();
             // Create a new kernel. This is the main entry point to the Semantic Kernel.
-            kernel = await KernelService.CreateKernelAsync();
+            Kernel = await KernelService!.CreateKernelAsync();
 
 
             // This is the system prompt, ie the information that the system wants to share with the user.
             var systemMessage = @"You are an AI assistant that helps people find information.";
 
-            kernel.ImportPluginFromObject(new TimePlugin(), "time");
-            kernel.ImportPluginFromObject(new HttpPlugin(), "http");
+            Kernel.ImportPluginFromObject(new TimePlugin(), "time");
+            Kernel.ImportPluginFromObject(new HttpPlugin(), "http");
             string userMessage = "Where is Stockholm?";
  
 
@@ -47,14 +46,14 @@
                 StateHasChanged();
 
                 // Conversation =
-                await Chat.SendWithPipeline(kernel, Conversation, callback: OnStreamCompletion);
+                await Chat!.SendWithPipeline(Kernel, Conversation, callback: OnStreamCompletion);
                 StateHasChanged();
 
             }
         }
     }
 
-    public Kernel kernel { get; set; }
+     Kernel? Kernel { get; set; }
  
    
 

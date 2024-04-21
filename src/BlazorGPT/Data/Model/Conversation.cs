@@ -36,7 +36,7 @@ public class Conversation
     public List<ConversationTreeState> TreeStateList { get; set; } = new();
 
     [NotMapped]
-    public Conversation HiveConversation { get; set; }
+    public Conversation HiveConversation { get; set; } = null!;
 
     public HiveState? HiveState
     { get; set; }

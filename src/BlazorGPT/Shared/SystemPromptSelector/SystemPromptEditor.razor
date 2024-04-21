@@ -40,8 +40,8 @@
 </RadzenDataGrid>
 
 @code {
-    RadzenDataGrid<UserSystemPrompt> _userSystemPromptsGrid;
-    List<UserSystemPrompt> _userSystemPrompts;
+    RadzenDataGrid<UserSystemPrompt?> _userSystemPromptsGrid = null!;
+    List<UserSystemPrompt>? _userSystemPrompts;
 
 
     readonly DataGridEditMode _editMode = DataGridEditMode.Single;

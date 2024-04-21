@@ -25,9 +25,9 @@ public class StateFileSaveInterceptor : InterceptorBase, IInterceptor
         return conversation;
     }
 
-    public async Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {
-        return conversation;
+        return Task.FromResult(conversation);
     }
 
     async Task ParseMessageAndSaveStateToDisk(ConversationMessage lastMsg)

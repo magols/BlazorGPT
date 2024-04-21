@@ -79,13 +79,13 @@ EmptyText="No profiles yet :("
     public string? UserId { get; set; } = null!;
 
     [Inject]
-    public QuickProfileRepository QuickProfileRepository { get; set; }
+    public required QuickProfileRepository QuickProfileRepository { get; set; }
 
     [Inject]
-    public DialogService DialogService { get; set; }
+    public required DialogService DialogService { get; set; }
 
 [Inject]
-public NotificationService NotificationService { get; set; }
+public required NotificationService NotificationService { get; set; }
 
     List<QuickProfile> _quickProfiles;
     private RadzenDataGrid<QuickProfile>? _grid;

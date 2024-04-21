@@ -12,7 +12,7 @@
 @code {
 
     [Inject]
-    public ChatWrapper Chat { get; set; }
+    public ChatWrapper? Chat { get; set; }
 
 
 
@@ -35,7 +35,7 @@
                 
             });
 
-            await Chat.SendWithPipeline(kernel, Conversation,
+            await Chat!.SendWithPipeline(kernel, Conversation,
                 quickProfiles: profiles,
                 callback: OnStreamCompletion);
         }

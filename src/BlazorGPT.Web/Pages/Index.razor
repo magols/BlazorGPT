@@ -10,10 +10,10 @@
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    public string? UserId { get; set; } = null!;
+    public string? UserId { get; set; }
 
     [Inject]
-    public SampleDataSeeder SampleDataSeeder { get; set; }
+    public required SampleDataSeeder SampleDataSeeder { get; set; }
 
     private async Task SeedSamples()
     {
@@ -24,10 +24,10 @@
             await SampleDataSeeder.SeedScriptsDataForUser(UserId);
         }
 
-        var alert = await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
+       await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
     }
 
-    public async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (AuthenticationState != null)
         {

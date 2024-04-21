@@ -13,7 +13,7 @@
 @code {
 
     private static string readme = "";
-    private MarkdownPipeline markdownPipeline;
+    private MarkdownPipeline markdownPipeline = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,9 +71,9 @@
 
             return html;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            return "";
+            return "GetMarkdown(string toHtml)";
         }
     }
 }

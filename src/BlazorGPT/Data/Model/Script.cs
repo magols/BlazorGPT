@@ -4,9 +4,9 @@ public class Script
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public string SystemMessage { get; set; } = "You are a helpful assistant";
 

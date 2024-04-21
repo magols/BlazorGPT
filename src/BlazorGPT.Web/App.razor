@@ -77,7 +77,7 @@
 
 
     [Inject]
-    public IHttpContextAccessor HttpContextAccessor { get; set; }
+    public required IHttpContextAccessor HttpContextAccessor { get; set; }
 
 
     public string? UserId { get; set; }

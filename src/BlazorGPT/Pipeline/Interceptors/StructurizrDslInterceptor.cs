@@ -7,7 +7,6 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
 {
  
     private readonly ConversationsRepository _conversationsRepository;
-    private readonly IDbContextFactory<BlazorGptDBContext> _context;
 
     public StructurizrDslInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -23,7 +22,7 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
         return conversation;
     }
 
-    private async Task<Conversation> AppendInstruction(Conversation conversation)
+    private Task<Conversation> AppendInstruction(Conversation conversation)
     {
         string state = @"
 
@@ -76,7 +75,7 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
             Name = "msgstate",
         };
 
-        return conversation;
+        return Task.FromResult(conversation);
     }   
 
     private string path = @"C:\source\BlazorGPT\BlazorGPT\wwwroot\state\";

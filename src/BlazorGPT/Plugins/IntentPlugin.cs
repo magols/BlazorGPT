@@ -7,7 +7,6 @@ namespace BlazorGPT.Plugins;
 
 public class IntentPlugin
 {
-    private Kernel _kernel;
     private readonly IServiceProvider _serviceProvider;
 
     public IntentPlugin(IServiceProvider serviceProvider)

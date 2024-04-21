@@ -46,7 +46,7 @@
     {
         await using var db = await DbContextFactory.CreateDbContextAsync();
         Scripts = await db.Scripts.Where(s => s.UserId == UserId).ToListAsync();
-
+        StateHasChanged();
 
     }
 
@@ -71,7 +71,7 @@
     [Parameter]
     public bool SetIsWorking { get; set; }
 
-    private Script? selected;
+    // private Script? selected;
 
 
     private async Task OnClick()
@@ -82,6 +82,6 @@
         }
     }
 
-     RadzenDropDown<Guid?> dropdown { get; set; }
+     RadzenDropDown<Guid?> dropdown { get; set; } = null!;
 
 }

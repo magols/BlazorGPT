@@ -17,7 +17,7 @@ public class SendGridEmailSender : IEmailSender
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
-        string sendGridApiKey = configuration["SendGridApiKey"];
+        string? sendGridApiKey = configuration["SendGridApiKey"];
         if (string.IsNullOrEmpty(sendGridApiKey))
         {
             throw new Exception("The 'SendGridApiKey' is not configured");

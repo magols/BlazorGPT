@@ -105,25 +105,22 @@
     Script? Script { get; set; }
 
     [Inject]
-    public ScriptRepository ScriptRepository { get; set; }
+    public required ScriptRepository ScriptRepository { get; set; }
 
     [Inject]
-    public DialogService DialogService { get; set; }
+    public required DialogService DialogService { get; set; }
 
     [Inject]
-    public NotificationService NotificationService { get; set; }
+    public required NotificationService NotificationService { get; set; }
 
     [Inject]
-    public IDbContextFactory<BlazorGptDBContext> Context { get; set; }
+    public required IDbContextFactory<BlazorGptDBContext> Context { get; set; }
     [Inject]
     public ConversationInterop? ConversationInterop { get; set; }
 
     RadzenDataGrid<ScriptStep> grid;
 
-    protected override async Task OnInitializedAsync()
-    {
-        
-    }
+ 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
