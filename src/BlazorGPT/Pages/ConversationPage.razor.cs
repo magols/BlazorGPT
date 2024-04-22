@@ -271,7 +271,8 @@ namespace BlazorGPT.Pages
 
             try
             {
-                var strs = await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors");
+                var hasKey = await LocalStorageService.ContainKeyAsync("bgpt_interceptors");
+                var strs = hasKey ? await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors") : [];
 
                 Conversation = await InterceptorHandler.Send(_kernel,
                     Conversation, 
