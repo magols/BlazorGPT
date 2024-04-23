@@ -197,6 +197,7 @@ public class PipelineOptions
     public ModelsProvidersOptions Providers { get; set; } =  new ModelsProvidersOptions();
 
     public int MaxTokens { get; set; }
+    public int MaxPlannerTokens { get; set; }
 
     public string[]? EnabledInterceptors { get; set; }
     public string[]? PreSelectedInterceptors { get; set; }
