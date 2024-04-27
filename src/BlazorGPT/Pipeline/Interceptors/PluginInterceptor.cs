@@ -1,7 +1,9 @@
 ﻿using Blazored.LocalStorage;
+using BlazorGPT.Settings;
 using BlazorGPT.Shared.PluginSelector;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Planning.Handlebars;
 
 namespace BlazorGPT.Pipeline.Interceptors;
@@ -13,6 +15,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     private readonly ILocalStorageService? _localStorageService;
     private readonly PluginsRepository _pluginsRepository;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ModelConfigurationService _modelConfigurationService;
 
     public PluginInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -20,6 +23,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         _kernelService = _serviceProvider.GetRequiredService<KernelService>();
         _localStorageService = _serviceProvider.GetRequiredService<ILocalStorageService>();
         _pluginsRepository = _serviceProvider.GetRequiredService<PluginsRepository>();
+        _modelConfigurationService = _serviceProvider.GetRequiredService<ModelConfigurationService>();
     }
 
     public override string Name { get; } = "Plugins with Handlebars Planner";
@@ -51,7 +55,14 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         conversation.Messages.Add(lastMsg);
         OnUpdate?.Invoke();
 
-        var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions { AllowLoops = true });
+        var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions
+        {
+            AllowLoops = true,
+            ExecutionSettings = new OpenAIPromptExecutionSettings
+            {
+                MaxTokens = _modelConfigurationService.GetDefaultConfig().MaxPlannerTokens,
+            }
+        });
 
         try
         {
