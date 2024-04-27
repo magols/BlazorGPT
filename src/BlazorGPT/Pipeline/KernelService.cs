@@ -66,13 +66,13 @@ public class KernelService
 #pragma warning disable SKEXP0011
             builder
             .AddAzureOpenAIChatCompletion(
-                deploymentName: _options.Providers.AzureOpenAI.ChatModels.First( p => p.Key == model).Key,
+                deploymentName: _options.Providers.AzureOpenAI.ChatModels.First( p => p.Value == model).Key,
                 modelId: model,
                 endpoint: _options.Providers.AzureOpenAI.Endpoint,
                 apiKey: _options.Providers.AzureOpenAI.ApiKey
                 )
             .AddAzureOpenAITextEmbeddingGeneration(
-                deploymentName: _options.Providers.AzureOpenAI.EmbeddingsModels.First(p => p.Key == _options.Providers.AzureOpenAI.EmbeddingsModel).Key,
+                deploymentName: _options.Providers.AzureOpenAI.EmbeddingsModels.First(p => p.Value == _options.Providers.AzureOpenAI.EmbeddingsModel).Key,
                 modelId: _options.Providers.AzureOpenAI.EmbeddingsModel,
                 endpoint: _options.Providers.AzureOpenAI.Endpoint,
                 apiKey: _options.Providers.AzureOpenAI.ApiKey
