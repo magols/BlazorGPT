@@ -27,15 +27,9 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     }
 
     public override string Name { get; } = "Plugins with Handlebars Planner";
-    public bool Internal { get; } = false;
 
-    public Task<Conversation> Receive(Kernel kernel, Conversation conversation,
-        CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(conversation);
-    }
 
-    public async Task<Conversation> Send(Kernel kernel, Conversation conversation,
+    public override async Task<Conversation> Send(Kernel kernel, Conversation conversation,
         Func<string, Task<string>>? onComplete = null,
         CancellationToken cancellationToken = default)
     {

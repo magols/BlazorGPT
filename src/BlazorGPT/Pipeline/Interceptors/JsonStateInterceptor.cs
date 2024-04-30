@@ -9,7 +9,6 @@ public class JsonStateInterceptor : InterceptorBase, IInterceptor, IStateWriting
     {
     }
 
-    public bool Internal => false;
 
     public override string Name { get; } = "Json Hive State";
 

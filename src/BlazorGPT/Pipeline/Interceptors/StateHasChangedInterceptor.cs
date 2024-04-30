@@ -4,28 +4,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
-public class StateHasChangedInterceptor : InterceptorBase, IInterceptor
+public class StateHasChangedInterceptor(IServiceProvider serviceProvider)
+    : InterceptorBase(serviceProvider), IInterceptor
 {
-    private readonly StateHasChangedInterceptorService _stateHasChangedInterceptorService;
+    private readonly StateHasChangedInterceptorService _stateHasChangedInterceptorService = serviceProvider.GetRequiredService<StateHasChangedInterceptorService>();
 
-    public StateHasChangedInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-
-        _stateHasChangedInterceptorService = serviceProvider.GetRequiredService<StateHasChangedInterceptorService>();
-    }
-
-    public bool Internal { get; } = true;
+    public override bool Internal { get; } = true;
 
     public override string Name { get; } = "State has changed";
-    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+
+    public override async  Task<Conversation> Receive(Kernel kernel, Conversation conversation, Func<string, Task<string>>? onComplete = null,
+        CancellationToken cancellationToken = default)
     {
         await ParseAndSendNotification(conversation.Messages.Last());
 
-        return conversation;
-    }
-
-    public async Task<Conversation> Send(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
-    {
         return conversation;
     }
 

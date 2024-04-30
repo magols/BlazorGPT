@@ -74,14 +74,11 @@ public class StructurizrDslInterceptor : InterceptorBase, IInterceptor, IStateWr
             IsPublished = true,
             Name = "msgstate",
         };
-
         return Task.FromResult(conversation);
     }   
 
     private string path = @"C:\source\BlazorGPT\BlazorGPT\wwwroot\state\";
 
-
-    public bool Internal { get; } = false;
 
     public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
     {

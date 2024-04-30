@@ -24,7 +24,6 @@ public class EmbeddingsInterceptor : InterceptorBase, IInterceptor
     }
 
     public override string Name { get; } = "Embeddings (gpt-4 encoding)";
-    public bool Internal { get; } = false;
 
     public override async Task<Conversation> Send(Kernel kernel, Conversation conversation, Func<string, Task<string>>? onComplete = null,
         CancellationToken cancellationToken = default)

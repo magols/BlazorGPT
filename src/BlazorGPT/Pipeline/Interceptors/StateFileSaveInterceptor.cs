@@ -13,13 +13,14 @@ public class StateFileSaveInterceptor : InterceptorBase, IInterceptor
     public StateFileSaveInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         var options = serviceProvider.GetRequiredService<IOptions<PipelineOptions>>().Value;
-        _path = options.StateFileSaveInterceptorPath;
+        _path = options.StateFileSaveInterceptorPath ?? string.Empty;
     }
 
     public override string Name { get; } = "Save file";
-    public bool Internal { get; } = true;
+    public override bool Internal { get; } = true;
 
-    public async Task<Conversation> Receive(Kernel kernel, Conversation conversation, CancellationToken cancellationToken = default)
+    public override async Task<Conversation> Receive(Kernel kernel, Conversation conversation, Func<string, Task<string>>? onComplete = null,
+        CancellationToken cancellationToken = default)
     {
         await ParseMessageAndSaveStateToDisk(conversation.Messages.Last());
         return conversation;
