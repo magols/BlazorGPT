@@ -57,7 +57,7 @@ public partial class SystemPromptSelect
             SelectedPrompt = new UserSystemPrompt
             {
                 Name = "",
-                Text = Conversation.GetSystemMessage().Content
+                Text = Conversation!.GetSystemMessage()!.Content
             };
 
             Conversation.SetSystemMessage(SelectedPrompt!.Text);

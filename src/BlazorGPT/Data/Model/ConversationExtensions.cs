@@ -13,13 +13,18 @@ public static class ConversationExtensions
         return message.Role == ConversationRole.Assistant;
     }
 
-    public static ConversationMessage GetSystemMessage(this Conversation conversation) 
+    public static ConversationMessage? GetSystemMessage(this Conversation conversation) 
     {
-        return conversation.Messages.First(o => o.Role == "system");
+        return conversation.Messages.FirstOrDefault(o => o.Role == "system");
     }
 
     public static void SetSystemMessage(this Conversation conversation, string systemMessage)
     {
+        if (conversation.Messages.Count == 0)
+        {
+            conversation.Messages.Add(new ConversationMessage("system", systemMessage));
+            return;
+        } 
         conversation.Messages.First(o => o.Role == "system").Content = systemMessage;
     }
 }
