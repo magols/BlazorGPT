@@ -368,3 +368,4 @@ src/BlazorGPT.Web/wwwroot/docs
 src/BlazorGPT.Web/wwwroot/README.md
 .semantic-kernel/
 /src/BlazorGPT.Web/wwwroot/Uploads/
+/docs/Imported/
