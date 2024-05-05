@@ -227,30 +227,31 @@ namespace BlazorGPT.Pages
 
         }
 
-
         private async Task SendConversation()
+        {
+            await SendConversation(false);
+        }
+
+
+        private async Task SendConversation(bool rerun)
         {
             IsBusy = true;
 
             Model.Prompt = Model.Prompt?.TrimEnd('\n');
 
-            if (!Conversation.HasStarted())
+            if (Conversation.InitStage())
             {
-
-                 
-
                 var selected = _profileSelectorStart != null ? _profileSelectorStart.SelectedProfiles : new List<QuickProfile>();
                 
                 string startMsg = string.Join(" ", selected.Select(p => p.Content));
                 if (!string.IsNullOrEmpty(startMsg))
                     startMsg += "\n\n";
-                Conversation.AddMessage(new ConversationMessage("user", startMsg + Model.Prompt));
 
                 Conversation.DateStarted = DateTime.UtcNow;
                 StateHasChanged();
 
             }
-            else
+            else if (!rerun)
             {
                 Conversation.AddMessage(new ConversationMessage("user", Model.Prompt!));
                 StateHasChanged();  

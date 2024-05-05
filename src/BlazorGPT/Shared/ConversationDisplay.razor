@@ -25,7 +25,7 @@
                 <ConversationMessageDisplay 
                     ShowBranches="@ShowBranches"
                     ShowEditButton="!BotMode && Conversation.IsStarted()"
-                    ShowRestartButton="!BotMode && RestartConversation.HasDelegate && Conversation.IsStarted() && message.IsAssistantTurn()"
+                    ShowRestartButton="!BotMode && RestartConversation.HasDelegate && Conversation.IsStarted() && !message.IsAssistantTurn()"
                     ShowCopyButton="!BotMode && CopyConversation.HasDelegate && Conversation.Id != null"
                     OnRestartClicked="RestartConversation"
                     OnCopyClicked="CopyConversation"

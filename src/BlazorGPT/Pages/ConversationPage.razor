@@ -19,19 +19,22 @@
         var result = await DialogService.Confirm("Restart conversation from here?", "Restart");
         if (result.HasValue && result.Value)
         {
-            var isuser = msg.Role == "user";
-            if (isuser)
+            var isUserMsg = msg.Role == "user";
+            if (isUserMsg)
             {
                 Model.Prompt = msg.Content.Trim();
             }
 
 
-            var index = Conversation.Messages.IndexOf(msg);
-            // find all messages in the conversation that are after this one
-            var messagesToRemove = Conversation.Messages.Skip(isuser ? index : index + 1).ToList();
-            // restart conversation by removing all messages after this one
-            Conversation.Messages.RemoveRange(isuser ? index : index + 1, Conversation.Messages.Count - index - 1);
-            await ConversationsRepository.DeleteMessages(messagesToRemove);
+            var messagesToKeep = Conversation.Messages.IndexOf(msg) + 1;
+
+            Console.WriteLine(messagesToKeep);
+            Conversation.Messages = Conversation.Messages.Take(messagesToKeep).ToList();
+            
+          //  await ConversationsRepository.DeleteMessages(messagesToRemove);
+
+
+            await SendConversation(rerun: true);
 
             StateHasChanged();
 
