@@ -25,14 +25,12 @@
                 Model.Prompt = msg.Content.Trim();
             }
 
+            var messageCutoff = Conversation.Messages.IndexOf(msg) + 1;
 
-            var messagesToKeep = Conversation.Messages.IndexOf(msg) + 1;
+            var messagesToRemove = Conversation.Messages.Skip(messageCutoff).ToList();
+            await ConversationsRepository.DeleteMessages(messagesToRemove);
 
-            Console.WriteLine(messagesToKeep);
-            Conversation.Messages = Conversation.Messages.Take(messagesToKeep).ToList();
-            
-          //  await ConversationsRepository.DeleteMessages(messagesToRemove);
-
+            Conversation.Messages = Conversation.Messages.Take(messageCutoff).ToList();
 
             await SendConversation(rerun: true);
 

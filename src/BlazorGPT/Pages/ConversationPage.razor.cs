@@ -239,7 +239,7 @@ namespace BlazorGPT.Pages
 
             Model.Prompt = Model.Prompt?.TrimEnd('\n');
 
-            if (Conversation.InitStage())
+            if (!Conversation.HasStarted())
             {
                 var selected = _profileSelectorStart != null ? _profileSelectorStart.SelectedProfiles : new List<QuickProfile>();
                 
@@ -247,7 +247,11 @@ namespace BlazorGPT.Pages
                 if (!string.IsNullOrEmpty(startMsg))
                     startMsg += "\n\n";
 
-                Conversation.DateStarted = DateTime.UtcNow;
+                if (!rerun)
+                {
+                    Conversation.AddMessage(new ConversationMessage("user", startMsg + Model.Prompt!));
+                    Conversation.DateStarted = DateTime.UtcNow;
+                }
                 StateHasChanged();
 
             }
