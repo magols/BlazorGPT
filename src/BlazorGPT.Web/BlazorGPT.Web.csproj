@@ -27,8 +27,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.2" />
-    <PackageReference Include="Radzen.Blazor" Version="4.29.2" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.3" />
+    <PackageReference Include="Radzen.Blazor" Version="4.31.7" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
     <PackageReference Include="Toolbelt.Blazor.ViewTransition" Version="1.0.3" />
 
