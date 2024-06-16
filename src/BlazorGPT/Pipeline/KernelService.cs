@@ -14,7 +14,7 @@ namespace BlazorGPT.Pipeline;
 
 public class KernelService
 {
-    private readonly PipelineOptions _options;
+    protected readonly PipelineOptions _options;
 
     public KernelService(IOptions<PipelineOptions> options)
     {
@@ -232,42 +232,6 @@ public class KernelService
         return chatHistory.ToConversation();
     }
 
-
-    public async Task<Conversation> OllamaChatCompletion(Kernel kernel,
-	    Conversation conversation,
-	    PromptExecutionSettings? requestSettings = default,
-        Func<string, string>? onCompletion = null,
-	    CancellationToken cancellationToken = default)
-    {
-	    requestSettings ??= new ChatRequestSettings();
-
-	    var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
-
-        //todo: now we have to recreate sttings, Ollama does't like the max_tokens parameter
-	    var settings = new PromptExecutionSettings
-	    {
-		    ExtensionData = new Dictionary<string, object>
-		    {
-			    { "temperature", requestSettings?.ExtensionData!["temperature"] ?? 0 }
-		    }
-	    };
-            
-        var history = conversation.ToChatHistory();
-
-	    var completion = await chatCompletion.GetChatMessageContentsAsync(history, settings, kernel, cancellationToken);
-
-        var content = "";
-        foreach (var chatMessageContent in completion)
-        {
-            content += chatMessageContent.Content;
-        }
-
-        conversation.Messages.Last().Content = content;
-        onCompletion?.Invoke(content);
-        return conversation;
-    }
-
-
 	public async Task<Conversation> ChatCompletionAsStreamAsync(Kernel kernel,
         Conversation conversation,
         PromptExecutionSettings? requestSettings = default,
@@ -277,14 +241,6 @@ public class KernelService
         requestSettings ??= new ChatRequestSettings();
 
         var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
-
-
-        if (chatCompletion is OllamaChatCompletionService)
-        {
-            return await OllamaChatCompletion(kernel, conversation, requestSettings, cancellationToken: cancellationToken);
-        }
-
-
         var fullMessage = string.Empty;
         var history = conversation.ToChatHistory();
 
