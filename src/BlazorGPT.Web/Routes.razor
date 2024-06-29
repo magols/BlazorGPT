@@ -1,4 +1,4 @@
-﻿<ViewTransitionRouter AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(ConversationPage).Assembly }" PreferExactMatches="@true">
+﻿<ViewTransitionRouter AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="@AvailableAssemblies" PreferExactMatches="@true">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(BlazorGptLayout)">
             <NotAuthorized>

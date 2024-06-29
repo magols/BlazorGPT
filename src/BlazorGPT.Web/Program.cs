@@ -1,3 +1,4 @@
+using System.Reflection;
 using Blazored.LocalStorage;
 using BlazorGPT;
 using BlazorGPT.Components.Account;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
+using BlazorGPT.Pages;
 using BlazorGPT.Settings;
 using BlazorGPT.Shared.PluginSelector;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -54,6 +56,7 @@ else
 }
 
 builder.Services.AddRazorPages();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -136,9 +139,12 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapRazorPages();
 
+List<Assembly> pluginAssemblies = PluginsLoader.GetAssembliesFromPluginsFolder().ToList();
+pluginAssemblies.Add(typeof(Conversation).Assembly);
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(typeof(Conversation).Assembly);
+    .AddAdditionalAssemblies(pluginAssemblies.ToArray());
 
 app.MapAdditionalIdentityEndpoints();
 
