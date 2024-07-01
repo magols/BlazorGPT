@@ -9,6 +9,10 @@ public static class PluginsLoader
     private static IEnumerable<Assembly> GetAssembliesFromDisk()
     {
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
         var files = Directory.GetFiles(path, "*.dll");
         foreach (var file in files)
         {
