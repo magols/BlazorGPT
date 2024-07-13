@@ -1,318 +1,81 @@
-﻿<div class="row m-1 p-0" style="@Style">
+﻿@using BlazorGPT.Data
+@if (Conversation != null)
+{
+    <div id="message-pane" class="scroll-pane" style="@Style">
+        <BranchedFrom Conversation="@Conversation" />
 
-    <div class="col-1 col-md-1 m-0 mb-0 p-1 pe-0 bg-gradient">
-        <ConversationRoleDisplay Role="@Message.Role"/>
-
-        <ul id="message-buttons" style="list-style-type: none" class="p-0 m-0">
-            @if (ShowRestartButton)
-            {
-                <li class="m-1">
-                    <RadzenButton Visible="ShowRestartButton" Class="" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))"/>
-
-                </li>
-            }
-            @if (ShowShouldDisplayStateButton)
-            {
-                <li class="m-1">
-                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))"/>
-
-                </li>
-            }
-
-            @if (ShowEditButton)
-            {
-                <li class="m-1">
-                    <RadzenButton Visible="true" Class="" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))"/>
-
-                </li>
-
-            }
-
-            @if (Message.Role == ConversationRole.Assistant && ShowCopyButton)
-            {
-                <li class="m-1">
-
-                    <RadzenButton Visible="ShowCopyButton" class="" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))"/>
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="col-11 col-md-11 ps-2 pt-0 p-1 pb-0 mt-2 mb-0" id="@Message.Id">
-        @if (Message.Role == ConversationRole.System)
+        @if (Conversation.Messages.Any())
         {
-            <SystemPromptSelect InitialSystemPrompt="@InitialSystemPrompt" Disabled="!EditMode && MessagesCount > 1" />
-
-            if (EditMode)
+            if (!BotMode)
             {
-                <button class="btn btn-sm btn-primary" @onclick="@(args => SaveMessage())">Save</button>
-                <button class="btn btn-sm btn-secondary" @onclick="@(args => SaveMessage())">Cancel</button>
+                <!-- system prompt -->
+                <ConversationMessageDisplay @ref="SystemMessageDisplay"
+                                            InitialSystemPrompt="@InitialSystemPrompt"
+                                            Message="Conversation.Messages.FirstOrDefault()"
+                                            MessagesCount="Conversation.Messages.Count()"
+                                            ShowEditButton="Conversation.IsStarted()" />
+
+            }
+
+
+            @foreach (var message in Conversation.Messages.Skip(1))
+            {
+                <ConversationMessageDisplay ShowBranches="@ShowBranches"
+                                            ShowEditButton="!BotMode && Conversation.IsStarted()"
+                                            ShowRestartButton="!BotMode && RestartConversation.HasDelegate && Conversation.IsStarted() && !message.IsAssistantTurn()"
+                                            ShowCopyButton="!BotMode && CopyConversation.HasDelegate && Conversation.Id != null"
+                                            OnRestartClicked="RestartConversation"
+                                            OnCopyClicked="CopyConversation"
+                                            Message="message">
+                </ConversationMessageDisplay>
+                @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.PluginsNames != null)
+                {
+                    <div class="m-3">Using plugins: @Conversation.PluginsNames</div>
+                }
+                @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.SKPlan != null)
+                {
+
+                    <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
+                }
             }
         }
-        else
-        {
-            <div class="m-0">
-                    
-                @if (string.IsNullOrEmpty(Message.Content))
-                {
-                    <div class="spinner-border text-light" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                }
-                @if (Message.Role == ConversationRole.Assistant)
-                    {
-                        <div class="float-end align-bottom align-text-bottom">
-                        
-                        @if (ShowBranches && Message.BranchedConversations.Any())
-                        {
-                            <div class="float-end">
-                                <ul>
 
-                                    @foreach (var branch in Message.BranchedConversations)
-                                    {
-                                        <li>
-                                            <RadzenLink Path="@("/conversation/" + branch.Id)" Text="@branch.Summary"/>
-                                        </li>
-                                    }
-                                </ul>
-
-                            </div>
-                        }
-                        
-                        </div>
-
-                    }
-
-
-
-                @if (EditMode)
-                {
-                    <RadzenTextArea
-                        Style="font-size: 0.9rem; width: 95%;"
-                        @bind-Value="@Message.Content"
-                        Rows="@CalculatePromptHeight()"/>
-
-                    <button class="btn btn-sm btn-primary" @onclick="@(args => SaveMessage())">Save</button>
-                    <button class="btn btn-sm btn-secondary" @onclick="@(args => CancelEdit())">Cancel</button>
-
-
-
-                }
-                else
-                {
-                    <MarkdownContent Content="@Message.Content"/>
-                }
-            </div>
-        }
     </div>
-</div>
-@code {
-
-    bool EditMode { get; set; }
-
-    [Parameter] public string? InitialSystemPrompt { get; set; }
- 
-
-    [Parameter]
-    public required ConversationMessage Message { get; set; }
-
-    [Parameter]
-    public int MessagesCount { get; set; }
-
-    [Parameter]
-    public bool ShowTokens { get; set; }
-
-    [Inject]
-    public TooltipService? tooltipService { get; set; }
-
+}
+@code
+{
     [Inject]
     public ConversationInterop? Interop { get; set; }
 
+    [Parameter]
+    public bool BotMode { get; set; }
 
-    void ShowTooltip(ElementReference elementReference, string content, TooltipOptions? options = null)
-    {
-        tooltipService!.Open(elementReference, content, options);
-    }
+    [Parameter]
+    public Conversation? Conversation { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter]
+    public string? InitialSystemPrompt { get; set; }
+
+
+    [Parameter]
+    public EventCallback<ConversationMessage> RestartConversation { get; set; }
+
+    [Parameter]
+    public EventCallback<ConversationMessage> CopyConversation { get; set; }
 
     [Parameter]
     public bool ShowBranches { get; set; }
 
-    [Parameter]
-    public bool ShowRestartButton { get; set; }
-
-    [Parameter]
-    public EventCallback<ConversationMessage>? OnRestartClicked { get; set; }
-
-    private async Task RestartClicked()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (OnRestartClicked.HasValue && OnRestartClicked.Value.HasDelegate)
+        if (firstRender)
         {
-            await OnRestartClicked.Value.InvokeAsync(Message);
+            if (Interop != null) await Interop.SetupCopyButtons();
         }
     }
 
-    [Parameter]
-    public bool ShowCopyButton { get; set; } = true;
-
-    [Parameter]
-    public EventCallback<ConversationMessage>? OnCopyClicked { get; set; }
-
-    private async Task CopyClicked()
-    {
-        if (OnCopyClicked.HasValue && OnCopyClicked.Value.HasDelegate)
-        {
-            await OnCopyClicked.Value.InvokeAsync(Message);
-        }
-    }
-
-    public bool ShowShouldDisplayStateButton => Message.State?.Content != null;
-
-    private async Task StateClicked()
-    {
-        if (Interop != null)
-        {
-            await Interop.OpenStateViewer("message", Message!.Id!.ToString() ?? string.Empty, "json");
-        }
-    }
-
-    private int CalculatePromptHeight()
-    {
-        if (Message == null || Message?.Content == null) return 1;
-        var lineBreaks = Message?.Content.Count(c => c == '\n') ?? 0;
-        var rows = Message?.Content.Length / 40 + lineBreaks ?? 1;
-        if (rows > 10) rows = 10;
-        return rows >= 1 ? rows : 1;
-    }
-
-
-    public string Style =>
-        GetBorder() +
-        Background() +
-        Color()
-        ;
-
-
-    private string Color()
-    {
-        var color = "";
-
-        switch (Message.Role)
-        {
-            case "system":
-
-                break;
-            case "assistant":
-
-                color = "white";
-                break;
-            case "user":
-                color = "white";
-                break;
-        }
-
-        return color != "" ? $" color:{color};" : "";
-    }
-
-    private string GetBorder()
-    {
-        var color = BorderColor();
-        if (color != "")
-        {
-            return @$"border-radius:6px; border: {BorderColor()} {BorderWidth()}px solid;";
-        }
-        return "";
-    }
-
-    private string BorderColor()
-    {
-        var border = "";
-        switch (Message.Role)
-        {
-            case "system":
-                border = "#424242";
-                break;
-            case "assistant":
-                border = "#424242";
-                break;
-            case "user":
-                border = "#424242";
-                break;
-            default:
-                border = "#262626";
-                break;
-        }
-
-        return border;
-    }
-
-    private int BorderWidth()
-    {
-        switch (Message.Role)
-        {
-            case "system":
-                return 1;
-            case "assistant":
-                return 1;
-            case "user":
-                return 1;
-            default:
-                return 1;
-        }
-    }
-
-    private string Background()
-    {
-        var c = "";
-        switch (Message.Role)
-        {
-            case "system":
-                c = "#242424";
-                break;
-            case "assistant":
-                c = "#303030";
-
-                break;
-            case "user":
-                c = "#424242";
-                break;
-            default:
-                return "";
-        }
-
-        return c != "" ? $" background-color:{c};" : "";
-    }
-
-    private RadzenTextArea? SystemPrompt { get; set; }
-
-    [Inject]
-    public ConversationsRepository? ConversationRepository { get; set; }
-    
-    string? _messageToEdit;
-
-    private async Task SaveMessage()
-    {
-        await  ConversationRepository!.UpdateMessageContent((Guid)Message!.Id!, Message.Content);
-        EditMode = false;
-    }
-
-    private Task CancelEdit()
-    {
-        EditMode = false;
-        Message!.Content = _messageToEdit!;
-        StateHasChanged();
-        _messageToEdit = null;
-        return Task.CompletedTask;
-    }
-
-
-    private Task EditClicked()
-    {
-        _messageToEdit = Message.Content;
-        EditMode = true;
-        return Task.CompletedTask;
-    }
-
-
-    [Parameter]
-    public bool ShowEditButton { get; set; }
-
+    private ConversationMessageDisplay? SystemMessageDisplay;
 }
