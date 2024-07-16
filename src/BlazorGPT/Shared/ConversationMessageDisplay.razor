@@ -1,20 +1,20 @@
 ﻿<div class="row m-1 p-0" style="@Style">
 
     <div class="col-1 col-md-1 m-0 mb-0 p-1 pe-0 bg-gradient">
-        <ConversationRoleDisplay Role="@Message.Role"/>
+        <ConversationRoleDisplay Role="@Message.Role" />
 
         <ul id="message-buttons" style="list-style-type: none" class="p-0 m-0">
             @if (ShowRestartButton)
             {
                 <li class="m-1">
-                    <RadzenButton Visible="ShowRestartButton" Class="" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))"/>
+                    <RadzenButton Visible="ShowRestartButton" Class="" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))" />
 
                 </li>
             }
             @if (ShowShouldDisplayStateButton)
             {
                 <li class="m-1">
-                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))"/>
+                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))" />
 
                 </li>
             }
@@ -22,7 +22,7 @@
             @if (ShowEditButton)
             {
                 <li class="m-1">
-                    <RadzenButton Visible="true" Class="" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))"/>
+                    <RadzenButton Visible="true" Class="" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))" />
 
                 </li>
 
@@ -32,7 +32,7 @@
             {
                 <li class="m-1">
 
-                    <RadzenButton Visible="ShowCopyButton" class="" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))"/>
+                    <RadzenButton Visible="ShowCopyButton" class="" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))" />
                 </li>
             }
         </ul>
@@ -51,7 +51,7 @@
         else
         {
             <div class="m-0">
-                    
+
                 @if (string.IsNullOrEmpty(Message.Content))
                 {
                     <div class="spinner-border text-light" role="status">
@@ -61,7 +61,7 @@
                 @if (Message.Role == ConversationRole.Assistant)
                 {
                     <div class="float-end align-bottom align-text-bottom">
-                        
+
                         @if (ShowBranches && Message.BranchedConversations.Any())
                         {
                             <div class="float-end">
@@ -70,14 +70,14 @@
                                     @foreach (var branch in Message.BranchedConversations)
                                     {
                                         <li>
-                                            <RadzenLink Path="@("/conversation/" + branch.Id)" Text="@branch.Summary"/>
+                                            <RadzenLink Path="@("/conversation/" + branch.Id)" Text="@branch.Summary" />
                                         </li>
                                     }
                                 </ul>
 
                             </div>
                         }
-                        
+
                     </div>
 
                 }
@@ -86,10 +86,9 @@
 
                 @if (EditMode)
                 {
-                    <RadzenTextArea
-                        Style="font-size: 0.9rem; width: 95%;"
-                        @bind-Value="@Message.Content"
-                        Rows="@CalculatePromptHeight()"/>
+                    <RadzenTextArea Style="font-size: 0.9rem; width: 95%;"
+                                    @bind-Value="@Message.Content"
+                                    Rows="@CalculatePromptHeight()" />
 
                     <button class="btn btn-sm btn-primary" @onclick="@(args => SaveMessage())">Save</button>
                     <button class="btn btn-sm btn-secondary" @onclick="@(args => CancelEdit())">Cancel</button>
@@ -99,7 +98,7 @@
                 }
                 else
                 {
-                    <MarkdownContent Content="@Message.Content"/>
+                    <MarkdownContent Content="@Message.Content" />
                 }
             </div>
         }
