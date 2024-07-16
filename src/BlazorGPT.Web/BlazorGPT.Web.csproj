@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BlazorGPT.Web-c48be10f-d69c-4f07-a429-1e1b836ce01d</UserSecretsId>
     <AssemblyVersion>2.6.0.0</AssemblyVersion>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Radzen.Blazor" Version="4.32.5" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
     <PackageReference Include="Toolbelt.Blazor.ViewTransition" Version="1.0.3" />
@@ -67,6 +69,9 @@
     <ItemGroup>
       <ReadMe Include="..\..\README.md" />
     </ItemGroup>
-    <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" />
+
+    <!-- only copy if the file exists-->
+        <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" Condition="Exists('..\..\README.md')" />
+    <!--<Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" />-->
   </Target>
 </Project>
