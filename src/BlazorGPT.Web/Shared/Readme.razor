@@ -3,16 +3,22 @@
 @using Markdown.ColorCode
 @using ColorCode.Styling
 @using System.Text.RegularExpressions
-<div class="container readme">
-    <div class="row">
-        <div class="col-sm-12 col-md-6 col-12">
-            @((MarkupString)readme)
+
+@if (!string.IsNullOrEmpty(readme))
+{
+
+    <div class="container readme">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-12">
+                @((MarkupString)readme)
+            </div>
         </div>
     </div>
-</div>
+}
+
 @code {
 
-    private static string readme = "";
+    private static string? readme;
     private MarkdownPipeline markdownPipeline = null!;
 
     protected override async Task OnInitializedAsync()
@@ -26,6 +32,11 @@
     private async Task ReadReadme()
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "docs", "README.md");
+
+        if (!File.Exists(path))
+        {
+         return;
+        }
 
         using var reader = new StreamReader(path);
         var content = await reader.ReadToEndAsync();
