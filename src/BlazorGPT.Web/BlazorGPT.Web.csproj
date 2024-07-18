@@ -9,6 +9,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+
   <ItemGroup>
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
@@ -50,19 +51,12 @@
     </None>
   </ItemGroup>
 
-  <Target Name="CopyPlugins" AfterTargets="Build">
-    <ItemGroup>
-      <PluginFiles Include="Plugins\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)\Plugins\%(RecursiveDir)" />
-  </Target>
+  <ItemGroup>
+    <Content Include="Plugins\BlazorGPT.PrivatePlugins.dll" Condition="Exists('Plugins\BlazorGPT.PrivatePlugins.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
-  <Target Name="CopyPrivatePluginsAssembly" AfterTargets="Build">
-    <ItemGroup>
-      <PluginFiles Include="Plugins\BlazorGPT.PrivatePlugins.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)\Plugins" Condition="Exists('Plugins\BlazorGPT.PrivatePlugins.dll')" />
-  </Target>
 
   <Target Name="CopyDocs" BeforeTargets="Build">
     <ItemGroup>
