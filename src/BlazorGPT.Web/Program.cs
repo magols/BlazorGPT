@@ -114,12 +114,6 @@ builder.Services.AddDbContextFactory<BlazorGptDBContext>(options =>
     });
 });
 
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                               ForwardedHeaders.XForwardedProto |
-                               ForwardedHeaders.XForwardedHost;
-});
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
@@ -127,7 +121,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseForwardedHeaders();
+app.UseProxyHeaders();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
