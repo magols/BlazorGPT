@@ -121,11 +121,8 @@ namespace BlazorGPT.Pages
 
             BotSystemInstruction ??= PipelineOptions.Value.Bot.BotSystemInstruction;
 
-
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
-
-            _cancellationTokenSource = new CancellationTokenSource(2 * 60 * 1000);
-        }
+            }
 
         private async Task  UpdateAndRedraw()
         {
@@ -235,6 +232,8 @@ namespace BlazorGPT.Pages
 
         private async Task SendConversation(bool rerun)
         {
+            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
+
             IsBusy = true;
 
             Model.Prompt = Model.Prompt?.TrimEnd('\n');
