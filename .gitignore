@@ -369,3 +369,4 @@ src/BlazorGPT.Web/wwwroot/README.md
 .semantic-kernel/
 /src/BlazorGPT.Web/wwwroot/Uploads/
 /docs/Imported/
+/src/BlazorGPT.Web/Plugins/PrivatePlugins
