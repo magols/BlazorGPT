@@ -31,7 +31,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Radzen.Blazor" Version="4.34.3" />
+    <PackageReference Include="Radzen.Blazor" Version="4.34.4" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
     <PackageReference Include="Toolbelt.Blazor.ViewTransition" Version="1.0.3" />
 
