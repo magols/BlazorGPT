@@ -6,12 +6,21 @@ namespace BlazorGPT.Web;
 
 public partial class Routes
 {
-    IEnumerable<Assembly>? AvailableAssemblies { get; set; }
+    static IEnumerable<Assembly>? AvailableAssemblies { get; set; }
 
     protected override void OnInitialized()
     {
+        if (AvailableAssemblies == null)
+        {
+            LoadAssemblies();
+        }
+    }
+
+    private void LoadAssemblies()
+    {
+
         AvailableAssemblies = new List<Assembly> { typeof(ConversationPage).Assembly };
- 
+
         var assemblies = PluginsLoader.GetAssembliesFromPluginsFolder();
 
         foreach (var assembly in assemblies)
@@ -32,6 +41,7 @@ public partial class Routes
                 }
             }
         }
+
     }
 }
 
