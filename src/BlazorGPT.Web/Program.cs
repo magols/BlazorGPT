@@ -2,10 +2,6 @@ using System.Reflection;
 using Blazored.LocalStorage;
 using BlazorGPT;
 using BlazorGPT.Components.Account;
-using BlazorGPT.Components.FileUpload;
-using BlazorGPT.Data;
-using BlazorGPT.Pipeline;
-using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Web;
 using BlazorGPT.Web.Data;
 using BlazorPro.BlazorSize;
@@ -14,11 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
-using BlazorGPT.Pages;
 using BlazorGPT.Settings;
-using BlazorGPT.Shared.PluginSelector;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddBlazorGPT(builder.Configuration);
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -62,58 +56,17 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.Configure<PipelineOptions>(
-    builder.Configuration.GetSection("PipelineOptions")); ;
-
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
-
 builder.Services.AddScoped<ModelConfigurationService>();
-
 builder.Services.AddScoped<ConversationInterop>();
 
 builder.Services.AddMediaQueryService();
 builder.Services.AddScoped<IResizeListener, ResizeListener>();
 
-builder.Services.AddScoped<ScriptRepository>();
-builder.Services.AddScoped<QuickProfileRepository>();
-builder.Services.AddScoped<ConversationsRepository>();
-builder.Services.AddScoped<StateRepository>();
-
-builder.Services.AddScoped<SampleDataSeeder>();
-
-builder.Services.AddScoped<KernelService>();
-
-
-builder.Services.AddScoped<ChatWrapper>();
-
-builder.Services.AddScoped<IQuickProfileHandler, QuickProfileHandler>();
-builder.Services.AddScoped<IInterceptorHandler, InterceptorHandler>();
-builder.Services.AddScoped<IInterceptor,JsonStateInterceptor>();
-builder.Services.AddScoped<IInterceptor, StructurizrDslInterceptor>();
-builder.Services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
-builder.Services.AddSingleton<StateHasChangedInterceptorService>();
-builder.Services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
-builder.Services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
-builder.Services.AddScoped<PluginsRepository>();
-builder.Services.AddScoped<InterceptorRepository>();
-builder.Services.AddScoped<IInterceptor, PluginInterceptor>();
-
-
-
 builder.WebHost.UseWebRoot("wwwroot");
-
-// register the GPT context
-builder.Services.AddDbContextFactory<BlazorGptDBContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BlazorGptDB"), o =>
-    {
-        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-    });
-});
-
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
