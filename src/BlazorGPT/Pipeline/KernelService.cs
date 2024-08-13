@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Connectors.Redis;
 using Microsoft.SemanticKernel.Connectors.Sqlite;
@@ -63,7 +64,6 @@ public class KernelService
         {
             model ??= _options.Providers.AzureOpenAI.ChatModel;
 
-#pragma warning disable SKEXP0011
             builder
             .AddAzureOpenAIChatCompletion(
                 deploymentName: _options.Providers.AzureOpenAI.ChatModels.First( p => p.Value == model).Key,
@@ -77,19 +77,16 @@ public class KernelService
                 endpoint: _options.Providers.AzureOpenAI.Endpoint,
                 apiKey: _options.Providers.AzureOpenAI.ApiKey
                 );
-#pragma warning restore SKEXP0011
         }
         if (provider == ChatModelsProvider.OpenAI)
 
         {
             model ??= _options.Providers.OpenAI.ChatModel;
-#pragma warning disable SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             builder
                 .AddOpenAIChatCompletion(model, _options.Providers.OpenAI.ApiKey)
                 .AddOpenAITextEmbeddingGeneration(_options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
                 .AddOpenAITextToImage(_options.Providers.OpenAI.ApiKey);
 
-#pragma warning restore SKEXP0011 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         }
 
         if (provider == ChatModelsProvider.Ollama)
@@ -152,16 +149,16 @@ public class KernelService
 
         if (provider == EmbeddingsModelProvider.AzureOpenAI)
         {
+            var generation = new AzureOpenAITextEmbeddingGenerationService(
+                model ?? _options.Providers.AzureOpenAI.EmbeddingsModel,
+                _options.Providers.AzureOpenAI.Endpoint,
+                _options.Providers.AzureOpenAI.ApiKey
+            );
 
             var mem = new MemoryBuilder()
-            .WithAzureOpenAITextEmbeddingGeneration(
-                deploymentName: _options.Providers.AzureOpenAI.EmbeddingsModels.First(o => o.Value == _options.Providers.AzureOpenAI.EmbeddingsModel).Key,
-                modelId: model ?? _options.Providers.AzureOpenAI.EmbeddingsModel,
-                endpoint: _options.Providers.AzureOpenAI.Endpoint,
-                apiKey: _options.Providers.AzureOpenAI.ApiKey
-            )
-            .WithMemoryStore(memoryStore)
-            .Build();
+                .WithTextEmbeddingGeneration(generation)
+                .WithMemoryStore(memoryStore)
+                .Build();
 
             return mem;
         }
@@ -175,9 +172,7 @@ public class KernelService
                 .Build();
             return mem;
         }
-
-        // todo: add local embeddings
-
+        
         if (provider == EmbeddingsModelProvider.Ollama)
         {
             
