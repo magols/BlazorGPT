@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BlazorGPT.Web-c48be10f-d69c-4f07-a429-1e1b836ce01d</UserSecretsId>
-    <AssemblyVersion>2.7.1.0</AssemblyVersion>
+    <AssemblyVersion>2.7.2.0</AssemblyVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -30,6 +30,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.4" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.46.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Radzen.Blazor" Version="4.34.4" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
