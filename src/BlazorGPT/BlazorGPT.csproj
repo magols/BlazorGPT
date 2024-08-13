@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>2.7.2.0</AssemblyVersion>
+    <AssemblyVersion>2.7.3.0</AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <VersionPrefix>$(AssemblyVersion)</VersionPrefix>
   </PropertyGroup>

@@ -1,6 +1,7 @@
 ﻿using BlazorGPT.Ollama;
 using Codeblaze.SemanticKernel.Connectors.Ollama;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -34,10 +35,15 @@ public class KernelService
 
 
     public async Task<Kernel> CreateKernelAsync(ChatModelsProvider? provider, 
-        string? model = null)
+        string? model = null, ILoggerFactory? loggerFactory = null)
     {
         if (model == "") model = null;
         var builder = Kernel.CreateBuilder();
+
+        if (loggerFactory != null)
+        {
+            builder.Services.AddSingleton(loggerFactory);
+        }
 
         if (provider == null)
         {
