@@ -1,3 +1,20 @@
+Function **Joke** a
+Arguments:
+* style : Andrew Dice Clay
+* input : web development
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Prerequisites
 .NET 7 SDK

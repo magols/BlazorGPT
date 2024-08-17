@@ -8,24 +8,6 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
-
-
-public class FunctionCallingFilter : IFunctionInvocationFilter
-{
-    public async Task OnFunctionInvocationAsync(FunctionInvocationContext context, Func<FunctionInvocationContext, Task> next)
-    {
-        Console.WriteLine(context.Function.Name);
-
-        await next(context);
-
-        // Get function invocation result
-        var result = context.Result;
-
-        Console.WriteLine(result);
-    }
-}
-
-
 public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
 {
     private CancellationToken _cancellationToken;
@@ -52,18 +34,22 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
         CancellationToken cancellationToken = default)
     {
         _cancellationToken = cancellationToken;
-        if (conversation.Messages.Count() == 2) await Intercept(kernel, conversation, cancellationToken);
-
+  
+        await Intercept(kernel, conversation, cancellationToken);
         conversation.StopRequested = true;
+      
         return conversation;
     }
  
 
     private  async Task Intercept(Kernel kernel, Conversation conversation, CancellationToken cancellationToken)
     {
+        var conversationState = _serviceProvider.GetRequiredService<CurrentConversationState>();
+        conversationState.SetCurrentConversationForUser(conversation);
 
+        var functionFilter = _serviceProvider.GetRequiredService<FunctionCallingFilter>();
         var config = await _modelConfigurationService.GetConfig();
-       kernel  = await _kernelService.CreateKernelAsync(config.Provider, config.Model, functionInvocationFilters: new List<IFunctionInvocationFilter>(){new FunctionCallingFilter()});
+       kernel  = await _kernelService.CreateKernelAsync(config.Provider, config.Model, functionInvocationFilters: new List<IFunctionInvocationFilter>(){functionFilter});
 
 
         await LoadPluginsAsync(kernel);
@@ -80,7 +66,7 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
             {
                 ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
                 TopP = 0,
-                 MaxTokens = _modelConfigurationService.GetDefaultConfig().MaxTokens,
+                MaxTokens = _modelConfigurationService.GetDefaultConfig().MaxTokens,
                 Temperature = 0
             };
 
@@ -97,21 +83,16 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
                 executionSettings: openAIPromptExecutionSettings,
                 kernel: kernel, cancellationToken: cancellationToken);
 
-
-
-            //if (response?.Metadata?["FinishReason"]?.ToString() == "stop")
-            //{
-            //    Logger.LogError("STOP");
-            //}
-
-            //Logger.LogInformation("FinishReason: " + response?.Metadata?["FinishReason"]);
-
             lastMsg.Content = response.Content;
         }
         catch (Exception e)
         {
             lastMsg.Content = e.Message + "\n";
             OnUpdate?.Invoke();
+        }
+        finally
+        {
+            conversationState.RemoveCurrentConversation(conversation.UserId);
         }
     }
 
@@ -123,7 +104,7 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
         IEnumerable<string> enabledNames = Enumerable.Empty<string>();
         if (_localStorageService != null)
         {
-            pluginsEnabledInSettings =
+            pluginsEnabledInSettings = 
                 await _localStorageService.GetItemAsync<List<Plugin>>("bgpt_plugins", _cancellationToken);
             enabledNames = pluginsEnabledInSettings.Select(o => o.Name);
             semanticPlugins = semanticPlugins.Where(o => enabledNames.Contains(o.Name)).ToList();

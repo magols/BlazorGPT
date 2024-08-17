@@ -9,7 +9,7 @@ namespace BlazorGPT
 {
     public static class BuilderExtensions
     {
-        public static void AddBlazorGPT(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddBlazorGPT(this IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<IConfiguration>(config);
             services.Configure<PipelineOptions>(config.GetSection("PipelineOptions")); ;
@@ -50,6 +50,14 @@ namespace BlazorGPT
             services.AddScoped<ModelConfigurationService>();
             services.AddScoped<InterceptorConfigurationService>();
             services.AddScoped<PluginsConfigurationService>();
+
+            services.AddSingleton<ConversationTreeState>();
+
+            services.AddSingleton<CurrentConversationState>();
+            services.AddTransient<FunctionCallingFilter>();
+
+            return services;
         }
+
     }
 }

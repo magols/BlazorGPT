@@ -2,6 +2,10 @@
 @using Markdown.ColorCode
 @using ColorCode.Styling
 @using System.Text.RegularExpressions
+@using ColorCode
+@using ColorCode.Compilation.Languages
+@using HandlebarsDotNet
+@using Markdown = Markdig.Markdown
 @inherits ComponentBase
 
 @if (Embedding != null)
@@ -24,7 +28,17 @@
         markdownPipeline = new MarkdownPipelineBuilder()
             .UsePipeTables()
             .UseAdvancedExtensions()
-            .UseColorCode(styleDictionary: StyleDictionary.DefaultDark)
+            .UseColorCode(styleDictionary: StyleDictionary.DefaultDark,
+                additionalLanguages: new List<ILanguage>()
+                {
+                    new Json(),
+                    new CSharp(),
+                    new Cpp(),
+                    new Css(),
+                    new Html(),
+                    new JavaScript(),
+                    new Php(),
+                })
             .UseAutoLinks()
             .UseEmojiAndSmiley()
             .UseMediaLinks()

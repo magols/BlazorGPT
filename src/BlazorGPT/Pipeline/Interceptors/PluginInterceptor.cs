@@ -26,7 +26,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
         _modelConfigurationService = _serviceProvider.GetRequiredService<ModelConfigurationService>();
     }
 
-    public override string Name { get; } = "Plugins with Handlebars Planner";
+    public override string Name { get; } = "Plugins with Handlebars Planner (select plugins)";
 
 
     public override async Task<Conversation> Send(Kernel kernel, Conversation conversation,

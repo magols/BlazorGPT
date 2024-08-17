@@ -22,7 +22,7 @@
 
     private void InterceptorSettingsChanged(IEnumerable<string> selectedInterceptors)
     {
-        if (selectedInterceptors.Any(o => o.ToLower().StartsWith("function")))
+        if (selectedInterceptors.Any(o => o.ToLower().StartsWith("function calling") || o.ToLower().StartsWith("plugins with handlebars")))
         {
             _showPlugins = true;
         }

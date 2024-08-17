@@ -1,43 +1,18 @@
-﻿@using Markdig
-@using Markdown.ColorCode
-@using ColorCode.Styling
-@using ColorCode
-@using ColorCode.Compilation.Languages
-@using Markdown = Markdig.Markdown
-@code
+﻿@code
 {
     [Parameter]
     public string? PlanAsString { get; set; }
-
-    private MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder()
-        .UseAdvancedExtensions()
-      
-        .UseBootstrap()
-        .UseColorCode(styleDictionary: StyleDictionary.DefaultDark,
-            additionalLanguages: new List<ILanguage>()
-            {
-                new Json(),
-                new CSharp(),
-                new Cpp(),
-                new Css(),
-                new Html(),
-                new JavaScript(),
-                new Php(),
-
-            })
-        .Build();
-
-    string? AsMarkdown => Markdown.ToHtml("```csharp\n" + PlanAsString , _markdownPipeline);
- 
 }
 
-<RadzenPanel AllowCollapse="true" Collapsed="true" Class="m-3">
+<RadzenPanel AllowCollapse="true" Collapsed="false" Class="m-3">
     <HeaderTemplate>
-        Plan
+        Action log
     </HeaderTemplate>
     <ChildContent>
+        <div class="pt-3">
+           
+            <MarkdownContent Content="@PlanAsString"/>
 
-        @((MarkupString)AsMarkdown)
-
+        </div>
     </ChildContent>
 </RadzenPanel>
