@@ -1,17 +1,57 @@
-<button type="button" class="btn btn-secondary @Class" @onclick="OpenSettings">Interceptors</button>
+@using Blazored.LocalStorage
+<RadzenButton ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings">
+    Interceptors
+    @if (_selected.Any())
+    {
+        <RadzenBadge Text="@SelectedCount" BadgeStyle="BadgeStyle.Success"/>
+    }
+</RadzenButton>
+
 @code
 {
-    [Parameter]
-    public string? Class { get; set; }
+    [Parameter] public string? Class { get; set; }
+    
+    [Parameter] public Action<IEnumerable<string>>? OnSettingsChangedAction { get; set; }
 
-    [Inject]
-    DialogService? DialogService { get; set; }
+    [Inject] DialogService? DialogService { get; set; }
+
+    [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+    private IEnumerable<string> _selected = new List<string>();
+    private string SelectedCount => _selected.Count().ToString();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _selected = await GetBrowserSettings();
+            StateHasChanged();
+        }
+    }
 
     private async Task OpenSettings()
     {
-        await DialogService!.OpenAsync<InterceptorSelector>("Select inteceptors", options:new DialogOptions()
+        await DialogService!.OpenAsync<InterceptorSelector>("Select interceptors", options: new DialogOptions
         {
-            CloseDialogOnOverlayClick = true,
+            CloseDialogOnOverlayClick = true
         });
+
+        _selected = await GetBrowserSettings();
+
+        if (OnSettingsChangedAction != null)
+        {
+            Console.WriteLine("OnSettingsChangedAction is not null");
+            OnSettingsChangedAction.Invoke(_selected);
+        }
+    }
+
+
+
+    private async Task<IEnumerable<string>> GetBrowserSettings()
+    {
+ 
+            var list = await InterceptorConfigurationService.GetConfig();
+
+            return list;
     }
 }

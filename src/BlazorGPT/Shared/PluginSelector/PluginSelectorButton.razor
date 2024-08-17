@@ -1,11 +1,30 @@
-<button class="btn btn-secondary @Class" type="button" @onclick="OpenSettings">Plugins</button>
+ <RadzenButton ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings">
+    Plugins
+    @if (BrowserData != null && BrowserData.Any())
+    {
+        <RadzenBadge Text="@BrowserData.Count.ToString()" BadgeStyle="BadgeStyle.Success" />
+    }
+</RadzenButton>
 @code
 {
-    [Parameter]
-    public string? Class { get; set; }
+    [Parameter]  public string? Class { get; set; }
 
-    [Inject]
-    DialogService? DialogService { get; set; }
+    [Inject] DialogService? DialogService { get; set; }
+
+    [Inject] public required PluginsConfigurationService PluginsConfigurationService { get; set; }
+    [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+
+    List<PluginSelection>? BrowserData { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+             await GetSelectionsFromLocalStorage();
+            StateHasChanged();
+        }
+    }
 
     private async Task OpenSettings()
     {
@@ -13,5 +32,13 @@
         {
             CloseDialogOnOverlayClick = true,
         });
+
+        await GetSelectionsFromLocalStorage();
+    }
+
+    private async Task GetSelectionsFromLocalStorage()
+    {
+        BrowserData = await PluginsConfigurationService!.GetConfig();
+        StateHasChanged();
     }
 }

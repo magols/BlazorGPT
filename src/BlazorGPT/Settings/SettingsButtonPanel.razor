@@ -1,0 +1,35 @@
+﻿@if (_showPlugins)
+{
+    <PluginSelectorButton Class="m-1 me-3 p-1 float-end"/>
+}
+<InterceptorSettingsButton Class="m-1 me-3 p-1  float-end" OnSettingsChangedAction="@InterceptorSettingsChanged" />
+<ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
+
+@code {
+    [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+    bool _showPlugins;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var list = await InterceptorConfigurationService.GetConfig();
+            InterceptorSettingsChanged(list);
+        }
+    }
+ 
+
+    private void InterceptorSettingsChanged(IEnumerable<string> selectedInterceptors)
+    {
+        if (selectedInterceptors.Any(o => o.ToLower().StartsWith("function")))
+        {
+            _showPlugins = true;
+        }
+        else
+        {
+            _showPlugins = false;
+        }
+        StateHasChanged();
+    }
+}

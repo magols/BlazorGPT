@@ -35,7 +35,8 @@ public class KernelService
 
 
     public async Task<Kernel> CreateKernelAsync(ChatModelsProvider? provider, 
-        string? model = null, ILoggerFactory? loggerFactory = null)
+        string? model = null, IEnumerable<IPromptRenderFilter>? promptRenderFilters = null,
+        IEnumerable<IFunctionInvocationFilter>? functionInvocationFilters = null, ILoggerFactory? loggerFactory = null)
     {
         if (model == "") model = null;
         var builder = Kernel.CreateBuilder();
@@ -100,6 +101,22 @@ public class KernelService
 	        builder.Services.AddTransient<HttpClient>();
 			model ??= _options.Providers.Local.ChatModel;
             builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl); 
+        }
+
+        if (promptRenderFilters != null)
+        {
+            foreach (var filter in promptRenderFilters)
+            {
+                builder.Services.AddSingleton(filter);
+            }
+        }
+
+        if (functionInvocationFilters != null)
+        {
+            foreach (var filter in functionInvocationFilters)
+            {
+                builder.Services.AddSingleton(filter);
+            }
         }
 
         return builder.Build();

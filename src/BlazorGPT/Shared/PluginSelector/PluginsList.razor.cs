@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Blazored.LocalStorage;
+﻿using BlazorGPT.Settings;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorGPT.Shared.PluginSelector;
@@ -7,15 +6,15 @@ namespace BlazorGPT.Shared.PluginSelector;
 public partial class PluginsList
 {
     private readonly PluginFormModel _model = new();
-
-
     private List<Plugin> _plugins = new();
+    List<PluginSelection>? BrowserData { get; set; }
 
     [Inject] 
-    private ILocalStorageService? LocalStorage { get; set; }
+    public required PluginsConfigurationService PluginsConfigurationService { get; set; }
 
     [Inject]
-    PluginsRepository? PluginsRepository { get; set; }
+    public required PluginsRepository PluginsRepository { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -40,7 +39,6 @@ public partial class PluginsList
 
     protected override async Task OnInitializedAsync()
     {
-     
         foreach (var plugin in await PluginsRepository.All())
         {
             _plugins.Add(plugin);
@@ -49,36 +47,15 @@ public partial class PluginsList
         }
     }
 
-
-
     private async Task GetSelectionsFromLocalStorage()
     {
-        if (LocalStorage != null)
-        {
-            var data = await LocalStorage.GetItemAsync<string>("bgpt_plugins");
-            if (data != null)
-              BrowserData =  JsonSerializer.Deserialize<List<PluginSelection>>(data);
-        }
+        BrowserData = await PluginsConfigurationService.GetConfig();
     }
-
-     List<PluginSelection>? BrowserData { get; set; }
-
-    private async Task SetSelectionsInLocalStorage()
-    {
-        if (LocalStorage != null)
-        {
-            await LocalStorage.SetItemAsync("bgpt_plugins", _model.SelectedPlugins.Where(o => o.Selected));
-        }
-    }
-
+    
     private async Task Submit()
     {
-        if (LocalStorage != null)
-        {
-            await SetSelectionsInLocalStorage();
-        }
+
+        await PluginsConfigurationService.SaveConfig(_model.SelectedPlugins.Where(o => o.Selected));
+
     }
 }
-
-
-

@@ -209,10 +209,8 @@
 
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-
-                                    <PluginSelectorButton Class="m-1 me-3 p-1 float-end" />
-                                    <InterceptorSettingsButton Class="m-1 me-3 p-1  float-end" />
-                                    <ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
+                                    
+                                    <SettingsButtonPanel />
 
                                     <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
 

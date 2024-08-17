@@ -44,6 +44,12 @@ namespace BlazorGPT
             services.AddScoped<PluginsRepository>();
             services.AddScoped<InterceptorRepository>();
             services.AddScoped<IInterceptor, PluginInterceptor>();
+
+            services.AddScoped<ConversationInterop>();
+
+            services.AddScoped<ModelConfigurationService>();
+            services.AddScoped<InterceptorConfigurationService>();
+            services.AddScoped<PluginsConfigurationService>();
         }
     }
 }
