@@ -9,7 +9,7 @@ using Microsoft.SemanticKernel.Planning.Handlebars;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
-public class PluginInterceptor : InterceptorBase, IInterceptor
+public class HandleBarsPluginsInterceptor : InterceptorBase, IInterceptor
 {
     private CancellationToken _cancellationToken;
     private KernelService _kernelService;
@@ -18,7 +18,7 @@ public class PluginInterceptor : InterceptorBase, IInterceptor
     private readonly IServiceProvider _serviceProvider;
     private readonly ModelConfigurationService _modelConfigurationService;
 
-    public PluginInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
+    public HandleBarsPluginsInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _serviceProvider = serviceProvider;
         _kernelService = _serviceProvider.GetRequiredService<KernelService>();

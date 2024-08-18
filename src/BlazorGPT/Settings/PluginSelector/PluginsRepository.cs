@@ -34,7 +34,7 @@ namespace BlazorGPT.Settings.PluginSelector
             plugins.AddRange(externalNative);
             plugins.AddRange(semanticPlugins);
 
-            return plugins;
+            return plugins.OrderBy(o => o.Name).ToList();
         }
 
         public  async Task<List<Plugin>> GetCore()

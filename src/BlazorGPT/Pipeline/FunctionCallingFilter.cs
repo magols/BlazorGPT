@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.SemanticKernel;
 
-namespace BlazorGPT.Pipeline.Interceptors;
+namespace BlazorGPT.Pipeline;
 
 public class FunctionCallingFilter(CurrentConversationState conversationState, UserManager<IdentityUser> userManager, IHttpContextAccessor httpContextAccessor) : IFunctionInvocationFilter
 {
@@ -28,7 +28,7 @@ public class FunctionCallingFilter(CurrentConversationState conversationState, U
             throw new InvalidOperationException("Conversation is null. This filter requires a conversation to be set.");
         }
 
- 
+
         await next(context);
 
         StringBuilder sb = new StringBuilder();

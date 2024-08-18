@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace BlazorGPT.Pipeline.Interceptors;
+namespace BlazorGPT.Pipeline;
 
 public class CurrentConversationState(IMemoryCache stateCache)
 {
@@ -11,7 +11,7 @@ public class CurrentConversationState(IMemoryCache stateCache)
         stateCache.Set(key, conversation);
     }
 
-    public   Conversation? GetCurrentConversation(string userId)
+    public Conversation? GetCurrentConversation(string userId)
     {
         string key = $@"cstate{userId}";
 

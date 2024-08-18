@@ -1,12 +1,12 @@
 using System.ComponentModel;
 using Microsoft.SemanticKernel;
 
-namespace BlazorGPT.Plugins;
+namespace SamplesNativePlugins;
 
-public class SamplesNativePlugin
+public class TextManipulationPlugin
 {
 
-    public SamplesNativePlugin(IServiceProvider serviceProvider)
+    public TextManipulationPlugin(IServiceProvider serviceProvider)
     {
     }
 
@@ -20,3 +20,4 @@ public class SamplesNativePlugin
          return Task.FromResult(new string(input.Reverse().ToArray()));
     }
 }
+

@@ -1,6 +1,12 @@
 @page "/settingsplugins"
 <p>
-    Select which plugins you want to use.
+    Select which plugins you want to use. 
+    
+    @if(_model.SelectedPlugins.Any(p => p.Selected))
+    {
+        <a @onclick="@ClearAll" class="link-warning"> [<RadzenIcon Icon="clear" IconColor="@Colors.Danger" /> Clear all ]</a>
+    }
+
 </p>
 <EditForm Model="_model" OnValidSubmit="Submit">
     @for (var i = 0; i < _plugins.Count; i++)

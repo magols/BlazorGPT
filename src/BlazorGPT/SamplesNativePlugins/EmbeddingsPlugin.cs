@@ -4,7 +4,7 @@ using BlazorGPT.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 
-namespace BlazorGPT.Plugins;
+namespace SamplesNativePlugins;
 
 public class EmbeddingsPlugin
 {

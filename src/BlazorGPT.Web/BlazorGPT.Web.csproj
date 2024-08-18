@@ -52,12 +52,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Plugins\BlazorGPT.PrivatePlugins.dll" Condition="Exists('Plugins\BlazorGPT.PrivatePlugins.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 
   <Target Name="CopyDocs" BeforeTargets="Build">
     <ItemGroup>

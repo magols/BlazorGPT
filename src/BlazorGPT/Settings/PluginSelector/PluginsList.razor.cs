@@ -57,4 +57,16 @@ public partial class PluginsList
         await PluginsConfigurationService.SaveConfig(_model.SelectedPlugins.Where(o => o.Selected));
 
     }
+
+    private async Task ClearAll()
+    {
+        foreach (var plugin in _model.SelectedPlugins)
+        {
+            plugin.Selected = false;
+        }
+
+        await Submit();
+        StateHasChanged();
+
+    }
 }

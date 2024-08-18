@@ -40,10 +40,10 @@ namespace BlazorGPT
             services.AddSingleton<StateHasChangedInterceptorService>();
             services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
             services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
-            services.AddScoped<IInterceptor, PluginInterceptor>();
+            services.AddScoped<IInterceptor, HandleBarsPluginsInterceptor>();
             services.AddScoped<PluginsRepository>();
             services.AddScoped<InterceptorRepository>();
-            services.AddScoped<IInterceptor, PluginInterceptor>();
+            services.AddScoped<IInterceptor, HandleBarsPluginsInterceptor>();
 
             services.AddScoped<ConversationInterop>();
 
