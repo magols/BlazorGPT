@@ -1,4 +1,4 @@
-﻿namespace BlazorGPT.Shared.PluginSelector;
+﻿namespace BlazorGPT.Settings.PluginSelector;
 
 internal class PluginFormModel
 {

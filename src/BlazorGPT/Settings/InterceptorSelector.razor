@@ -70,12 +70,12 @@
     public RadzenCheckBoxList<string> list { get; set; }
 
 
-    private async Task<IEnumerable<string>>  GetBrowserSettings()
-    {
+    private async Task<IEnumerable<string>?> GetBrowserSettings() => await InterceptorConfigurationService.GetConfig();
+    // {
  
-        var data = await InterceptorConfigurationService.GetConfig();
-        return data;
-    }
+    //     var data = await InterceptorConfigurationService.GetConfig();
+    //     return data;
+    // }
 
     List<string>? BrowserData { get; set; }
 

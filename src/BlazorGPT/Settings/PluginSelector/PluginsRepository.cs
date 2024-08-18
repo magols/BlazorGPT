@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel;
-using Microsoft.SemanticKernel;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System;
+using Microsoft.SemanticKernel;
 
-namespace BlazorGPT.Shared.PluginSelector
+namespace BlazorGPT.Settings.PluginSelector
 {
     public class PluginsRepository
     {

@@ -1,4 +1,4 @@
-﻿namespace BlazorGPT.Shared.PluginSelector;
+﻿namespace BlazorGPT.Settings.PluginSelector;
 
 public class Function
 {

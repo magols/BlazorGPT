@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using BlazorGPT.Settings;
-using BlazorGPT.Shared.PluginSelector;
+using BlazorGPT.Settings.PluginSelector;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;

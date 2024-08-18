@@ -1,7 +1,8 @@
 ﻿using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
-using BlazorGPT.Shared.PluginSelector;
+using BlazorGPT.Settings.PluginSelector;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,7 +36,6 @@ namespace BlazorGPT
             services.AddScoped<IQuickProfileHandler, QuickProfileHandler>();
             services.AddScoped<IInterceptorHandler, InterceptorHandler>();
             services.AddScoped<IInterceptor, JsonStateInterceptor>();
-            services.AddScoped<IInterceptor, StructurizrDslInterceptor>();
             services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
             services.AddSingleton<StateHasChangedInterceptorService>();
             services.AddScoped<IInterceptor, StateHasChangedInterceptor>();

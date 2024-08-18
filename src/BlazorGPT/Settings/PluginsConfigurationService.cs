@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Blazored.LocalStorage;
-using BlazorGPT.Shared.PluginSelector;
+using BlazorGPT.Settings.PluginSelector;
+
 
 namespace BlazorGPT.Settings;
 

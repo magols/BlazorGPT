@@ -1,7 +1,6 @@
-﻿using BlazorGPT.Settings;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
-namespace BlazorGPT.Shared.PluginSelector;
+namespace BlazorGPT.Settings.PluginSelector;
 
 public partial class PluginsList
 {
