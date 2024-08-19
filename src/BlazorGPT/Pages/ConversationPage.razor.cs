@@ -148,7 +148,7 @@ namespace BlazorGPT.Pages
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
 
 
-                initialControlHeight = _browserIsSmall ? 290 : 290;
+                initialControlHeight = _browserIsSmall ? 300 : 310;
 
                 initialControlHeight = BotMode ? 150 : initialControlHeight;
 
@@ -211,8 +211,8 @@ namespace BlazorGPT.Pages
         {
             IsBusy = true;
 
-            Conversation.AddMessage(new ConversationMessage("user", "Summarize all in 10 words"));
-            await Send();
+            Conversation.AddMessage(new ConversationMessage("user", "Summarize this conversation in 10 words"));
+            await SendConversation(rerun: true);
 
             await using var ctx = await DbContextFactory.CreateDbContextAsync();
             ctx.Attach(Conversation);
@@ -456,12 +456,6 @@ namespace BlazorGPT.Pages
         }
 
         private Conversations _conversations;
-
-        private void GoToNew()
-        {
-            NavigationManager.NavigateTo("/conversation", true);
-        }
-
 
         BrowserWindowSize browser = new BrowserWindowSize();
 

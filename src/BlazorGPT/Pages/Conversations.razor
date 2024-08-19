@@ -1,7 +1,7 @@
 @using BlazorGPT.Data
 
 
-<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos"  PageSize="10" AllowPaging="true" class="hide-grid-header" EmptyText="Previous conversations">
+<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos" PageSize="10" PageNumbersCount="3" AllowPaging="true" PagerHorizontalAlign="@HorizontalAlign.Justify" class="hide-grid-header" EmptyText="Previous conversations">
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">
             <Template Context="c">

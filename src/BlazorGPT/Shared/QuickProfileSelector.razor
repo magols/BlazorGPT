@@ -14,7 +14,7 @@
                 <div class="m-3 mt-1 ms-0">
                     @foreach (var profile in _profiles)
                     {
-                        <RadzenButton Shade="Shade.Dark" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" Click="() => Execute(profile)" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions() { CssClass = "qp-tooltip"}))">@profile.Name</RadzenButton>
+                        <RadzenButton Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Warning" Click="() => Execute(profile)" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions() { CssClass = "qp-tooltip"}))">@profile.Name</RadzenButton>
                     }
                 </div>
             }
@@ -25,7 +25,7 @@
                 <RadzenText TextStyle="TextStyle.Overline">Apply @InsertAt</RadzenText>
                 @foreach (var profile in _profiles)
                 {
-                    <RadzenButton Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" ButtonStyle="@GetButtonStyle(profile)" Click="() => Toggle(profile)" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions() { CssClass = "qp-tooltip"}))">@profile.Name</RadzenButton>
+                    <RadzenButton Shade="Shade.Lighter"  Size="ButtonSize.ExtraSmall" ButtonStyle="@GetButtonStyle(profile)" Click="() => Toggle(profile)" MouseEnter="@(args => ShowTooltip(args, profile.Content, new TooltipOptions() { CssClass = "qp-tooltip"}))">@profile.Name</RadzenButton>
                 }
             </div>
         }

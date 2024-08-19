@@ -14,7 +14,7 @@ export function scrollToBottom(elementId) {
 
 
 export function focusElement(element) {
-    console.log("focusing " + element.id);
+   // console.log("focusing " + element.id);
     element.focus({ focusVisible: true });
 
 }

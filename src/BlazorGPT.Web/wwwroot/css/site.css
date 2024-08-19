@@ -48,7 +48,8 @@ html {
 body {
     font-family: var(--rz-text-font-family);
     color: var(--rz-text-color);
-    font-size: var(--rz-body-font-size);
+    /*font-size: var(--rz-body-font-size);*/
+    font-size: 7px;
     line-height: var(--rz-body-line-height);
     background-color: var(--rz-body-background-color);
     width: 100%;
@@ -56,22 +57,8 @@ body {
     overflow-x: hidden;
 }
 
-
-:root {
-    /*font-size: var(--rz-root-font-size);*/
-    font-size: 14px;
-    --rz-body-background-color: #272727;
-    --rz-base-background-color: #202020;
-    --rz-secondary: #9E9E9E;
-    --rz-primary: #5c6bc0;
-    --rz-primary-dark: #283593;
-    --rz-primary-darker: #1a237e;
-    --rz-primary-light: #5c6bc0;
-    --rz-primary-lighter: #c5cae9;
-    --rz-secondary-dark: #616161;
-    --rz-secondary-darker: #424242;
-    --rz-secondary-lighter: #bdbdbd;
-    --rz-secondary-light: #f5f5f5;
+:root:has(.rz-layout) {
+    font-size: 0.9rem;
     --rz-link-color: #51b269;
     --rz-link-hover-color: #89f89e;
     --rz-grid-stripe-background-color: #252525;
@@ -83,7 +70,9 @@ body {
 }
 
 .rz-body {
+    padding: 0;
     --rz-body-padding: 0;
+    font-size: 0.8rem;
 }
 
  

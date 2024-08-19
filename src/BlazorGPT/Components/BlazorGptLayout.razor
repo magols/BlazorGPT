@@ -1,35 +1,63 @@
-﻿@using BlazorPro.BlazorSize
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 <MediaQueryList>
     <RadzenDialog/>
     <RadzenNotification/>
     <RadzenTooltip/>
     <RadzenContextMenu/>
 
-    <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
-        <RadzenHeader>
-            <div class="container-fluid">
+    @* <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';"> *@
+        <RadzenLayout style=" ">
 
-                <div class="row me-0 pe-0  justify-content-start align-items-center bg-dark">
+            <RadzenHeader>
+                
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <RadzenButton Click="@SidebarToggleClick"
+                                          Icon="menu"
+                                          Variant="Variant.Outlined"
+                                          ButtonStyle="ButtonStyle.Info"
+                                          class=""/>
 
-                    <div class="col-9 p-0 m-0">
+                            <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
 
+                        <SectionOutlet SectionName="heading" />
 
-                        <div class="p-2">
-                            <RadzenIcon @onclick="@SidebarToggleClick"
-                                        Icon="menu"
-                                        IconStyle="IconStyle.Info"
-                                        class="float-start m-2 mt-0  p-0" />
-                            <SectionOutlet SectionName="heading" />
                         </div>
-
-                    </div>
-                    <div class="col-3 d-flex align-items-center justify-content-end">
-                        <LoginDisplay/>
+                
                     </div>
                 </div>
-            </div>
-        </RadzenHeader>
+
+                
+
+@*                 <div class="container-fluid">
+
+                    <div class="row me-0 pe-0  justify-content-start align-items-center bg-dark">
+
+                        <div class="col-sm-2 col-md-2 col-lg-5 p-0 m-0">
+                            <div class="p-2">
+                                <RadzenButton Click="@SidebarToggleClick"
+                                              Icon="menu"
+                                              Variant="Variant.Outlined"
+                                              ButtonStyle="ButtonStyle.Info"
+                                              class="float-start m-2 mt-0  p-0"/>
+
+                                <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
+
+                            </div>
+
+                        </div>
+                        <div class="col-7 col-sm-12">
+                            This is a section outlet
+                        </div>
+                        <div class="col-3 d-flex align-items-center justify-content-end">
+                            <LoginDisplay/>
+                        </div>
+                    </div>
+                </div> *@
+                
+
+            </RadzenHeader>
         <RadzenBody Expanded="@sidebarExpanded">
             <div class="container-fluid ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
                 <div class="row">
@@ -41,14 +69,17 @@
         </RadzenBody>
         <RadzenSidebar Expanded="@sidebarExpanded" style="z-index: 2">
             <RadzenPanelMenu>
-                <RadzenPanelMenuItem Text="Home" Path="/"/>
-                <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top" />
+                <RadzenPanelMenuItem Text="BlazorGPT" Path="/"/>
+                <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top"/>
                 <RadzenPanelMenuItem Icon="question_answer" Text="Conversations" Path="conversations"/>
                 <RadzenPanelMenuItem Icon="people" Text="Quick profiles" Path="quickprofiles"/>
                 <RadzenPanelMenuItem Icon="format_list_numbered" Text="Scripts" Path="scripts"/>
                 <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts"/>
 
             </RadzenPanelMenu>
+            
+            <LoginDisplay/>
+            
 
             <div class="py-3 py-md-4" style="padding: var(--rz-panel-menu-item-padding);">
                 <RadzenText Text="BlazorGPT v3" TextStyle="TextStyle.Caption" style="color: var(--rz-text-disabled-color);" TagName="TagName.P" TextAlign="TextAlign.Center"/>

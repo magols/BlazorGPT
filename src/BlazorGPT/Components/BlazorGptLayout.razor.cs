@@ -11,7 +11,7 @@ public partial class BlazorGptLayout
     protected IJSRuntime? JSRuntime { get; set; }
 
     [Inject]
-    protected NavigationManager? NavigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
     protected DialogService? DialogService { get; set; }
@@ -36,5 +36,10 @@ public partial class BlazorGptLayout
         sidebarExpanded = !sidebarExpanded;
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    private void GoToNew()
+    {
+        NavigationManager.NavigateTo("/conversation", true);
     }
 }

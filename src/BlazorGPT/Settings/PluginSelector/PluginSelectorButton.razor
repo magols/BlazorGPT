@@ -1,4 +1,4 @@
- <RadzenButton ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings">
+ <RadzenButton Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings" Disabled="!Enabled">
     Plugins
     @if (BrowserData != null && BrowserData.Any())
     {
@@ -8,7 +8,7 @@
 @code
 {
     [Parameter]  public string? Class { get; set; }
-
+    [Parameter]  public bool Enabled { get; set; }
     [Inject] DialogService? DialogService { get; set; }
 
     [Inject] public required PluginsConfigurationService PluginsConfigurationService { get; set; }

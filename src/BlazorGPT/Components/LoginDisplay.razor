@@ -4,14 +4,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <NavLink href="Account/Manage">
-            <RadzenIcon Icon="person" />
-        </NavLink>
+        
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Account" Icon="person" Navigate="true" Path="Account/Manage" />
+        </RadzenPanelMenu>
 
         <form action="Account/Logout" method="post">
-            <RadzenButton Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" class="m-3" type="submit">Logout</RadzenButton>
-            <AntiforgeryToken />
-            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+            <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" class="m-3" type="submit">Logout</RadzenButton>
+            <AntiforgeryToken/>
+            <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
         </form>
     </Authorized>
     <NotAuthorized>

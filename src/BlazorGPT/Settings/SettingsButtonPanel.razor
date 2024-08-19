@@ -1,9 +1,11 @@
-﻿@if (_showPlugins)
-{
-    <PluginSelectorButton Class="m-1 me-3 p-1 float-end"/>
-}
-<InterceptorSettingsButton Class="m-1 me-3 p-1  float-end" OnSettingsChangedAction="@InterceptorSettingsChanged" />
-<ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
+﻿
+
+<div class="float-end">
+    <ModelSettingsButton />
+    <InterceptorSettingsButton OnSettingsChangedAction="@InterceptorSettingsChanged" />
+    <PluginSelectorButton Enabled="@_showPlugins" />
+</div>
+
 
 @code {
     [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }

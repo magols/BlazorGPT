@@ -36,3 +36,21 @@
 .rz-tabview-panel {
     padding: 0;
 }
+
+#btnNew { 
+    font-size: 45px !important;
+}
+
+.truncate {
+    display: inline-block;
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 769px) {
+    .truncate {
+        width: 600px;
+    }
+}
