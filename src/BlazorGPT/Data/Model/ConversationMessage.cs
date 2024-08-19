@@ -1,25 +1,13 @@
-﻿using Azure.AI.OpenAI;
- 
- 
-
-
-namespace BlazorGPT.Data.Model;
+﻿namespace BlazorGPT.Data.Model;
 
 public class ConversationMessage
 {
-
-
-    public ConversationMessage(string role, string content)  
+    public ConversationMessage(string role, string content)
     {
         Role = role;
         Content = content;
     }
 
-    //public ConversationMessage(ChatMessage msg)  
-    //{
-    //    Role = msg.Role == ChatRole.User ? "user" : "assistant";
-    //    Content = msg.Content;
-    //}
 
     public Guid? Id { get; set; }
     public string Role { get; set; }
@@ -36,4 +24,5 @@ public class ConversationMessage
 
     public DateTime Date { get; set; } = DateTime.UtcNow;
 
+    public string? ActionLog { get; set;  }
 }

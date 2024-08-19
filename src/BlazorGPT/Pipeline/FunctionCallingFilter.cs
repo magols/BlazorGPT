@@ -43,18 +43,18 @@ public class FunctionCallingFilter(CurrentConversationState conversationState, U
         }
         sb.Append("  \n");
 
-        sb.Append("Result: " + context.Result);
+        sb.Append("Result:\n" + context.Result + "\n");
 
-        sb.Append("  \n");
+       var lastUserMessage =  conversation.Messages.FindLast(o => o.Role == ConversationRole.User)!;
 
-        if (string.IsNullOrEmpty(conversation.SKPlan))
-        {
-            conversation.SKPlan = sb.ToString();
-
+       if (!string.IsNullOrEmpty(lastUserMessage?.ActionLog))
+       {
+            lastUserMessage.ActionLog += "\n" + sb.ToString();
         }
         else
         {
-            conversation.SKPlan += "  \n" + sb.ToString();
+            lastUserMessage.ActionLog = sb.ToString();
+
         }
     }
 }

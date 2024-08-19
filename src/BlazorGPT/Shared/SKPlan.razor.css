@@ -10,3 +10,7 @@ background-color: blue;
 .skplan-step-done {
     background-color: green;
 }
+
+.actionlog {
+    margin: 100px;
+}

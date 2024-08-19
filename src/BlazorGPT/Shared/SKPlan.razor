@@ -1,12 +1,17 @@
 ﻿@code
 {
+
+
     [Parameter]
     public string? PlanAsString { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
 }
 
-<RadzenPanel AllowCollapse="true" Collapsed="false" Class="m-3">
+<RadzenPanel AllowCollapse="true" Collapsed="true" class="m-3 actionlog">
     <HeaderTemplate>
-        Action log
+        @Title
     </HeaderTemplate>
     <ChildContent>
         <div class="pt-3">

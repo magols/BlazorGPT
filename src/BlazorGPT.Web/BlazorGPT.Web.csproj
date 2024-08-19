@@ -52,6 +52,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Plugins\BlazorGPT.PrivatePlugins.dll" Condition="Exists('Plugins\BlazorGPT.PrivatePlugins.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <Target Name="CopyDocs" BeforeTargets="Build">
     <ItemGroup>
@@ -60,14 +65,11 @@
     <Copy SourceFiles="@(DocFiles)" DestinationFolder="wwwroot\docs\%(RecursiveDir)" />
   </Target>
 
-
   <Target Name="CopyReadme" BeforeTargets="Build">
     <ItemGroup>
       <ReadMe Include="..\..\README.md" />
     </ItemGroup>
-
-    <!-- only copy if the file exists-->
-        <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" Condition="Exists('..\..\README.md')" />
-    <!--<Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" />-->
+    <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" Condition="Exists('..\..\README.md')" />
   </Target>
+
 </Project>

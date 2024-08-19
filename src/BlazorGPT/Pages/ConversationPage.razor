@@ -32,6 +32,9 @@
 
             Conversation.Messages = Conversation.Messages.Take(messageCutoff).ToList();
 
+            var lastUserMessage =  Conversation.Messages.FindLast(o => o.Role == ConversationRole.User)!;
+            lastUserMessage.ActionLog = null;
+
             await SendConversation(rerun: true);
 
             StateHasChanged();

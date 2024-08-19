@@ -148,7 +148,7 @@ namespace BlazorGPT.Pages
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
 
 
-                initialControlHeight = _browserIsSmall ? 300 : 310;
+                initialControlHeight = _browserIsSmall ? 300 : 300;
 
                 initialControlHeight = BotMode ? 150 : initialControlHeight;
 

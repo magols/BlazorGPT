@@ -104,3 +104,14 @@
         }
     </div>
 </div>
+
+@if(!string.IsNullOrEmpty( Message.ActionLog))
+{<div class="row">
+    
+        <div class="col-md-12">
+            <SKPlan Title="Action Log" PlanAsString="@Message.ActionLog"></SKPlan>
+
+        </div>
+
+    </div>
+}
