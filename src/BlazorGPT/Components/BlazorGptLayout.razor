@@ -27,36 +27,6 @@
                 
                     </div>
                 </div>
-
-                
-
-@*                 <div class="container-fluid">
-
-                    <div class="row me-0 pe-0  justify-content-start align-items-center bg-dark">
-
-                        <div class="col-sm-2 col-md-2 col-lg-5 p-0 m-0">
-                            <div class="p-2">
-                                <RadzenButton Click="@SidebarToggleClick"
-                                              Icon="menu"
-                                              Variant="Variant.Outlined"
-                                              ButtonStyle="ButtonStyle.Info"
-                                              class="float-start m-2 mt-0  p-0"/>
-
-                                <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
-
-                            </div>
-
-                        </div>
-                        <div class="col-7 col-sm-12">
-                            This is a section outlet
-                        </div>
-                        <div class="col-3 d-flex align-items-center justify-content-end">
-                            <LoginDisplay/>
-                        </div>
-                    </div>
-                </div> *@
-                
-
             </RadzenHeader>
         <RadzenBody Expanded="@sidebarExpanded">
             <div class="container-fluid ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
@@ -67,7 +37,7 @@
                 </div>
             </div>
         </RadzenBody>
-        <RadzenSidebar Expanded="@sidebarExpanded" style="z-index: 2">
+        <RadzenSidebar id="sidebar" Expanded="@sidebarExpanded" style="z-index: 2">
             <RadzenPanelMenu>
                 <RadzenPanelMenuItem Text="BlazorGPT" Path="/"/>
                 <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top"/>

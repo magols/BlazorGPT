@@ -48,8 +48,6 @@ html {
 body {
     font-family: var(--rz-text-font-family);
     color: var(--rz-text-color);
-    /*font-size: var(--rz-body-font-size);*/
-    font-size: 7px;
     line-height: var(--rz-body-line-height);
     background-color: var(--rz-body-background-color);
     width: 100%;
@@ -62,7 +60,7 @@ body {
     --rz-link-color: #51b269;
     --rz-link-hover-color: #89f89e;
     --rz-grid-stripe-background-color: #252525;
-    --rz-sidebar-width: 220px;
+    --rz-sidebar-width: 180px;
 }
 
 .rz-card {
