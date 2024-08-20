@@ -33,7 +33,7 @@ public class FunctionCallingFilter(CurrentConversationState conversationState, U
 
         StringBuilder sb = new StringBuilder();
 
-        sb.Append($"**{context.Function.PluginName} {context.Function.Name}** called with arguments:  \n");
+        sb.Append($"\n\n##### {context.Function.PluginName} {context.Function.Name}\n\n");
 
         foreach (var arg in context.Arguments.Names)
         {
@@ -49,7 +49,7 @@ public class FunctionCallingFilter(CurrentConversationState conversationState, U
 
        if (!string.IsNullOrEmpty(lastUserMessage?.ActionLog))
        {
-            lastUserMessage.ActionLog += "\n" + sb.ToString();
+            lastUserMessage.ActionLog += "\n\n---" + sb.ToString();
         }
         else
         {
