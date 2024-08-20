@@ -96,3 +96,13 @@ body {
     /*color: darkgreen;*/
     font-size: smaller;
 }
+
+#sysprompt-dropdown-label > span {
+    font-size: 0.8rem;
+}
+
+
+.qp-button {
+    margin: 2px;
+   
+}
