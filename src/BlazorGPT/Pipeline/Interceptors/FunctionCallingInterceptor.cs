@@ -56,7 +56,7 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
         await LoadPluginsAsync(kernel);
 
         var prompt = conversation.Messages.Last().Content;
-        var lastMsg = new ConversationMessage("assistant", "Executing....");
+        var lastMsg = new ConversationMessage("assistant", "");
         conversation.Messages.Add(lastMsg);
         OnUpdate?.Invoke();
 
