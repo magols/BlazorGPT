@@ -4,9 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>3.0.0-beta1</AssemblyVersion>
+    <AssemblyVersion>3.0.0.1</AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <VersionPrefix>$(AssemblyVersion)</VersionPrefix>
+    <Version>3.0.0-beta.1</Version>
+
   </PropertyGroup>
   
   <PropertyGroup>
