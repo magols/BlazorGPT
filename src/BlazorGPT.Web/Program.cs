@@ -11,8 +11,37 @@ using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using OpenTelemetry.Logs;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+using Microsoft.Extensions.Configuration;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    //.WriteTo.Console(theme: AnsiConsoleTheme.Literate, applyThemeToRedirectedOutput: true)
+    //.WriteTo.File(@"logs/log.txt", shared: true, rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+Log.Error("hjälp");
+
+builder.Services.AddSerilog();
+builder.Services.AddTransient<ILoggerFactory>(b =>
+{
+    var loggerFactory = LoggerFactory.Create(logBuilder =>
+    {
+        logBuilder.SetMinimumLevel(LogLevel.Information);
+        logBuilder.AddOpenTelemetry(options =>
+        {
+            options.AddConsoleExporter();
+
+        });
+    });
+    loggerFactory.AddSerilog();
+    return loggerFactory;
+});
 
 var connectionString = builder.Configuration.GetConnectionString("UserDB") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
