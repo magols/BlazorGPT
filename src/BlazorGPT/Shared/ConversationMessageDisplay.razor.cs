@@ -171,7 +171,7 @@ namespace BlazorGPT.Shared
 
                     break;
                 case "user":
-                    c = "#424242";
+                    c = "#505050";
                     break;
                 default:
                     return "";

@@ -1,25 +1,25 @@
- @page "/systemprompts"
+@page "/systemprompts"
 
 
- <div class="container-fluid">
-     <div class="row">
-         <div class="col">
-             <h3>System prompts</h3>
-         </div>
-         <div class="col">
-            <RadzenButton ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Icon="add_circle_outline" Text="New" Click="@InsertRow" Disabled="@(_editMode == DataGridEditMode.Single && _userSystemPromptsToInsert.Count() > 0)" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h3>System prompts</h3>
+        </div>
+        <div class="col">
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Icon="add_circle_outline" Text="New" Click="@InsertRow" Disabled="@(_editMode == DataGridEditMode.Single && _userSystemPromptsToInsert.Count() > 0)"/>
 
-         </div>
+        </div>
 
-     </div>
-     <div class="row">
-         <div class="col">
-           
+    </div>
+    <div class="row">
+        <div class="col">
 
-         </div>
 
-     </div>
- </div>
+        </div>
+
+    </div>
+</div>
 
 <RadzenDataGrid @ref="_userSystemPromptsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="@_editMode"
                 Data="@_userSystemPrompts" TItem="UserSystemPrompt" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
@@ -38,25 +38,19 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Width="70px" TItem="UserSystemPrompt" Context="UserSystemPrompt" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+        <RadzenDataGridColumn Width="90px" TItem="UserSystemPrompt" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="false" FrozenPosition="FrozenColumnPosition.Right">
             <Template Context="userSystemPrompt">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(userSystemPrompt))" @onclick:stopPropagation="true">
-                </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(userSystemPrompt))" @onclick:stopPropagation="true">
-                </RadzenButton>
+                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(userSystemPrompt))" @onclick:stopPropagation="true"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(userSystemPrompt))" @onclick:stopPropagation="true"/> 
             </Template>
             <EditTemplate Context="userSystemPrompt">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(userSystemPrompt))">
-                </RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(userSystemPrompt))">
-                </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(userSystemPrompt))">
-                </RadzenButton>
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(userSystemPrompt))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(userSystemPrompt))" />
             </EditTemplate>
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
- 
+
 
 @code {
     RadzenDataGrid<UserSystemPrompt?> _userSystemPromptsGrid = null!;
@@ -65,25 +59,21 @@
 
     readonly DataGridEditMode _editMode = DataGridEditMode.Single;
 
-    readonly List<UserSystemPrompt> _userSystemPromptsToInsert = new List<UserSystemPrompt>();
+    readonly List<UserSystemPrompt> _userSystemPromptsToInsert = new();
 
-    [Inject]
-    public DialogService DialogService { get; set; } = null!;
+    [Inject] public DialogService DialogService { get; set; } = null!;
 
-    [Inject]
-    public NotificationService NotificationService { get; set; } = null!;
+    [Inject] public NotificationService NotificationService { get; set; } = null!;
 
-    [Inject]
-    IDbContextFactory<BlazorGptDBContext>? ContextFactory { get; set; }
+    [Inject] IDbContextFactory<BlazorGptDBContext>? ContextFactory { get; set; }
 
-    [CascadingParameter]
-    Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    string? UserId { get; set; } = null!;  
+    string? UserId { get; set; }
 
     void Reset()
     {
-         _userSystemPromptsToInsert.Clear();
+        _userSystemPromptsToInsert.Clear();
     }
 
     void Reset(UserSystemPrompt userSystemPrompt)
@@ -94,7 +84,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
- 
+
         if (AuthenticationState != null)
         {
             var authState = await AuthenticationState;
@@ -154,15 +144,13 @@
 
     async Task DeleteRow(UserSystemPrompt userSystemPrompt)
     {
+        var result = await DialogService.Confirm("Are you sure you want to delete this prompt?", "Delete", new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No" });
+        if (!result.HasValue || !result.Value) return;
 
-        var result = await DialogService.Confirm("Are you sure you want to delete this prompt?", "Delete", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-        if (!result.HasValue ||  !result.Value) return;
-
-      //  Reset(userSystemPrompt);
+        //  Reset(userSystemPrompt);
 
         if (_userSystemPrompts.Contains(userSystemPrompt))
         {
-       
             _userSystemPrompts.Remove(userSystemPrompt);
 
             await using var ctx = await ContextFactory!.CreateDbContextAsync();
@@ -178,6 +166,7 @@
             _userSystemPromptsGrid.CancelEditRow(userSystemPrompt);
             await _userSystemPromptsGrid.Reload();
         }
+
         StateHasChanged();
     }
 
@@ -188,7 +177,7 @@
             Reset();
         }
 
-        var userSystemPrompt = new UserSystemPrompt() {UserId = UserId};
+        var userSystemPrompt = new UserSystemPrompt { UserId = UserId };
         await _userSystemPromptsGrid.InsertRow(userSystemPrompt);
     }
 
@@ -198,11 +187,12 @@
         {
             return;
         }
+
         await using var ctx = await ContextFactory!.CreateDbContextAsync();
 
         ctx.Add(userSystemPrompt);
 
         await ctx.SaveChangesAsync();
-
     }
+
 }

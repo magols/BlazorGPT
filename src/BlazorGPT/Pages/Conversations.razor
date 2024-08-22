@@ -39,12 +39,6 @@
 
 </RadzenDataGrid>
 
-@if (Convos.Any())
-{
-    <RadzenLink Path="/conversations" class="">See all</RadzenLink>    
-}
-
-
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
