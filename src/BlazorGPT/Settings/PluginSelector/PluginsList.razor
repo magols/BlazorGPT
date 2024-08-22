@@ -4,10 +4,15 @@
     
     @if(_model.SelectedPlugins.Any(p => p.Selected))
     {
-        <a @onclick="@ClearAll" class="link-warning"> [<RadzenIcon Icon="clear" IconColor="@Colors.Danger" /> Clear all ]</a>
+        <span class="float-end"> 
+
+            <a @onclick="@ClearAll" class="link-warning"> [<RadzenIcon Icon="clear" IconColor="@Colors.Danger" /> Clear all ]</a>
+        </span>
     }
 
 </p>
+<hr />
+
 <EditForm Model="_model" OnValidSubmit="Submit">
     @for (var i = 0; i < _plugins.Count; i++)
     {
@@ -28,5 +33,6 @@
                 </li>
             }
         </ul>
+        <hr />
     }
 </EditForm>

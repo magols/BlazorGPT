@@ -68,8 +68,6 @@ body {
 }
 
 .rz-body {
-    padding: 0;
-    --rz-body-padding: 0;
     font-size: 0.8rem;
 }
 
@@ -106,3 +104,4 @@ body {
     margin: 2px;
    
 }
+

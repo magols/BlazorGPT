@@ -1,14 +1,32 @@
  @page "/systemprompts"
 
 
- <RadzenButton ButtonStyle="ButtonStyle.Success" Size="ButtonSize.ExtraSmall" Icon="add_circle_outline" Text="New system prompt" Click="@InsertRow" Disabled="@(_editMode == DataGridEditMode.Single && _userSystemPromptsToInsert.Count() > 0)" />
- 
+ <div class="container-fluid">
+     <div class="row">
+         <div class="col">
+             <h3>System prompts</h3>
+         </div>
+         <div class="col">
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Icon="add_circle_outline" Text="New" Click="@InsertRow" Disabled="@(_editMode == DataGridEditMode.Single && _userSystemPromptsToInsert.Count() > 0)" />
+
+         </div>
+
+     </div>
+     <div class="row">
+         <div class="col">
+           
+
+         </div>
+
+     </div>
+ </div>
+
 <RadzenDataGrid @ref="_userSystemPromptsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="@_editMode"
                 Data="@_userSystemPrompts" TItem="UserSystemPrompt" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
     <Columns>
         <RadzenDataGridColumn TItem="UserSystemPrompt" Property="Name" Title="Name" Width="200px">
             <EditTemplate Context="userSystemPrompt">
-                <RadzenTextBox @bind-Value="userSystemPrompt.Name" class="textarea-full-width" ></RadzenTextBox>
+                <RadzenTextBox @bind-Value="userSystemPrompt.Name" class="textarea-full-width"></RadzenTextBox>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="UserSystemPrompt" Property="Text" Title="Text" Width="400px">
@@ -17,10 +35,10 @@
             </Template>
             <EditTemplate Context="userSystemPrompt">
                 <RadzenTextArea @bind-Value="userSystemPrompt.Text" Name="Text" Class="textarea-full-width"></RadzenTextArea>
-             </EditTemplate>
+            </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="UserSystemPrompt" Context="UserSystemPrompt" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+        <RadzenDataGridColumn Width="70px" TItem="UserSystemPrompt" Context="UserSystemPrompt" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
             <Template Context="userSystemPrompt">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(userSystemPrompt))" @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -38,6 +56,7 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+ 
 
 @code {
     RadzenDataGrid<UserSystemPrompt?> _userSystemPromptsGrid = null!;

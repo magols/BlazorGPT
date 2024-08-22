@@ -10,7 +10,7 @@
         </RadzenPanelMenu>
 
         <form action="Account/Logout" method="post">
-            <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" class="m-3" type="submit">Logout</RadzenButton>
+            <RadzenButton Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Base" class="m-3" type="submit">Logout</RadzenButton>
             <AntiforgeryToken/>
             <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
         </form>

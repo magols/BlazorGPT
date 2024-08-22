@@ -7,13 +7,11 @@
 
 @code {
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     public string? UserId { get; set; }
 
-    [Inject]
-    public required SampleDataSeeder SampleDataSeeder { get; set; }
+    [Inject] public required SampleDataSeeder SampleDataSeeder { get; set; }
 
     private async Task SeedSamples()
     {
@@ -24,7 +22,7 @@
             await SampleDataSeeder.SeedScriptsDataForUser(UserId);
         }
 
-       await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
+        await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
     }
 
     protected override async Task OnInitializedAsync()
@@ -38,49 +36,66 @@
                 UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
             }
         }
-
     }
+
 }
 
 <div>
     <AuthorizeView>
         <Authorized>
 
-            <RadzenCard Class="col-12 col-md-7 col-lg-6 m-3">
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <RadzenCard>
 
-                <RadzenStack>
-                    <RadzenText TextStyle="TextStyle.Body1"><RadzenLink Path="/quickprofiles">Quick Profiles</RadzenLink> lets you define and save questions, contexts and instructions.</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Overline">Then, when you are ready to ask a question, you can quickly apply the Quick Profiles to your question to enhance the Assistant result and format the response.</RadzenText>
-                    <br>
-                    <RadzenButton Class="mt-2" Size="ButtonSize.ExtraSmall" Click="@(() => NavigationManager.NavigateTo("/quickprofiles"))">Try Quick profiles</RadzenButton>
-                </RadzenStack>
-            </RadzenCard>
+                        <RadzenText TextStyle="TextStyle.Body1"><RadzenLink Path="/quickprofiles">Quick Profiles</RadzenLink> lets you define and save questions, contexts and instructions.</RadzenText>
+                        <p>
+                            Then, when you are ready to ask a question, you can quickly apply the Quick Profiles to your question to enhance the Assistant result and format the response.
+                        </p>
+                        <br>
+                        <RadzenButton Class="mt-2" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Click="@(() => NavigationManager.NavigateTo("/quickprofiles"))">Try Quick profiles</RadzenButton>
+                    </RadzenCard>
+                </div>
+                <div class="col-12 col-md-6">
 
-            <RadzenCard Class="col-12 col-md-6 m-3">
-                <RadzenStack>
-                    <RadzenText TextStyle="TextStyle.Body1"><RadzenLink Path="/scripts">Scripts</RadzenLink> are a way to ask a question with a series of automated follow up questions. </RadzenText>
-                    <RadzenText TextStyle="TextStyle.Overline">This can be very useful for repetitive research work.</RadzenText>
-                    <br/>
-                    <RadzenButton Class="mt-2" Size="ButtonSize.ExtraSmall" Click="@(() => NavigationManager.NavigateTo("/scripts"))">Try Scripts</RadzenButton>
-                </RadzenStack>
-            </RadzenCard>
+                    <RadzenCard>
+                        <RadzenText TextStyle="TextStyle.Body1"><RadzenLink Path="/scripts">Scripts</RadzenLink> are a way to ask a question with a series of automated follow up questions. </RadzenText>
+                        <p>
+                            This can be very useful for repetitive research work.
+                        </p>
+                        <br/>
+                            <RadzenButton Class="mt-2" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Click="@(() => NavigationManager.NavigateTo("/scripts"))">Try Scripts</RadzenButton>
+                    </RadzenCard>
 
-            <RadzenButton class="m-3" Click="@(() => NavigationManager.NavigateTo("/conversation"))">Start new Conversation</RadzenButton>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <RadzenCard>
+                            <RadzenText TextStyle="TextStyle.H6">Samples </RadzenText>
+                            <p>
+                                Generate some sample Quick Profiles and Scripts to help you get started.
+                            </p>
+                            <br/>
+                            <RadzenButton Class="mt-2" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@(async () => await SeedSamples())">Add samples</RadzenButton>
 
-            <RadzenCard Class="col-12 col-md-7 col-lg-6 m-3">
-                <RadzenStack>
-                    <RadzenText TextStyle="TextStyle.H6">Samples </RadzenText>
-                    <RadzenText TextStyle="TextStyle.Overline">
-                        Generate some sample Quick Profiles and Scripts to help you get started.
-                    </RadzenText>
-                    <br/>
-                    <RadzenButton Class="mt-2" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" Click="@(async () => await SeedSamples())">Add samples</RadzenButton>
+                        </RadzenCard>
+                    </div>
+                    
+                </div>
 
-                </RadzenStack>
-            </RadzenCard>
+               
+
+
+            </div>
+            
+            </div>
+
+
         </Authorized>
+        
     </AuthorizeView>
-    
+
     <Readme/>
 
 </div>
