@@ -1,5 +1,4 @@
-﻿using BlazorGPT.Ollama;
-using Codeblaze.SemanticKernel.Connectors.Ollama;
+﻿using Codeblaze.SemanticKernel.Connectors.Ollama;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -98,9 +97,9 @@ public class KernelService
 
         if (provider == ChatModelsProvider.Ollama)
         {
-	        builder.Services.AddTransient<HttpClient>();
-			model ??= _options.Providers.Local.ChatModel;
-            builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl); 
+            model ??= _options.Providers.Ollama.ChatModel;
+            builder.Services.AddTransient<HttpClient>();
+            builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl);
         }
 
         if (promptRenderFilters != null)
@@ -200,7 +199,8 @@ public class KernelService
         {
             
             var httpClient = new HttpClient();
-           var generation = new OllamaTextEmbeddingGenerationService(model ?? _options.Providers.Ollama.ChatModel,
+            
+           var generation = new OllamaTextEmbeddingGeneration(model ?? _options.Providers.Ollama.ChatModel,
                _options.Providers.Ollama.BaseUrl,
                httpClient,
                null);
