@@ -1,4 +1,5 @@
-﻿using BlazorPro.BlazorSize;
+﻿using Blazored.LocalStorage;
+using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Radzen;
@@ -28,14 +29,26 @@ public partial class BlazorGptLayout
     [Inject]
     public IResizeListener? ResizeListener { get; set; }
 
-    private bool sidebarExpanded = true;
+    [Inject]
+    public required ILocalStorageService LocalStorage { get; set; }
 
+    private bool sidebarExpanded = false;
 
-    Task SidebarToggleClick()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            sidebarExpanded = await LocalStorage.GetItemAsync<bool>("sidebarExpanded");
+            StateHasChanged();
+        }
+
+    }
+
+    async Task SidebarToggleClick()
     {
         sidebarExpanded = !sidebarExpanded;
+        await LocalStorage.SetItemAsync("sidebarExpanded", sidebarExpanded);
         StateHasChanged();
-        return Task.CompletedTask;
     }
 
     private void GoToNew()

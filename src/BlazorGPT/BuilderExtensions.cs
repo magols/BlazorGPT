@@ -13,6 +13,10 @@ namespace BlazorGPT
         public static IServiceCollection AddBlazorGPT(this IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<IConfiguration>(config);
+
+            services.AddMemoryCache();
+
+
             services.Configure<PipelineOptions>(config.GetSection("PipelineOptions")); ;
 
             services.AddDbContextFactory<BlazorGptDBContext>(options =>
@@ -53,8 +57,10 @@ namespace BlazorGPT
 
             services.AddSingleton<ConversationTreeState>();
 
+
             services.AddSingleton<CurrentConversationState>();
             services.AddTransient<FunctionCallingFilter>();
+
 
             return services;
         }

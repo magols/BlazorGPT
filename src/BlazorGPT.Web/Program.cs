@@ -15,6 +15,7 @@ using OpenTelemetry.Logs;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Microsoft.Extensions.Configuration;
+using BlazorGPT.Pipeline;
 
 
 
@@ -49,6 +50,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddBlazorGPT(builder.Configuration);
+// web mode, uter apps use FunctionCallingUserConsoleProvider
+builder.Services.AddTransient<IFunctionCallingUserProvider, FunctionCallingUserWebProvider>();
+
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();

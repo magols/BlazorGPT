@@ -5,40 +5,42 @@
     <RadzenTooltip/>
     <RadzenContextMenu/>
 
-    @* <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';"> *@
-        <RadzenLayout style=" ">
+    <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'">
 
-            <RadzenHeader>
-                
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col">
-                            <RadzenButton Click="@SidebarToggleClick"
-                                          Icon="menu"
-                                          Variant="Variant.Outlined"
-                                          ButtonStyle="ButtonStyle.Info"
-                                          class=""/>
+        <RadzenHeader>
 
-                            <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
-
-                        <SectionOutlet SectionName="heading" />
-
-                        </div>
-                
-                    </div>
-                </div>
-            </RadzenHeader>
-        <RadzenBody Expanded="@sidebarExpanded">
-            <div class="container-fluid ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col">
-                        @Body
+                        <RadzenButton Click="@SidebarToggleClick"
+                                      Icon="menu"
+                                      Variant="Variant.Outlined"
+                                      ButtonStyle="ButtonStyle.Info"
+                                      Visible="!sidebarExpanded"
+                                      class=""/>
+
+                        <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
+
+                        <SectionOutlet SectionName="heading"/>
+
                     </div>
+
                 </div>
             </div>
-        </RadzenBody>
-        <RadzenSidebar id="sidebar" Expanded="@sidebarExpanded" style="z-index: 2">
+        </RadzenHeader>
+    
+        <RadzenSidebar id="sidebar" Expanded="sidebarExpanded" Responsive="false">
+           
+            <RadzenButton Click="@SidebarToggleClick"
+                          Icon="menu_open"
+                          Variant="Variant.Outlined"
+                          ButtonStyle="ButtonStyle.Info"
+                          Visible="sidebarExpanded"
+                          class="float-end m-2"/>
+
             <RadzenPanelMenu>
+
+
                 <RadzenPanelMenuItem Text="BlazorGPT" Path="/"/>
                 <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top"/>
                 <RadzenPanelMenuItem Icon="question_answer" Text="History" Path="conversations"/>
@@ -47,13 +49,24 @@
                 <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts"/>
 
             </RadzenPanelMenu>
-            
+
             <LoginDisplay/>
-            
+
 
             <div class="py-3 py-md-4" style="padding: var(--rz-panel-menu-item-padding);">
                 <RadzenText Text="BlazorGPT v3" TextStyle="TextStyle.Caption" style="color: var(--rz-text-disabled-color);" TagName="TagName.P" TextAlign="TextAlign.Center"/>
             </div>
         </RadzenSidebar>
+
+        <RadzenBody>
+            <div class="container-fluid ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
+                <div class="row">
+                    <div class="col">
+                        @Body
+                    </div>
+                </div>
+            </div>
+        </RadzenBody>
+
     </RadzenLayout>
 </MediaQueryList>

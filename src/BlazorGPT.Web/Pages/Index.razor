@@ -20,9 +20,8 @@
         {
             await SampleDataSeeder.SeedQPDataForUser(UserId);
             await SampleDataSeeder.SeedScriptsDataForUser(UserId);
+            await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
         }
-
-        await DialogService.Alert("Sample Quick Profiles and Scripts have been added.", "Done", new AlertOptions { OkButtonText = "Ok" });
     }
 
     protected override async Task OnInitializedAsync()

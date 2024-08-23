@@ -53,6 +53,7 @@ body {
     width: 100%;
     height: auto;
     overflow-x: hidden;
+    --bs-code-color: #f0e68c;
 }
 
 :root:has(.rz-layout) {
@@ -60,7 +61,7 @@ body {
     --rz-link-color: #51b269;
     --rz-link-hover-color: #89f89e;
     --rz-grid-stripe-background-color: #252525;
-    --rz-sidebar-width: 180px;
+    --rz-sidebar-width: 250px;
 }
 
 .rz-card {
