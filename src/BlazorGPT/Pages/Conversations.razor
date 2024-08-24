@@ -1,7 +1,7 @@
 @using BlazorGPT.Data
+@page "/clist"
 
-
-<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos" PageSize="10" PageNumbersCount="3" AllowPaging="true" PagerHorizontalAlign="@HorizontalAlign.Justify" class="hide-grid-header" EmptyText="Previous conversations">
+<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos" ShowPagingSummary="true" class="hide-grid-header" EmptyText="">
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">
             <Template Context="c">
@@ -39,6 +39,9 @@
 
 </RadzenDataGrid>
 
+<div class="float-end m-3">
+    <RadzenButton Icon="history" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => NavigationManager.NavigateTo("/conversations"))" @onclick:stopPropagation="true" />
+</div>
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
@@ -78,7 +81,7 @@ public DialogService DialogService { get; set; } = null!;
 
     public async Task LoadConversations()
     {
-        Convos = await ConversationsRepository.GetConversationsByUserId(UserId);
+        Convos = await ConversationsRepository.GetConversationsByUserIdSimple(UserId, 15);
     ;
         StateHasChanged();
     }
