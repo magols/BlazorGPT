@@ -1,28 +1,28 @@
-﻿<div class="row m-1 p-0" style="@Style">
+﻿<div class="row m-1 p-0 message message-role-@Message.Role.ToLower()">
 
-    <div class="col-1 col-md-1 m-0 mb-0 p-1 pe-0 bg-dark">
+    <div class="col-1 col-md-1 m-0 mb-0 p-2 pe-0 @(Message.Role.ToLower() != "system" ? "bg-gradient" : "")">
         <ConversationRoleDisplay Role="@Message.Role" />
 
-        <ul id="message-buttons" style="list-style-type: none" class="p-0 m-0">
+        <ul id="message-buttons" style="list-style-type: none" class="p-0 m-0 mt-1">
             @if (ShowRestartButton)
             {
-                <li class="m-1">
-                    <RadzenButton Visible="ShowRestartButton" Class="" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))" />
+                <li class="m-1 ms-0">
+                    <RadzenButton Visible="ShowRestartButton" Class="message-action-restart" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))" />
 
                 </li>
             }
             @if (ShowShouldDisplayStateButton)
             {
-                <li class="m-1">
-                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))" />
+                <li class="m-1 ms-0">
+                    <RadzenButton Visible="ShowShouldDisplayStateButton" Class="message-action-state" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state"))" />
 
                 </li>
             }
 
             @if (ShowEditButton)
             {
-                <li class="m-1">
-                    <RadzenButton Visible="true" Class="" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))" />
+                <li class="m-1 ms-0">
+                    <RadzenButton Visible="true" Class="message-action-edit" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))" />
 
                 </li>
 
@@ -30,9 +30,9 @@
 
             @if (Message.Role == ConversationRole.Assistant && ShowCopyButton)
             {
-                <li class="m-1">
+                <li class="m-1 ms-0">
 
-                    <RadzenButton Visible="ShowCopyButton" class="" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))" />
+                    <RadzenButton Visible="ShowCopyButton" class="message-action-copy" Click="CopyClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="fork_left" Style="transform: rotate(180deg);" MouseEnter="@(args => ShowTooltip(args, "Branch from here"))" />
                 </li>
             }
         </ul>

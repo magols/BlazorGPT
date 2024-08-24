@@ -67,11 +67,6 @@ body {
 .rz-card {
     margin: 8px;
 }
-
-.rz-body {
-    font-size: 0.8rem;
-}
-
  
 .hide-grid-header thead {
     display: none;
@@ -106,3 +101,53 @@ body {
    
 }
 
+
+.message {
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+
+.message-role-system {
+    background-color: #181818;
+    border-color: #242424;
+}
+
+.message-role-user {
+    background-color: #212121;
+    border-color: #484848;
+}
+
+.message-role-assistant {
+    background-color: #141414;
+    border-color: #424242;
+}
+
+
+.message-icon-system {
+    color: #d4d3b3;
+}
+
+.message-icon-user {
+    color: #4a9f5e;
+}
+
+.message-icon-assistant {
+    color: #2dacc1;
+}
+
+
+.message-action-restart {
+    --rz-text-color: #99d7ff;
+}
+ 
+.message-action-state {
+}
+
+.message-action-edit {
+}
+
+.message-action-copy {
+    --rz-text-color: #099c1d;
+}

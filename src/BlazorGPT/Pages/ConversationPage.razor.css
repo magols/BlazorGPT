@@ -1,6 +1,7 @@
 ﻿#conversationframe {
     --rz-layout-body-padding: 0;
     --rz-layout-body-margin: 0;
+
     margin: 0;
     padding: 0;
 }
@@ -24,11 +25,6 @@
     font-size: 13px;
 }
 
-#message-pane pre {
-    background-color: red;
-    padding: 100px;
-}
-
 .scroll-pane {
 
     
@@ -40,10 +36,6 @@
 
 .rz-tabview-panel {
     padding: 0;
-}
-
-#btnNew { 
-    font-size: 45px !important;
 }
 
 .truncate {
