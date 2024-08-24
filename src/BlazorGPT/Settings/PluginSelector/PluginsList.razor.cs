@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Radzen;
+using Radzen.Blazor;
 
 namespace BlazorGPT.Settings.PluginSelector;
 
 public partial class PluginsList
 {
-    private readonly PluginFormModel _model = new();
+ 
     private List<Plugin> _plugins = new();
+    private RadzenDataGrid<Plugin> _grid;
+    private IList<Plugin> _selPlugins;
     List<PluginSelection>? BrowserData { get; set; }
 
     [Inject] 
@@ -13,6 +17,8 @@ public partial class PluginsList
 
     [Inject]
     public required PluginsRepository PluginsRepository { get; set; }
+
+    private bool _loaded;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -22,27 +28,28 @@ public partial class PluginsList
 
             if (BrowserData != null)
             {
-
                 foreach (var plugin in BrowserData)
                 {
-                    var exists = _model.SelectedPlugins.FirstOrDefault(o => o.Name == plugin.Name);
-                    if (exists != null)
+                    var e = _plugins.FirstOrDefault(o => o.Name == plugin.Name);
+                    if (e != null)
                     {
-                        exists.Selected = plugin.Selected;
+                       await _grid.SelectRow(e, true);
                     }
                 }
-                StateHasChanged();
             }
+
+            await _grid.Reload();
+            _loaded = true;
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
+        _selPlugins = new List<Plugin>();
         foreach (var plugin in await PluginsRepository.All())
         {
             _plugins.Add(plugin);
-            _model.Plugins.Add(new PluginSelection { Name = plugin.Name });
-            _model.SelectedPlugins.Add(new PluginSelection { Name = plugin.Name });
+ 
         }
     }
 
@@ -53,20 +60,34 @@ public partial class PluginsList
     
     private async Task Submit()
     {
-
-        await PluginsConfigurationService.SaveConfig(_model.SelectedPlugins.Where(o => o.Selected));
+        var pluginSelections = _selPlugins.Select( o => new PluginSelection() {Name = o.Name, Selected = true} );
+        await PluginsConfigurationService.SaveConfig(pluginSelections);
 
     }
 
     private async Task ClearAll()
     {
-        foreach (var plugin in _model.SelectedPlugins)
-        {
-            plugin.Selected = false;
-        }
-
+        _selPlugins.Clear();
+        _grid.Reset(false);
         await Submit();
         StateHasChanged();
 
+    }
+
+  
+
+    private async Task RowSelect(Plugin arg)
+    {
+        if (_loaded)
+        {
+            _selPlugins.Add(arg);
+            await Submit();
+        }
+    }
+
+    private async Task RowDeselect(Plugin arg)
+    {
+       _selPlugins.Remove(arg);
+        await Submit();
     }
 }
