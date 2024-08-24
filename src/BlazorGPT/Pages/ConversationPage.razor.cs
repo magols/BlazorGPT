@@ -494,6 +494,9 @@ namespace BlazorGPT.Pages
             string formatted = string.Format(loadedScript.Steps.First().Message, new[] { scriptInput });
             Conversation.AddMessage(new ConversationMessage("user", formatted));
             StateHasChanged();
+
+            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
+
             await Send();
 
             foreach (var step in loadedScript.Steps.Skip(1))
