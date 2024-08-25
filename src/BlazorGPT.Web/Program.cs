@@ -13,8 +13,6 @@ using BlazorGPT.Data.Model;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using OpenTelemetry.Logs;
 using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
-using Microsoft.Extensions.Configuration;
 using BlazorGPT.Pipeline;
 
 
@@ -22,11 +20,7 @@ using BlazorGPT.Pipeline;
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
-    //.WriteTo.Console(theme: AnsiConsoleTheme.Literate, applyThemeToRedirectedOutput: true)
-    //.WriteTo.File(@"logs/log.txt", shared: true, rollingInterval: RollingInterval.Day)
     .CreateLogger();
-
-Log.Error("hjälp");
 
 builder.Services.AddSerilog();
 builder.Services.AddTransient<ILoggerFactory>(b =>
