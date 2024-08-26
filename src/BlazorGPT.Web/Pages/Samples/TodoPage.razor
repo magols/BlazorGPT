@@ -1,0 +1,104 @@
+@page "/todo/{ConversationId:guid?}"
+@using BlazorGPT.Pipeline
+@using BlazorGPT.Settings
+@using BlazorGPT.Settings.PluginSelector
+
+@using Microsoft.Extensions.Configuration
+@layout BlankLayout
+
+
+<div class="row">
+    <div class="col-12 col-md-6 mx-auto">
+
+        @if(ConversationId != null)
+        {
+            <div class="float-end me-5">
+                <NavLink href="/todo">New</NavLink>
+            </div>
+        }
+    </div>
+</div>
+<div class="col-12 col-md-6 mx-auto">
+
+    @if (ConversationId == null)
+    {
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h3 class="card-title">Welcome to the todolist</h3>
+                <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
+                    <p> 
+                        You can add, delete and update the todo list here. 
+                        </p>
+                    <p>
+                        The list is shared among all users.
+
+                    </p>
+
+                </p>
+            </div>
+        </div>
+    }
+
+    <ConversationPage Style="z-index: 50;" 
+                      UserId="@UserId"
+                      BotMode="true"
+                      BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users."
+                      
+                      NewDestinationPrefix="/todo"
+                      ConversationId="@ConversationId"
+                      MessageId="@MessageId">
+
+    </ConversationPage>
+
+</div>
+
+@code
+{
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [Parameter]
+    public Guid? ConversationId { get; set; }
+
+    [Parameter]
+    public Guid? MessageId { get; set; }
+
+    string? UserId { get; set; }
+
+    [Inject]
+    public IConfiguration? Configuration { get; set; }
+
+    [Inject]
+    public NavigationManager? NavigationManager { get; set; }
+
+    [Inject]
+    public IOptions< PipelineOptions>? PipelineOptions { get; set; }
+
+    [Inject]
+    public required PluginsConfigurationService PluginsConfigurationService { get; set; }
+
+    [Inject]
+    public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        UserId = "BotUser"; // PipelineOptions!.Value.Bot.BotUserId;
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            List<PluginSelection> config = new List<PluginSelection>();
+            config.Add(new PluginSelection() { Name = "Samples.Native.TodoPlugin", Selected = true});
+           await PluginsConfigurationService.SaveConfig(config);
+           await InterceptorConfigurationService.SaveConfig(new[]
+           {
+              "BotFunctionsInterceptor"
+           });
+
+        //   await InterceptorConfigurationService.SaveConfig(new[] { "Function calling (select plugins)" });
+        }
+    }
+}

@@ -162,7 +162,7 @@
                     </div>
                     <div class="mt-4">
                         <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-                        <ModelSettingsButton Class="m-1 me-3 p-1 float-end"/>
+                       
                         @if (UseFileUpload)
                         {
                             <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"

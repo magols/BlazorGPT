@@ -14,7 +14,7 @@ public class FunctionCallingUserConsoleProvider : IFunctionCallingUserProvider
 { 
     public Task<string> GetUserId()
     {
-        return Task.FromResult("ConsoleUser");
+        return Task.FromResult("BotUser");
     }
 }
 
