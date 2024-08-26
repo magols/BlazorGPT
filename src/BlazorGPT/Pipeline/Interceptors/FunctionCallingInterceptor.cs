@@ -73,12 +73,8 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
 
             IChatCompletionService chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
 
-            ChatHistory chatHistory = [];
-            chatHistory = [];
-
-
-            chatHistory.AddUserMessage(prompt);
-
+            ChatHistory chatHistory = conversation.ToChatHistory();
+       
             var response = await chatCompletion.GetChatMessageContentAsync(
                 chatHistory,
                 executionSettings: openAIPromptExecutionSettings,
