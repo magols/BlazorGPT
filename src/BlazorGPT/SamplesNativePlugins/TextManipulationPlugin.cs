@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Microsoft.SemanticKernel;
 
-namespace SamplesNativePlugins;
+namespace Samples.Native;
 
 public class TextManipulationPlugin
 {
