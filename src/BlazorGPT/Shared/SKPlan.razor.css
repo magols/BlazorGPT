@@ -11,6 +11,7 @@ background-color: blue;
     background-color: green;
 }
 
-.actionlog {
-    margin: 100px;
+
+.md-content {
+    font-size: 0.8rem
 }

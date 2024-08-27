@@ -151,3 +151,11 @@ body {
 .message-action-copy {
     --rz-text-color: #099c1d;
 }
+
+
+
+.actionlog .rz-panel-titlebar {
+    flex-direction: row-reverse;
+    justify-content: left;
+ 
+}
