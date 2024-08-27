@@ -234,7 +234,7 @@ namespace BlazorGPT.Pages
 
             }
 
-            if (BotMode || selectedTabIndex == 0)
+            if (! _browserIsSmall && (BotMode || selectedTabIndex == 0))
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
