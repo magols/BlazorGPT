@@ -18,6 +18,81 @@ namespace BlazorGPT.Pages
 {
     public partial class ConversationPage : IDisposable
     {
+
+        private bool _browserIsSmall = true;
+
+        private async Task CancelSend()
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
+
+        [Inject]
+        public NotificationService NotificationService { get; set; } = null!;
+
+        private async Task RestartConversation(ConversationMessage msg)
+        {
+            var result = await DialogService.Confirm("Restart conversation from here?", "Restart");
+            if (result.HasValue && result.Value)
+            {
+                var isUserMsg = msg.Role == "user";
+                if (isUserMsg)
+                {
+                    Model.Prompt = msg.Content.Trim();
+                }
+
+                var messageCutoff = Conversation.Messages.IndexOf(msg) + 1;
+
+                var messagesToRemove = Conversation.Messages.Skip(messageCutoff).ToList();
+                await ConversationsRepository.DeleteMessages(messagesToRemove);
+
+                Conversation.Messages = Conversation.Messages.Take(messageCutoff).ToList();
+
+                var lastUserMessage = Conversation.Messages.FindLast(o => o.Role == ConversationRole.User)!;
+                lastUserMessage.ActionLog = null;
+
+                await SendConversation(rerun: true);
+
+                StateHasChanged();
+
+                NotificationService.Notify(NotificationSeverity.Success, "Conversation restarted");
+            }
+        }
+
+
+
+        private async Task StateClicked()
+        {
+            if (Interop != null)
+            {
+                var srs = await RenderType();
+                await Interop.OpenStateViewer("conversation", Conversation.Id!.ToString() ?? string.Empty, srs);
+            }
+        }
+
+        private async Task Copy(ConversationMessage msg, string newName)
+        {
+            var newConvo = await ConversationsRepository.BranchFromMessage(UserId, msg, newName, Conversation);
+            NavigationManager.NavigateTo("/conversation/" + newConvo.Id);
+            await _conversations.LoadConversations();
+            NotificationService.Notify(NotificationSeverity.Success, "Conversation branched");
+        }
+
+        private string ConversationDisplayStyle()
+        {
+            if (browser.Height == 0 || controlHeight == 0)
+            {
+                return "";
+            }
+            var height = browser.Height - controlHeight;
+            return $"height: {height}px";
+        }
+
+        private async Task ShareClicked()
+        {
+            await Interop.OpenWindow("/share/" + ConversationId);
+        }
+
+
         public class PromptModel
         {
             [Required]

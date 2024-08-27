@@ -1,105 +1,27 @@
 ﻿@page "/conversation/{ConversationId:guid?}"
 @page "/conversation/{ConversationId:guid?}/{MessageId:guid?}"
-
 @attribute [Authorize]
 
 @code {
-    private bool _browserIsSmall = true;
-
-    private async Task CancelSend()
-    {
-        await _cancellationTokenSource.CancelAsync();
-    }
-
-    [Inject]
-    public NotificationService NotificationService { get; set; } = null!;
-
-    private async Task RestartConversation(ConversationMessage msg)
-    {
-        var result = await DialogService.Confirm("Restart conversation from here?", "Restart");
-        if (result.HasValue && result.Value)
-        {
-            var isUserMsg = msg.Role == "user";
-            if (isUserMsg)
-            {
-                Model.Prompt = msg.Content.Trim();
-            }
-
-            var messageCutoff = Conversation.Messages.IndexOf(msg) + 1;
-
-            var messagesToRemove = Conversation.Messages.Skip(messageCutoff).ToList();
-            await ConversationsRepository.DeleteMessages(messagesToRemove);
-
-            Conversation.Messages = Conversation.Messages.Take(messageCutoff).ToList();
-
-            var lastUserMessage =  Conversation.Messages.FindLast(o => o.Role == ConversationRole.User)!;
-            lastUserMessage.ActionLog = null;
-
-            await SendConversation(rerun: true);
-
-            StateHasChanged();
-
-            NotificationService.Notify(NotificationSeverity.Success, "Conversation restarted");
-        }
-    }
-
 
     private async Task CopyConversation(ConversationMessage msg)
     {
         var result = await DialogService.OpenAsync("Copy conversation from here?", ds =>
-    @<div>
-        <div class="row">
-            <div class="col">
-                @{
-                    var newName = "";
-                }
-                <RadzenLabel Text="Enter a name for the copied conversation"></RadzenLabel><br />
-                <RadzenTextBox class="mt-2 mb-2 textarea-full-width" @bind-Value="newName">as</RadzenTextBox><br />
-                <RadzenButton Text="Ok" Click="async () => {await Copy(msg, newName); ds.Close(newName);}" class="me-1" Style="width: 80px;" />
-                <RadzenButton Text="Cancel" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Light" class="me-1" />
+            @<div>
+                <div class="row">
+                    <div class="col">
+                        @{
+                            var newName = "";
+                        }
+                        <RadzenLabel Text="Enter a name for the copied conversation"></RadzenLabel><br />
+                        <RadzenTextBox class="mt-2 mb-2 textarea-full-width" @bind-Value="newName">as</RadzenTextBox><br />
+                        <RadzenButton Text="Ok" Click="async () => {await Copy(msg, newName); ds.Close(newName);}" class="me-1" Style="width: 80px;" />
+                        <RadzenButton Text="Cancel" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Light" class="me-1" />
 
-            </div>
-        </div>
-    </div>);
+                    </div>
+                </div>
+            </div>);
     }
-
-    private async Task StateClicked()
-    {
-        if (Interop != null)
-        {
-            var srs = await RenderType();
-            await Interop.OpenStateViewer("conversation", Conversation.Id!.ToString() ?? string.Empty, srs);
-        }
-    }
-
-    private async Task Copy(ConversationMessage msg, string newName)
-    {
-        var newConvo = await ConversationsRepository.BranchFromMessage(UserId, msg, newName, Conversation);
-
-        //msg.BranchedConversations.Add(newConvo);
-
-        //await ConversationsRepository.SaveMessage(msg);
-
-        NavigationManager.NavigateTo("/conversation/" + newConvo.Id);
-        await _conversations.LoadConversations();
-        NotificationService.Notify(NotificationSeverity.Success, "Conversation branched");
-    }
-
-    private string ConversationDisplayStyle()
-    {
-        if (browser.Height == 0 || controlHeight == 0)
-        {
-            return "";
-        }
-        var height = browser.Height - controlHeight;
-        return $"height: {height}px";
-    }
-
-    private async Task ShareClicked()
-    {
-        await Interop.OpenWindow("/share/" + ConversationId);
-    }
-
 }
 
 <SectionContent SectionName="heading">
@@ -108,8 +30,6 @@
        <span class="ms-3 truncate">@Conversation.Summary</span>
     }
 </SectionContent>
- 
-
 
 <CascadingValue Name="Conversation" Value="Conversation">
 
@@ -138,12 +58,9 @@
         {
             <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">
                 <Conversations @ref="_conversations"></Conversations>
-
             </div>
         }
-
     </div>
-
 
     <div class="row sticky-bottom mt-auto mb-0 pb-0 pt-0">
         <div id="control" class="col mt-0 mb-0 pb-0 pt-0 me-3">
@@ -180,7 +97,6 @@
             }
             else
             {
-
                 <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
                     <Tabs>
                         <RadzenTabsItem Text="Conversation" class="m-0 p-0">
@@ -201,35 +117,27 @@
                                     </RadzenTextArea>
                                 </div>
 
-
                                 <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3"/>
                                 <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile"/>
 
-
                                 <div class="mt-4">
                                     <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-
                                     <SettingsButtonPanel/>
-
                                     <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
 
                                 </div>
 
                                 <span class="float-end mt-2 mb-0">
-
                                     <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state"/>
-
                                     <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state"/>
-
                                 </span>
-
+                                list 
                                 @if (UseFileUpload)
                                 {
                                     <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"
                                               OnSyncFiles="FileAreaSynced"
                                               FolderName="@Conversation.Id?.ToString()"/>
                                 }
-
 
                             </EditForm>
                         </RadzenTabsItem>
@@ -249,7 +157,6 @@
                                     <div>
                                         <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy"/>
                                     </div>
-
                                 </div>
 
                                 <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy"/>
@@ -258,18 +165,12 @@
                         </RadzenTabsItem>
                         <RadzenTabsItem Text="Tools">
                             <RadzenButton class="" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
-
                         </RadzenTabsItem>
                     </Tabs>
                 </RadzenTabs>
             }
         </div>
         <div class="col-sm-4 d-none d-lg-block"></div>
-
-
-
     </div>
-
 </div>
-
 </CascadingValue>
