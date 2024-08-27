@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
+using BlazorGPT.Migrations;
+using Microsoft.KernelMemory;
 using Microsoft.SemanticKernel;
 
 namespace BlazorGPT.Settings.PluginSelector
@@ -28,11 +30,13 @@ namespace BlazorGPT.Settings.PluginSelector
             var coreNative = GetCoreNative();
             var semanticPlugins = await GetSemanticPlugins();
             var externalNative = GetExternalNative();
+            var kernelMemory = await GetKernelMemoryPlugins();
 
             var plugins = new List<Plugin>();
             plugins.AddRange(coreNative);
             plugins.AddRange(externalNative);
             plugins.AddRange(semanticPlugins);
+            plugins.AddRange(kernelMemory);
 
             return plugins.OrderBy(o => o.Name).ToList();
         }
@@ -188,6 +192,58 @@ namespace BlazorGPT.Settings.PluginSelector
             var allPlugins = await All();
             return allPlugins.Where(p => pluginsNames.Contains(p.Name)).ToList();
 
+        }
+
+
+        // get kernel memory plugins
+        public async Task<List<Plugin>> GetKernelMemoryPlugins()
+        {
+            var plugins = new List<Plugin>();
+
+            var kmPlugin = new MemoryPlugin("http://localhost:9001", "api", false);
+            
+            var plugin = new Plugin
+            {
+                Name = "Kernel Memory",
+                Functions = new List<Function>()
+            };
+
+            Assembly assembly = Assembly.GetAssembly(typeof(MemoryPlugin))!;
+            var kmType = assembly.GetTypes()
+                .First(type => type == typeof(MemoryPlugin) && type.GetMethods().Any(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any()));
+
+          
+                var instance = Activator.CreateInstance(kmType, "http://localhost:9001", "api", false);
+                Plugin p = new Plugin() { Name = kmType.ToString(), IsNative = true };
+                p.Instance = instance;
+
+
+                var methods = kmType.GetMethods()
+                    .Where(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any())
+                    .ToList();
+
+                foreach (var method in methods)
+                {
+                    var attr = method.GetCustomAttribute<KernelFunctionAttribute>();
+                    if (attr != null)
+                    {
+                        var descAttr = method.GetCustomAttribute<DescriptionAttribute>();
+                        string desc = descAttr?.Description ?? "";
+                        // desc should be set to the DescriptionAttribute of the method
+
+                        var f = new Function
+                        {
+                            Name = method.Name,
+                            Description = desc
+                        };
+                        p.Functions.Add(f);
+                    }
+                }
+
+                plugins.Add(p);
+            
+
+            return plugins;
         }
     }
 }

@@ -134,5 +134,23 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
             }
         }
 
+
+        // kernel memory plugin
+        var kernelMemoryPlugins = await _pluginsRepository.GetKernelMemoryPlugins();
+        kernelMemoryPlugins = kernelMemoryPlugins.Where(o => enabledNames.Contains(o.Name)).ToList();
+
+        foreach (var plugin in kernelMemoryPlugins)
+        {
+            try
+            {
+                string pluginName = plugin.Name.Substring(plugin.Name.LastIndexOf(".", StringComparison.Ordinal) + 1);
+                kernel.ImportPluginFromObject(plugin.Instance, pluginName);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Could not load kernel memory plugins", e);
+            }
+        }
+
     }
 }
