@@ -134,7 +134,6 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
             }
         }
 
-
         // kernel memory plugin
         var kernelMemoryPlugins = await _pluginsRepository.GetKernelMemoryPlugins();
         kernelMemoryPlugins = kernelMemoryPlugins.Where(o => enabledNames.Contains(o.Name)).ToList();
@@ -151,6 +150,5 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
                 throw new InvalidOperationException("Could not load kernel memory plugins", e);
             }
         }
-
     }
 }

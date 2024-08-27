@@ -2,6 +2,9 @@
 using System.Reflection;
 using System.Text.Json;
 using BlazorGPT.Migrations;
+using BlazorGPT.Pipeline;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.KernelMemory;
 using Microsoft.SemanticKernel;
 
@@ -198,9 +201,11 @@ namespace BlazorGPT.Settings.PluginSelector
         // get kernel memory plugins
         public async Task<List<Plugin>> GetKernelMemoryPlugins()
         {
-            var plugins = new List<Plugin>();
 
-            var kmPlugin = new MemoryPlugin("http://localhost:9001", "api", false);
+            var options = _serviceProvider.GetRequiredService<IOptions<PipelineOptions>>().Value;
+
+            var plugins = new List<Plugin>();
+            var kmPlugin = new MemoryPlugin(options.Memory.Url,  options.Memory.ApiKey);
             
             var plugin = new Plugin
             {
@@ -213,7 +218,7 @@ namespace BlazorGPT.Settings.PluginSelector
                 .First(type => type == typeof(MemoryPlugin) && type.GetMethods().Any(method => method.GetCustomAttributes(typeof(KernelFunctionAttribute), true).Any()));
 
           
-                var instance = Activator.CreateInstance(kmType, "http://localhost:9001", "api", false);
+                var instance = Activator.CreateInstance(kmType, options.Memory.Url, options.Memory.ApiKey, false);
                 Plugin p = new Plugin() { Name = kmType.ToString(), IsNative = true };
                 p.Instance = instance;
 
