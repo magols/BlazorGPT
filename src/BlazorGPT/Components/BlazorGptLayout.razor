@@ -19,7 +19,12 @@
                                       Visible="!sidebarExpanded"
                                       class=""/>
 
-                        <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
+                        <AuthorizeView>
+                            <Authorized>
+                                <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
+
+                            </Authorized>
+                        </AuthorizeView>
 
                         <SectionOutlet SectionName="heading"/>
 
@@ -47,16 +52,18 @@
                     <Authorized>
                         <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top"/>
                         <RadzenPanelMenuItem Icon="history" Text="History" Path="conversations" />
+                        <hr/>
+                        <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts" />
+
                         <RadzenPanelMenuItem Icon="people" Text="Quick profiles" Path="quickprofiles"/>
                         <RadzenPanelMenuItem Icon="format_list_numbered" Text="Scripts" Path="scripts"/>
-                        <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts"/>
                     </Authorized>
                 </AuthorizeView>
 
 
 
             </RadzenPanelMenu>
-
+            <hr/>
             <LoginDisplay/>
 
 

@@ -17,11 +17,13 @@
     </Authorized>
     <NotAuthorized>
         
-        <NavLink class="pe-3" href="Account/Register">
-            Register
-        </NavLink>
+
         <NavLink  href="Account/Login">
-             Login
+            <RadzenButton Size="ButtonSize.Small" Text="Login" Icon="login"  Variant="Variant.Outlined"/>
+
+        </NavLink>
+        <NavLink class="pe-3" href="Account/Register">
+            <RadzenButton Size="ButtonSize.Small" Text="Login" Icon="person_Add"  Variant="Variant.Outlined"/>
         </NavLink>
     </NotAuthorized>
 </AuthorizeView>

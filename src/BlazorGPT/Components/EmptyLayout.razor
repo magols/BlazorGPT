@@ -1,5 +1,4 @@
-﻿@using BlazorPro.BlazorSize
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 <MediaQueryList>
     <RadzenDialog />
@@ -8,18 +7,6 @@
     <RadzenContextMenu />
 
     <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
-        <RadzenHeader>
-            <div class="container-fluid">
-                <div class="row justify-content-start align-items-center">
-                    <div class="col-2 d-flex align-items-center ps-0 pl-0">
-                        @*<RadzenSidebarToggle Click="@SidebarToggleClick"></RadzenSidebarToggle>*@
-                    </div>
-                    <div class="col-10 d-flex align-items-center justify-content-end">
-                        @*<LoginDisplay />*@
-                    </div>
-                </div>
-            </div>
-        </RadzenHeader>
         <RadzenBody Expanded="@sidebarExpanded">
             <div class="container-fluid pt-2 pt-md-2 pt-lg-2 pt-xl-2 pb-2 pb-lg-5" style="max-width: 1440px;">
                 <div class="row">
