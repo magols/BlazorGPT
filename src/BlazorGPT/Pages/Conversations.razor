@@ -5,13 +5,18 @@
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">
             <Template Context="c">
-                
+                @if (CurrentConversation?.Id == c.Id)
+                {
+                    <RadzenIcon Icon="arrow_right" />
+                }
                 @{
                     string link = "/conversation/" +c.Id;
                     string text = !string.IsNullOrEmpty(c.Summary) ? c.Summary : "No summary";
-
                 }
-                <a href="@link">@text</a>
+                <a href="@link">
+                    
+                    @text
+                </a>
             </Template>
             <EditTemplate Context="c">
                 <RadzenTextBox @bind-Value="@c.Summary" Rows="3" Class="textarea-full-width"></RadzenTextBox>
@@ -49,12 +54,15 @@
     public string? UserId { get; set; } = null!;
 
 
+    [CascadingParameter(Name = "Conversation")]
+    public Conversation? CurrentConversation { get; set; }
+
     [Inject]
     public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
     [Inject]
     public ConversationsRepository ConversationsRepository{ get; set; } = null!;
     [Inject]
-public DialogService DialogService { get; set; } = null!;
+    public DialogService DialogService { get; set; } = null!;
 
 
     [Inject]
@@ -81,8 +89,16 @@ public DialogService DialogService { get; set; } = null!;
 
     public async Task LoadConversations()
     {
-        Convos = await ConversationsRepository.GetConversationsByUserIdSimple(UserId, 15);
-    ;
+        Convos = await ConversationsRepository.GetConversationsByUserIdSimple(UserId, 10);
+
+        if (CurrentConversation != null 
+        && CurrentConversation.Id != null
+            
+            && Convos.All(o => o.Id != CurrentConversation?.Id))
+        {
+            Convos.Insert(0, CurrentConversation!);
+        }
+
         StateHasChanged();
     }
 
