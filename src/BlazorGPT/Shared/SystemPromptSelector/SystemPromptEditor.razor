@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<RadzenDataGrid @ref="_userSystemPromptsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="@_editMode"
+<RadzenDataGrid @ref="_userSystemPromptsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="@_editMode"
                 Data="@_userSystemPrompts" TItem="UserSystemPrompt" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
     <Columns>
         <RadzenDataGridColumn TItem="UserSystemPrompt" Property="Name" Title="Name" Width="200px">
