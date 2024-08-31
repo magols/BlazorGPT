@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Threading;
 using Blazored.LocalStorage;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
@@ -183,7 +184,7 @@ namespace BlazorGPT.Pages
         private CancellationTokenSource _cancellationTokenSource = null!;
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
-        [Inject] private ModelConfigurationService? _modelConfigurationService { get; set; } = null!;
+        [Inject] public required ModelConfigurationService _modelConfigurationService { get; set; }
 
          protected override async Task OnInitializedAsync()
          {
@@ -664,8 +665,10 @@ namespace BlazorGPT.Pages
         private async Task ApplyEndProfile(QuickProfile profile)
         {
             IsBusy = true;
-
+            _modelConfiguration = await _modelConfigurationService.GetConfig();
+            _kernel = await KernelService.CreateKernelAsync(_modelConfiguration.Provider, _modelConfiguration.Model);
             Conversation.AddMessage(new ConversationMessage("user", profile.Content));
+            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
             await Send();
             IsBusy = false;
 
