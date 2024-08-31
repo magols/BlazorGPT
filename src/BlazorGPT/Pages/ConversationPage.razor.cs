@@ -299,6 +299,19 @@ namespace BlazorGPT.Pages
 
         }
 
+        public async Task SendMessage(string message, string role = "user")
+        {
+            if (role == "user")
+            {
+                Model.Prompt += message;
+                await SendConversation();
+            }
+            else
+            {
+                throw new NotImplementedException("Other types of messages than user is not supported");
+            }
+        }
+
         private async Task SendConversation()
         {
             await SendConversation(false);
@@ -402,6 +415,7 @@ namespace BlazorGPT.Pages
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
+            StateHasChanged();
         }
 
         private async Task Send()

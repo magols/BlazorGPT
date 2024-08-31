@@ -1,0 +1,39 @@
+﻿<div class="col">
+    <div class="card @Class" style="@Style" @onclick="Clicked">
+        <div class="card-title">
+            <RadzenIcon Icon="@Icon" class="card-icon"/>
+            @Title
+        </div>
+        <div class="card-body">
+            <div class="card-title">@Body</div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+    [Parameter]
+    public string? Style { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? Body { get; set; }
+    [Parameter]
+    public string? Prompt { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private async Task Clicked()
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(Body);
+        }
+    }
+}

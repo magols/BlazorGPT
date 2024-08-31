@@ -6,54 +6,69 @@
 @using Microsoft.Extensions.Configuration
 @layout BlankLayout
 
+<div class="container-fluid">
 
-<div class="row">
-    <div class="col-12 col-md-6 mx-auto">
+    <div class="row">
+        <div class="col-12 col-md-6 mx-auto">
 
-        @if(ConversationId != null)
-        {
-            <div class="float-end me-5">
-                <NavLink href="/todo">New</NavLink>
-            </div>
-        }
+            @if(ConversationId != null)
+            {
+                <div class="float-end me-5">
+                    <NavLink href="/todo">New</NavLink>
+                </div>
+            }
+        </div>
     </div>
-</div>
-<div class="col-12 col-md-6 mx-auto">
+    <div class="row">
 
-    @if (ConversationId == null)
-    {
-        <div class="card bg-dark">
-            <div class="card-body">
-                <h3 class="card-title">Welcome to the todolist</h3>
-                <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
-                    <p> 
-                        You can add, delete and update the todo list here. 
+        <div class="col-12 col-md-6 mx-auto">
+
+        @if (ConversationId == null)
+        {
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h3 class="card-title">Welcome to the todolist</h3>
+                    <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
+                        <p> 
+                            You can add, delete and update the todo list here. 
                         </p>
-                    <p>
-                        The list is shared among all users.
+                        <p>
+                            The list is shared among all users.
+
+                        </p>
 
                     </p>
-
-                </p>
+                </div>
+            </div>
+        }
+        
+        <div class="container mt-5 mb-5">
+            <div class="row row-cols-1 row-cols-md-3">
+                <PromptExampleCard Icon="list" Body="List my todos" OnClick="@(message => _conversationPage.SendMessage(message))" />
+                <PromptExampleCard Icon="edit" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => _conversationPage!.SendMessage(message))" />
+                <PromptExampleCard Icon="check" Body="I bought milk" Title="Completing" OnClick="@(message => _conversationPage!.SendMessage(message))" />
             </div>
         </div>
-    }
 
-    <ConversationPage Style="z-index: 50;" 
-                      UserId="@UserId"
-                      BotMode="true"
-                      BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users."
-                      
-                      NewDestinationPrefix="/todo"
-                      ConversationId="@ConversationId"
-                      MessageId="@MessageId">
+        <ConversationPage @ref="_conversationPage" Style="z-index: 50;" 
+                          UserId="@UserId"
+                          BotMode="true"
+                          BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Doo not insert duplicates, handle dupes without mentioning them"
+                          
+                          NewDestinationPrefix="/todo"
+                          ConversationId="@ConversationId"
+                          MessageId="@MessageId">
 
-    </ConversationPage>
+        </ConversationPage>
 
+    </div>
+    </div>
 </div>
 
 @code
 {
+    private ConversationPage? _conversationPage;
+
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
@@ -80,9 +95,12 @@
     [Inject]
     public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
 
+    [Inject]
+    public required ModelConfigurationService ModelConfigurationService { get; set; }
+
     protected override void OnInitialized()
     {
-        UserId = "BotUser"; // PipelineOptions!.Value.Bot.BotUserId;
+        UserId = "BotUser"; 
         base.OnInitialized();
     }
 
@@ -90,6 +108,12 @@
     {
         if (firstRender)
         {
+            ModelConfigurationService.SaveConfig(new ModelConfiguration()
+            {
+                Model = "gpt-4o-mini",
+                Provider = ChatModelsProvider.AzureOpenAI
+            });
+
             List<PluginSelection> config = new List<PluginSelection>();
             config.Add(new PluginSelection() { Name = "Samples.Native.TodoPlugin", Selected = true});
            await PluginsConfigurationService.SaveConfig(config);
@@ -97,8 +121,6 @@
            {
               "BotFunctionsInterceptor"
            });
-
-        //   await InterceptorConfigurationService.SaveConfig(new[] { "Function calling (select plugins)" });
         }
     }
 }
