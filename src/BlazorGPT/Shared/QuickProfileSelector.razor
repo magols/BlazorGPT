@@ -74,9 +74,9 @@
     }
 
     [Parameter]
-    public EventCallback<QuickProfile> OnProfileClickedd { get; set; }
+    public EventCallback<QuickProfile> OnProfileClicked { get; set; }
 
-    private EventCallback Toggle(QuickProfile profile)
+    private async Task< EventCallback> Toggle(QuickProfile profile)
     {
         if (SelectedProfiles.Contains(profile))
         {
@@ -86,6 +86,13 @@
         {
             SelectedProfiles.Add(profile);
         }
+
+        if (OnProfileClicked.HasDelegate)
+        {
+            await OnProfileClicked.InvokeAsync(profile);
+        }
+
+
         return EventCallback.Empty;
     }
 
@@ -96,9 +103,9 @@
 
     private async Task Execute(QuickProfile profile)
     {
-        if (OnProfileClickedd.HasDelegate)
+        if (OnProfileClicked.HasDelegate)
         {
-            await OnProfileClickedd.InvokeAsync(profile);
+            await OnProfileClicked.InvokeAsync(profile);
         }
     }
 

@@ -8,7 +8,9 @@ using BlazorGPT.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Radzen;
@@ -95,8 +97,7 @@ namespace BlazorGPT.Pages
 
         public class PromptModel
         {
-            [Required]
-            public string? Prompt { get; set; }
+            [Required] public string? Prompt { get; set; } = "";
         }
 
         [Parameter]
@@ -148,6 +149,9 @@ namespace BlazorGPT.Pages
         [Inject]
         public required KernelService KernelService{ get; set; }
 
+        [Inject]
+        public required ILoggerFactory LoggerFactory { get; set; }
+        private ILogger<ConversationPage> _logger;
 
         [Inject]
         public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
@@ -183,8 +187,9 @@ namespace BlazorGPT.Pages
 
          protected override async Task OnInitializedAsync()
          {
+             _logger = LoggerFactory.CreateLogger<ConversationPage>();
 
-             if (UserId == null && AuthenticationState != null)
+            if (UserId == null && AuthenticationState != null)
             {
                 var authState = await AuthenticationState;
                 var user = authState?.User;
@@ -197,9 +202,9 @@ namespace BlazorGPT.Pages
             BotSystemInstruction ??= PipelineOptions.Value.Bot.BotSystemInstruction;
 
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
-            }
+         }
 
-        private async Task  UpdateAndRedraw()
+         private async Task  UpdateAndRedraw()
         {
             await InvokeAsync(StateHasChanged);
         }
@@ -232,7 +237,7 @@ namespace BlazorGPT.Pages
 
                 await Interop.SetupCopyButtons();
 
-            }
+                }
 
             if (! _browserIsSmall && (BotMode || selectedTabIndex == 0))
             {
@@ -420,8 +425,6 @@ namespace BlazorGPT.Pages
 
         private async Task Send()
         {
-            promptIsReady = false;
-
             try
             {
                 if (!Conversation.StopRequested)
@@ -531,6 +534,7 @@ namespace BlazorGPT.Pages
 
             //Conversation = conv;
             Model.Prompt = "";
+            promptIsReady = false;
         }
 
         private async Task<string> OnStreamCompletion(string s)
@@ -611,16 +615,36 @@ namespace BlazorGPT.Pages
         ScriptsDropdown? ScriptsDdn { get; set; }
 
         public bool IsBusy { get; set; }
+        public bool SendButtonDisabled => SendDisabled();
 
-        private bool preventDefaultKey = false;
-        private async Task OnPromptKeyUp(KeyboardEventArgs obj)
+        public bool SendDisabled()
         {
-
-            if (!string.IsNullOrWhiteSpace(obj.Key))
+            if (IsBusy)
             {
-                promptIsReady = true;
+                return true;
             }
 
+
+            if (!Conversation.IsStarted() && _profileSelectorStart != null && _profileSelectorStart.SelectedProfiles.Any())
+            {
+                return false;
+            }
+
+            if (promptIsReady) return false;
+
+            return true;
+
+        }
+
+        private bool preventDefaultKey = false;
+
+        private async Task OnPromptInput(ChangeEventArgs args)
+        {
+            promptIsReady = !string.IsNullOrEmpty(args.Value?.ToString());
+        }
+
+        private async Task OnPromptKeyUp(KeyboardEventArgs obj)
+        {
             if (obj.Key == "Enter" && obj.ShiftKey == false)
             {
                 // move mouse focus from prompt field
@@ -629,22 +653,11 @@ namespace BlazorGPT.Pages
                 StateHasChanged();
                 await SendConversation();
             }
-            else
-            {
-                
-            }
         }
 
-        private void PromptChanged()
+        private async Task StartProfileClicked(QuickProfile profile)
         {
-            if (Model.Prompt?.Length > 0)
-            {
-                promptIsReady = true;
-            }
-            else
-            {
-                promptIsReady = false;
-            }
+            await InvokeAsync(StateHasChanged);
         }
 
 
