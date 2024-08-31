@@ -10,6 +10,7 @@
     /*  position: fixed;
     bottom: 0;*/
     /*left: 0;*/
+    background-color: var(--rz-layout-body-background-color);
     width: 100%;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -36,6 +37,7 @@
 
 .rz-tabview-panel {
     padding: 0;
+
 }
 
 .truncate {
@@ -51,3 +53,4 @@
         width: 600px;
     }
 }
+

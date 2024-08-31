@@ -1,7 +1,7 @@
 @using BlazorGPT.Data
 @page "/clist"
 
-<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos" ShowPagingSummary="true" class="hide-grid-header" EmptyText="">
+<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos" ShowPagingSummary="true" class="hide-grid-header" Density="Density.Compact" EmptyText="">
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">
             <Template Context="c">
@@ -44,7 +44,7 @@
 
 </RadzenDataGrid>
 
-<div class="float-end m-3">
+<div class="float-end m-3" style="z-index: 1000">
     <RadzenButton Icon="history" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => NavigationManager.NavigateTo("/conversations"))" @onclick:stopPropagation="true" />
 </div>
 @code {

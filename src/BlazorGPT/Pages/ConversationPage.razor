@@ -33,7 +33,7 @@
        <span class="ms-3 truncate">@Conversation.Summary</span>
     }
     
-    <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
+    <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-2 me-5" />
 
 </SectionContent>
 
@@ -69,7 +69,7 @@
     </div>
 
     <div class="row sticky-bottom mt-auto mb-0 pb-0 pt-0">
-        <div id="control" class="col mt-0 mb-0 pb-0 pt-0 me-3">
+        <div id="control" class="col mt-1 mb-0 pb-0 pt-0 me-3">
             @if (BotMode)
             {
                 <EditForm Model="@Model" OnValidSubmit="@SendConversation">
@@ -143,7 +143,7 @@
 
                                 <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClicked="ApplyEndProfile" />
 
-                                <div class="mt-0">
+                                <div class="mt-1">
                                     <SettingsButtonPanel/>
                                 </div>
 
