@@ -92,20 +92,16 @@
                             </div>
                         </div>
 
-                        <div class="mt-4">
                             @if (UseFileUpload)
                             {
+                                <div class="mt-4">
+
                                 <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"
                                           OnSyncFiles="FileAreaSynced"
                                           FolderName="@Conversation.Id?.ToString()"/>
+                                </div>
+
                             }
-                        </div>
-
-                        <span class="float-end mt-2 mb-0">
-                            <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state"/>
-                            <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state"/>
-                        </span>
-
                     </EditForm>
                 </div>
 

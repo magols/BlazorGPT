@@ -9,7 +9,6 @@
 #control {
     padding: 0;
     margin: 0;
-    background-color: var(--rz-layout-body-background-color);
     width: 100%;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     /* rounded corners */
@@ -19,7 +18,6 @@
 #bot-control {
     padding: 20px;
     margin: 0;
-    background-color: var(--rz-layout-body-background-color);
     width: 100%;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 10px 10px 0 0;
