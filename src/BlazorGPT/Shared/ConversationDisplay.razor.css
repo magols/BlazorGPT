@@ -1,12 +1,7 @@
-﻿
-#message-pane {
+﻿#message-pane {
     font-size: 13px;
 }
 
-    #message-pane pre {
-        background-color: red;
-        padding: 100px;
-    }
 
 .scroll-pane {
     overflow-y: auto;

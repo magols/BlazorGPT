@@ -7,13 +7,24 @@
 }
 
 #control {
-    /*  position: fixed;
-    bottom: 0;*/
-    /*left: 0;*/
+    padding: 0;
+    margin: 0;
     background-color: var(--rz-layout-body-background-color);
     width: 100%;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    /* rounded corners */
+    border-radius: 10px 10px 0 0;
 }
+
+#bot-control {
+    padding: 20px;
+    margin: 0;
+    background-color: var(--rz-layout-body-background-color);
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px 10px 0 0;
+}
+
 
 @media screen and (min-width: 769px) {
     #message-box {
@@ -21,11 +32,6 @@
 
     }
 }
-
-#message-pane {
-    font-size: 13px;
-}
-
 .scroll-pane {
 
     
@@ -54,3 +60,7 @@
     }
 }
 
+.rz-body {
+    padding: 0;
+    margin: 0;
+}

@@ -21,7 +21,6 @@ namespace BlazorGPT.Pages
 {
     public partial class ConversationPage : IDisposable
     {
-
         private bool _browserIsSmall = true;
 
         private async Task CancelSend()

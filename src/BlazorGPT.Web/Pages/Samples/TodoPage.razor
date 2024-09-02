@@ -23,33 +23,6 @@
 
         <div class="col-12 col-md-6 mx-auto">
 
-        @if (ConversationId == null)
-        {
-            <div class="card bg-dark">
-                <div class="card-body">
-                    <h3 class="card-title">Welcome to the todolist</h3>
-                    <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
-                        <p> 
-                            You can add, delete and update the todo list here. 
-                        </p>
-                        <p>
-                            The list is shared among all users.
-
-                        </p>
-
-                    </p>
-                </div>
-            </div>
-        }
-        
-        <div class="container mt-5 mb-5">
-            <div class="row row-cols-1 row-cols-md-3">
-                <PromptExampleCard Icon="list" Body="List my todos" OnClick="@(message => _conversationPage.SendMessage(message))" />
-                <PromptExampleCard Icon="edit" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => _conversationPage!.SendMessage(message))" />
-                <PromptExampleCard Icon="check" Body="I bought milk" Title="Completing" OnClick="@(message => _conversationPage!.SendMessage(message))" />
-            </div>
-        </div>
-
         <ConversationPage @ref="_conversationPage" Style="z-index: 50;" 
                           UserId="@UserId"
                           BotMode="true"
@@ -58,7 +31,36 @@
                           NewDestinationPrefix="/todo"
                           ConversationId="@ConversationId"
                           MessageId="@MessageId">
+                          
+                    <ChildContent>
+                        
+                        @if (ConversationId == null)
+                        {
+                            <div class="card bg-dark">
+                                <div class="card-body">
+                                    <h3 class="card-title">Welcome to the todolist</h3>
+                                    <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
+                                        <p> 
+                                            You can add, delete and update the todo list here. 
+                                        </p>
+                                        <p>
+                                            The list is shared among all users.
 
+                                        </p>
+
+                                    </p>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="container mt-5 mb-5">
+                            <div class="row row-cols-1 row-cols-md-3">
+                                <PromptExampleCard Icon="list" Body="List my todos" OnClick="@(message => _conversationPage.SendMessage(message))"/>
+                                <PromptExampleCard Icon="edit" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => _conversationPage!.SendMessage(message))"/>
+                                <PromptExampleCard Icon="check" Body="I bought milk" Title="Completing" OnClick="@(message => _conversationPage!.SendMessage(message))"/>
+                            </div>
+                        </div>
+                    </ChildContent>
         </ConversationPage>
 
     </div>
