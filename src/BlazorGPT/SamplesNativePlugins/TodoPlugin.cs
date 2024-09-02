@@ -67,4 +67,20 @@ public class TodoPlugin(IServiceProvider serviceProvider)
 
         return todoList;
     }
+
+    // clear all items from the todo list
+    [KernelFunction("clear_todos")]
+    [Description("Clear all todos")]
+    public async Task ClearTodos()
+    {
+        var store = await GetStore();
+        var result = store.SearchAsync(Collection, "*", 500, 0.1);
+
+        string? exists = null;
+        await foreach (var item in result)
+        {
+            exists = item.Metadata.Text;
+            await store.RemoveAsync(Collection, item.Metadata.Id);
+        }
+    }
 }
