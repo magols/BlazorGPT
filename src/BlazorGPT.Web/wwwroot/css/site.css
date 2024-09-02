@@ -54,14 +54,15 @@ body {
     height: auto;
     overflow-x: hidden;
     --bs-code-color: #f0e68c;
+    font-size: 0.9rem;
+
+    --rz-grid-stripe-background-color: #252525;
 }
 
 :root:has(.rz-layout) {
-    font-size: 0.9rem;
+    --rz-sidebar-width: 250px;
     --rz-link-color: #51b269;
     --rz-link-hover-color: #89f89e;
-    --rz-grid-stripe-background-color: #252525;
-    --rz-sidebar-width: 250px;
 }
 
 .rz-card {
