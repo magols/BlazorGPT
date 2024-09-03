@@ -10,11 +10,12 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace BlazorGPT.Pipeline.Interceptors;
 
-public class BotFunctionCallingFilter(CurrentConversationState conversationState, IFunctionCallingUserProvider userProvider) : IFunctionInvocationFilter
+public class BotFunctionCallingFilter(CurrentConversationState conversationState, IFunctionCallingUserProvider userProvider , UserStorageService userStorage) : IFunctionInvocationFilter
 {
     public async Task OnFunctionInvocationAsync(FunctionInvocationContext context, Func<FunctionInvocationContext, Task> next)
     {
-        var conversation = conversationState.GetCurrentConversation("BotUser");
+        var id = await userStorage.GetUserIdFromLocalStorage();
+        var conversation = conversationState.GetCurrentConversation(id);
 
         if (conversation == null)
         {
@@ -54,6 +55,7 @@ public class BotFunctionsInterceptor : InterceptorBase, IInterceptor
     private readonly PluginsRepository _pluginsRepository;
     private readonly IServiceProvider _serviceProvider;
     private readonly ModelConfigurationService _modelConfigurationService;
+    private readonly UserStorageService _userStorage;
 
     public BotFunctionsInterceptor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -62,6 +64,8 @@ public class BotFunctionsInterceptor : InterceptorBase, IInterceptor
         _localStorageService = _serviceProvider.GetRequiredService<ILocalStorageService>();
         _pluginsRepository = _serviceProvider.GetRequiredService<PluginsRepository>();
         _modelConfigurationService = _serviceProvider.GetRequiredService<ModelConfigurationService>();
+
+        _userStorage = _serviceProvider.GetRequiredService<UserStorageService>();
     }
 
     public override string Name { get; } = "BotFunctionsInterceptor";
@@ -85,7 +89,7 @@ public class BotFunctionsInterceptor : InterceptorBase, IInterceptor
         var conversationState = _serviceProvider.GetRequiredService<CurrentConversationState>();
         conversationState.SetCurrentConversationForUser(conversation);
 
-        var functionFilter = new BotFunctionCallingFilter(conversationState, new FunctionCallingUserConsoleProvider());
+        var functionFilter = new BotFunctionCallingFilter(conversationState, new FunctionCallingUserConsoleProvider(), _userStorage );
 
 
 

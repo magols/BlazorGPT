@@ -57,6 +57,7 @@ namespace BlazorGPT
 
             services.AddSingleton<ConversationTreeState>();
 
+            services.AddScoped<UserStorageService>();
 
             services.AddSingleton<CurrentConversationState>();
             services.AddTransient<FunctionCallingFilter>();

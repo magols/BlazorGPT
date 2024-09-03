@@ -38,24 +38,23 @@
 </SectionContent>
 
 <CascadingValue Name="Conversation" Value="Conversation">
-
 <!-- conv page start -->
     <div id="conversationframe" class="container-fluid @Class conversationframe m-0" style="@Style">
     <div class="row">
         <div class="col">
-                <ConversationDisplay BotMode="BotMode"
-                                     InitialSystemPrompt="@(Conversation.HasStarted() ? Conversation.Messages.FirstOrDefault(o => o.Role == "system")?.Content : null)"
-                                     Conversation="Conversation"
-                                     ShowBranches="true"
-                                     RestartConversation="RestartConversation"
-                                     CopyConversation="CopyConversation"
-                                     Style="@ConversationDisplayStyle()" >
-                    <Head>
-                        @ChildContent
-                    </Head>
-                </ConversationDisplay>
+            <ConversationDisplay BotMode="BotMode"
+                                 InitialSystemPrompt="@(Conversation.HasStarted() ? Conversation.Messages.FirstOrDefault(o => o.Role == "system")?.Content : null)"
+                                 Conversation="Conversation"
+                                 ShowBranches="true"
+                                 RestartConversation="RestartConversation"
+                                 CopyConversation="CopyConversation"
+                                 Style="@ConversationDisplayStyle()">
+                <Head>
+                    @ChildContent
+                </Head>
+            </ConversationDisplay>
 
-             
+
         </div>
         @if (!BotMode)
         {
@@ -77,7 +76,7 @@
 
 
                             <div class="row">
-                                <div class="col col-10 col-md-11 col-lg-11">
+                                <div class="col col-9 col-md-10 col-lg-10">
                                     <RadzenTextArea @ref="_promptField2"
                                                     @bind-value="@Model.Prompt"
                                                     class="form-control"
@@ -87,8 +86,15 @@
                                                     @onkeyup="OnPromptKeyUp"/>
                                 </div>
                                 <div class="col col-2 col-md-1 col-lg-1">
+                            
                                     <RadzenButton Class="m-0" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled"/>
                                     <RadzenButton Class="mt-1" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"/>
+
+                                </div>
+                                
+                                <div class="col-1">
+                                    
+                                    @ButtonContent
                                 </div>
                             </div>
                         </div>

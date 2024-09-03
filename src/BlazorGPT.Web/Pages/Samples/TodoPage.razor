@@ -1,116 +1,78 @@
 @page "/todo/{ConversationId:guid?}"
-@using BlazorGPT.Pipeline
-@using BlazorGPT.Settings
-@using BlazorGPT.Settings.PluginSelector
 
-@using Microsoft.Extensions.Configuration
+@inherits SamplePage
 @layout BlankLayout
 
 <div class="container-fluid">
-
-    <div class="row">
-        <div class="col-12 col-md-6 mx-auto">
-
-            @if(ConversationId != null)
-            {
-                <div class="float-end me-5">
-                    <NavLink href="/todo">New</NavLink>
-                </div>
-            }
-        </div>
-    </div>
     <div class="row">
 
         <div class="col-12 col-md-6 mx-auto">
-
-        <ConversationPage @ref="_conversationPage" Style="z-index: 50;" 
-                          UserId="@UserId"
-                          BotMode="true"
-                          BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Doo not insert duplicates, handle dupes without mentioning them"
+            <ConversationPage @ref="ConversationPage" Style="z-index: 50;" 
+                              UserId="@UserId"
+                              BotMode="true"
+                              BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Doo not insert duplicates, handle dupes without mentioning them"
                           
-                          NewDestinationPrefix="/todo"
-                          ConversationId="@ConversationId"
-                          MessageId="@MessageId">
+                              NewDestinationPrefix="/todo"
+                              ConversationId="@ConversationId"
+                              MessageId="@MessageId">
                           
-                    <ChildContent>
+                <ChildContent>
                         
-                        @if (ConversationId == null)
-                        {
-                            <div class="card bg-dark">
-                                <div class="card-body">
-                                    <h3 class="card-title">Welcome to the todolist</h3>
-                                    <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
-                                        <p> 
-                                            You can add, delete and update the todo list here. 
-                                        </p>
-                                        <p>
-                                            The list is shared among all users.
-
-                                        </p>
+                    @if (ConversationId == null)
+                    {
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h3 class="card-title">Welcome to the todolist</h3>
+                                <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
+                                    <p> 
+                                        You can add, delete and update the todo list here. 
+                                    </p>
+                                    <p>
+                                        The list is shared among all users.
 
                                     </p>
-                                </div>
-                            </div>
-                        }
 
-                        <div class="container mt-5 mb-5">
-                            <div class="row row-cols-1 row-cols-md-3">
-                                <PromptExampleCard Icon="list" Body="List my todos" OnClick="@(message => _conversationPage.SendMessage(message))"/>
-                                <PromptExampleCard Icon="edit" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => _conversationPage!.SendMessage(message))"/>
-                                <PromptExampleCard Icon="check" Body="I bought milk" Title="Completing" OnClick="@(message => _conversationPage!.SendMessage(message))"/>
+                                </p>
                             </div>
                         </div>
-                    </ChildContent>
-        </ConversationPage>
+                    }
 
+                    <div class="container mt-5 mb-5">
+                        <div class="row row-cols-1 row-cols-md-3">
+                            <PromptExampleCard Icon="list" Body="List my todos" OnClick="@(message => ConversationPage.SendMessage(message))"/>
+                            <PromptExampleCard Icon="edit" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => ConversationPage!.SendMessage(message))"/>
+                            <PromptExampleCard Icon="check" Body="I bought milk" Title="Completing" OnClick="@(message => ConversationPage!.SendMessage(message))"/>
+                        </div>
+                    </div>
+                </ChildContent>
+                <ButtonContent>
+                    @if (ConversationPage.Conversation != null && ConversationPage.Conversation.IsStarted())
+                    {
+                        <NavLink href="/todo" @onclick="GoToNew">New</NavLink>
+                    }
+                </ButtonContent>
+            </ConversationPage>
+      
     </div>
     </div>
 </div>
 
 @code
 {
-    private ConversationPage? _conversationPage;
-
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationState { get; set; }
-
-    [Parameter]
-    public Guid? ConversationId { get; set; }
-
-    [Parameter]
-    public Guid? MessageId { get; set; }
-
-    string? UserId { get; set; }
-
-    [Inject]
-    public IConfiguration? Configuration { get; set; }
-
-    [Inject]
-    public NavigationManager? NavigationManager { get; set; }
-
-    [Inject]
-    public IOptions< PipelineOptions>? PipelineOptions { get; set; }
-
-    [Inject]
-    public required PluginsConfigurationService PluginsConfigurationService { get; set; }
-
-    [Inject]
-    public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
-
-    [Inject]
-    public required ModelConfigurationService ModelConfigurationService { get; set; }
-
-    protected override void OnInitialized()
+    protected override Task OnInitializedAsync()
     {
-        UserId = "BotUser"; 
-        base.OnInitialized();
+        NewPath = "/todo";
+        return base.OnInitializedAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            ModelConfigurationService.SaveConfig(new ModelConfiguration()
+
+            await SetUser();
+
+            await ModelConfigurationService.SaveConfig(new ModelConfiguration()
             {
                 Model = "gpt-4o-mini",
                 Provider = ChatModelsProvider.AzureOpenAI
@@ -125,4 +87,5 @@
            });
         }
     }
+
 }
