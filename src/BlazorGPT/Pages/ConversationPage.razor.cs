@@ -216,9 +216,6 @@ namespace BlazorGPT.Pages
         {
             UseFileUpload = BotMode ? PipelineOptions!.Value.Bot.FileUpload.Enabled :
                     PipelineOptions!.Value.FileUpload.Enabled;
-
-
-            StateHasChanged();
         }
 
 
@@ -233,7 +230,7 @@ namespace BlazorGPT.Pages
 
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
-                initialControlHeight = _browserIsSmall ? 300 : 320;
+                initialControlHeight = _browserIsSmall ? 320 : 350;
                 initialControlHeight = BotMode ? 150 : initialControlHeight;
                 controlHeight = initialControlHeight;
 
@@ -246,6 +243,8 @@ namespace BlazorGPT.Pages
             }
 
             await Interop.ScrollToBottom("message-pane");
+            await Interop.ScrollToBottom("layout-body");
+
         }
 
         async Task SetupConversation()

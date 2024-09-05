@@ -12,17 +12,14 @@ export function scrollToBottom(elementId) {
     objDiv.scrollTop = objDiv.scrollHeight;
 }
 
-
 export function focusElement(element) {
    // console.log("focusing " + element.id);
     element.focus({ focusVisible: true });
-
 }
+
 export function blurElement(element) {
     element.blur();
 }
-
-
 
 export function preventDefaultOnEnter(element, remove = false) {
     var preventDefaultOnEnterFunction = function (e) {
