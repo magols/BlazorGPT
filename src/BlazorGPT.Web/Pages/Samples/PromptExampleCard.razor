@@ -1,11 +1,11 @@
 ﻿<div class="col">
     <div class="card @Class" style="@Style" @onclick="Clicked">
         <div class="card-title">
-            <RadzenIcon Icon="@Icon" class="card-icon"/>
+            <RadzenIcon Icon="@Icon" class="card-icon" IconColor="@IconColor" />
             @Title
         </div>
-        <div class="card-body">
-            <div class="card-title">@Body</div>
+        <div class="card-body" style="@(!string.IsNullOrEmpty(TextColor) ? $"color:{TextColor};": "")">
+            @Body 
         </div>
     </div>
 </div>
@@ -15,6 +15,13 @@
 
     [Parameter]
     public string? Icon { get; set; }
+
+    [Parameter]
+    public string? IconColor { get; set; }
+
+    [Parameter]
+    public string? TextColor { get; set; }
+
     [Parameter]
     public string? Style { get; set; }
     [Parameter]

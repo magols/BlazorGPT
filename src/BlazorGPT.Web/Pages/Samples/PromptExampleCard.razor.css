@@ -17,7 +17,6 @@
 .card-body {
     padding: 0px;
     text-decoration: none;
-    color: var(--rz-link-color);
 }
 
 .card:hover {
@@ -25,7 +24,7 @@
 }
 
 .card-icon {
-    font-size: 0.8rem;
     margin: 0;
     padding: 0;
+    font-size: 0.3rem;
 }

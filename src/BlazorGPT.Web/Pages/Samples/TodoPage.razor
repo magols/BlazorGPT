@@ -1,21 +1,17 @@
 @page "/todo/{ConversationId:guid?}"
-
 @inherits SamplePage
 @layout EmptyLayout
 
 <div class="container-fluid">
     <div class="row">
-
         <div class="col-12 col-md-6 mx-auto">
             <ConversationPage @ref="ConversationPage" Style="z-index: 50;" 
-                              UserId="@UserId"
+                              UserId="@UserId" 
                               BotMode="true"
                               BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Doo not insert duplicates, handle dupes without mentioning them"
-                          
                               NewDestinationPrefix="/todo"
                               ConversationId="@ConversationId"
                               MessageId="@MessageId">
-                          
                 <ChildContent>
                         
                     @if (ConversationId == null)
@@ -29,9 +25,7 @@
                                     </p>
                                     <p>
                                         The list is shared among all users.
-
                                     </p>
-
                                 </p>
                             </div>
                         </div>
@@ -39,20 +33,19 @@
 
                     <div class="container mt-5 mb-5">
                         <div class="row row-cols-1 row-cols-md-3">
-                            <PromptExampleCard Icon="list" Body="List my todos" OnClick="@(message => ConversationPage.SendMessage(message))"/>
-                            <PromptExampleCard Icon="edit" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => ConversationPage!.SendMessage(message))"/>
-                            <PromptExampleCard Icon="check" Body="I bought milk" Title="Completing" OnClick="@(message => ConversationPage!.SendMessage(message))"/>
+                            <PromptExampleCard Icon="list" IconColor="lightgreen" TextColor="lightblue" Title="List"  Body="List my todos" OnClick="@(message => ConversationPage.SendMessage(message))"/>
+                            <PromptExampleCard Icon="edit" IconColor="yellow" TextColor="lightblue" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => ConversationPage!.SendMessage(message))" />
+                            <PromptExampleCard Icon="check" Body="I bought milk" TextColor="lightblue" Title="Completing" OnClick="@(message => ConversationPage!.SendMessage(message))" />
                         </div>
                     </div>
                 </ChildContent>
                 <ButtonContent>
                     @if (ConversationPage.Conversation != null && ConversationPage.Conversation.IsStarted())
                     {
-                        <NavLink href="/todo" @onclick="GoToNew">New</NavLink>
+                        <RadzenButton Text="New" Variant="Variant.Outlined" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" Click="GoToNew"/>
                     }
                 </ButtonContent>
             </ConversationPage>
-      
     </div>
     </div>
 </div>
@@ -69,7 +62,6 @@
     {
         if (firstRender)
         {
-
             await SetUser();
 
             await ModelConfigurationService.SaveConfig(new ModelConfiguration()
@@ -78,13 +70,16 @@
                 Provider = ChatModelsProvider.AzureOpenAI
             });
 
-            List<PluginSelection> config = new List<PluginSelection>();
-            config.Add(new PluginSelection() { Name = "Samples.Native.TodoPlugin", Selected = true});
-           await PluginsConfigurationService.SaveConfig(config);
-           await InterceptorConfigurationService.SaveConfig(new[]
-           {
+            List<PluginSelection> config =
+            [
+                new() { Name = "Samples.Native.TodoPlugin", Selected = true }
+            ];
+            await PluginsConfigurationService.SaveConfig(config);
+            
+            await InterceptorConfigurationService.SaveConfig(new[]
+            {
               "BotFunctionsInterceptor"
-           });
+            });
         }
     }
 

@@ -76,7 +76,7 @@
 
 
                             <div class="row">
-                                <div class="col col-9 col-md-10 col-lg-10">
+                                <div class="col col-8 col-md-8 col-lg-8">
                                     <RadzenTextArea @ref="_promptField2"
                                                     @bind-value="@Model.Prompt"
                                                     class="form-control"
@@ -85,14 +85,14 @@
                                                     @oninput="@OnPromptInput"
                                                     @onkeyup="OnPromptKeyUp"/>
                                 </div>
-                                <div class="col col-2 col-md-1 col-lg-1">
+                                <div class="col col-2 col-md-2 col-lg-2">
                             
                                     <RadzenButton Class="m-0" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled"/>
                                     <RadzenButton Class="mt-1" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"/>
 
                                 </div>
                                 
-                                <div class="col-1">
+                                <div class="col-2">
                                     
                                     @ButtonContent
                                 </div>
