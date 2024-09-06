@@ -30,12 +30,6 @@ namespace BlazorGPT {
            await module.InvokeVoidAsync("scrollToBottom", elementId);
         }
 
-        //public async ValueTask ScrollBodyToBottom()
-        //{
-        //    var module = await moduleTask.Value;
-        //    await module.InvokeVoidAsync("scrollBodyToBottom");
-        //}
-
         public async ValueTask FocusElement(ElementReference? elementId)
         {
             if (elementId == null) return;

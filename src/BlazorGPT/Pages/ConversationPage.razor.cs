@@ -131,7 +131,13 @@ namespace BlazorGPT.Pages
         public string? UserId { get; set; } = null!;
 
         [Parameter]
-        public Guid? ConversationId { get; set; }
+        public Guid? ConversationId
+        {
+            get { return _currentConversationId; }
+            set { _currentConversationId = value; }
+        }
+        private Guid? _currentConversationId;
+        private Guid _loadedConversationId = default;
 
         [Parameter]
         public Guid? MessageId { get; set; }
@@ -226,8 +232,17 @@ namespace BlazorGPT.Pages
             {
                 if (BotMode && UserId == null) UserId = await UserStorage.GetUserIdFromLocalStorage();
 
-                await SetupConversation();
+            }
 
+            if ((ConversationId == null && _loadedConversationId == default)
+                || (ConversationId != _loadedConversationId ))
+            {
+                await SetupConversation();
+            }
+
+
+            if (firstRender)
+            {
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
                 initialControlHeight = _browserIsSmall ? 320 : 350;
@@ -235,6 +250,9 @@ namespace BlazorGPT.Pages
                 controlHeight = initialControlHeight;
 
                 await Interop.SetupCopyButtons();
+
+                await Interop.ScrollToBottom("message-pane");
+                await Interop.ScrollToBottom("layout-body");
             }
 
             if (! _browserIsSmall && (BotMode || selectedTabIndex == 0))
@@ -242,18 +260,30 @@ namespace BlazorGPT.Pages
                 await Interop.FocusElement(_promptField2.Element);
             }
 
-            await Interop.ScrollToBottom("message-pane");
-            await Interop.ScrollToBottom("layout-body");
+
 
         }
 
         async Task SetupConversation()
         {
-            if (ConversationId != null)
+            if (ConversationId == null)
             {
-                var loaded  = await ConversationsRepository.GetConversation(ConversationId);
+                Conversation = CreateDefaultConversation();
+                ConversationId = Guid.Empty;
+                _loadedConversationId = Guid.Empty;
+                StateHasChanged();
+                return;
+            }
+ 
+
+            if (ConversationId != _loadedConversationId)
+            {
+                var a = "change!";
+
+                var loaded = await ConversationsRepository.GetConversation(ConversationId);
                 if (loaded != null)
                 {
+                    _loadedConversationId = loaded.Id ?? default;
                     if (loaded.UserId != UserId)
                     {
                         throw new UnauthorizedAccessException();
@@ -270,15 +300,20 @@ namespace BlazorGPT.Pages
                     }
                     Conversation = loaded;
                 }
+
+
                 else
                 {
                     NavigationManager.NavigateTo("/conversation");
                 }
+
+
+
             }
-            else
-            {
-                Conversation = CreateDefaultConversation();
-            }
+
+           
+ 
+
             StateHasChanged();
         }
 
