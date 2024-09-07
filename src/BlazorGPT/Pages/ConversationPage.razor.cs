@@ -100,6 +100,8 @@ namespace BlazorGPT.Pages
             [Required] public string? Prompt { get; set; } = "";
         }
 
+        [Parameter] public bool ShowActionLog { get; set; } = true;
+
         [Parameter]
         public bool UseFileUpload { get; set; }
 
