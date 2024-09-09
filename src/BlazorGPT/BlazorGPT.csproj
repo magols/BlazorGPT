@@ -38,14 +38,14 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
 
-    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.71.240820.1" />
+    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.73.240906.1" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.18.1-rc" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.18.1-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.18.1-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.18.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.18.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.18.1-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.18.2" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.18.2-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.18.2-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.18.2-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.18.2-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.18.2-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.12.0" />
