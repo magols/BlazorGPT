@@ -261,9 +261,6 @@ namespace BlazorGPT.Pages
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
-
-
-
         }
 
         async Task SetupConversation()
@@ -392,6 +389,8 @@ namespace BlazorGPT.Pages
                 Conversation.AddMessage(new ConversationMessage("user", Model.Prompt!));
              
             }
+            StateHasChanged();
+            await Interop.ScrollToBottom("message-pane");
 
             try
             {
@@ -454,8 +453,9 @@ namespace BlazorGPT.Pages
                     _modelConfiguration ??= await _modelConfigurationService.GetConfig();
                     
                     Conversation.AddMessage("assistant", "");
-
                     StateHasChanged();
+                    await Interop.ScrollToBottom("message-pane");
+
 
                     var chatRequestSettings = new ChatRequestSettings();
                     chatRequestSettings.ExtensionData["max_tokens"] = _modelConfiguration!.MaxTokens;

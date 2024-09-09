@@ -65,11 +65,9 @@
         {
             await SetUser();
 
-            await ModelConfigurationService.SaveConfig(new ModelConfiguration()
-            {
-                Model = "gpt-4o-mini",
-                Provider = ChatModelsProvider.AzureOpenAI
-            });
+            var cfg = ModelConfigurationService.GetDefaultConfig();
+            cfg.MaxTokens = 1500;
+            await ModelConfigurationService.SaveConfig(cfg);
 
             List<PluginSelection> config =
             [
