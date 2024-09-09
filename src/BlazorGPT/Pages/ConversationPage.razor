@@ -24,8 +24,15 @@
     );
     }
 }
+@if (Conversation.HasStarted())
+{
+    <PageTitle>@Conversation?.Summary</PageTitle>
+}
+else
+{
+    <PageTitle>New Conversation</PageTitle>
 
-
+}
 
 <SectionContent SectionName="heading">
     @if (!BotMode)
