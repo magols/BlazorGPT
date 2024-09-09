@@ -2,9 +2,9 @@
 @inherits SamplePage
 @layout EmptyLayout
 
-<div class="container-fluid">
+<div class="container">
     <div class="row">
-        <div class="col-12 col-md-6 mx-auto">
+        <div class="col-12 col-md-7 mx-auto">
             <ConversationPage @ref="ConversationPage" Style="z-index: 50;" 
                               UserId="@UserId" 
                               ShowActionLog="false"
@@ -20,14 +20,14 @@
                         <div class="card bg-dark">
                             <div class="card-body">
                                 <h3 class="card-title">Welcome to the todolist</h3>
-                                <p class="card-text">This is a simple bot that can be used to test the BlazorGPT library.
-                                    <p> 
-                                        You can add, delete and update the todo list here. 
-                                    </p>
+                                <div class="card-text">
+                                    This is a simple bot that can be used to test the BlazorGPT library.
                                     <p>
+                                        You can add, delete and update the todo list here.
+                                   <br>
                                         The list is shared among all users.
                                     </p>
-                                </p>
+                                </div>
                             </div>
                         </div>
                     }
