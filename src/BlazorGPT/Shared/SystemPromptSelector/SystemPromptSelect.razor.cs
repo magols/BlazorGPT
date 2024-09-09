@@ -50,7 +50,7 @@ public partial class SystemPromptSelect
         }
     }
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
         if (Conversation != null &&  Conversation.HasStarted())
         {
@@ -64,8 +64,12 @@ public partial class SystemPromptSelect
             StateHasChanged();
             grid?.Reload();
         }
+        else
+        {
+            await LoadPrompts();
+        }
 
-        return base.OnParametersSetAsync();
+      
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -74,25 +78,7 @@ public partial class SystemPromptSelect
         {
             if (!Conversation.HasStarted())
             {
-                await using var ctx = await ContextFactory!.CreateDbContextAsync();
-                Prompts = ctx.UserSystemPrompts.Where(o => o.UserId == UserId).ToList();
-
-
-                var defaultPrompt = new UserSystemPrompt
-                    { UserId = UserId, Name = DefaultKey, Text = Configuration["PipelineOptions:DefaultSystemPrompt"] ?? "You are a helpful assistant" };
-
-
-                var savedId = await LocalStorage!.GetItemAsStringAsync(StoreKey);
-
-                if (savedId != null)
-                {
-                    var id = Guid.Parse(savedId);
-                    SelectedPrompt = Prompts.SingleOrDefault(o => o.Id == id, defaultPrompt);
-                }
-                else
-                {
-                    SelectedPrompt = Prompts.SingleOrDefault(o => o.Name == DefaultKey, defaultPrompt);
-                }
+                await LoadPrompts();
             }
 
             if (Conversation != null && SelectedPrompt != null)
@@ -101,6 +87,29 @@ public partial class SystemPromptSelect
             }
             StateHasChanged();
             grid?.Reload();
+        }
+    }
+
+    private async Task LoadPrompts()
+    {
+        await using var ctx = await ContextFactory!.CreateDbContextAsync();
+        Prompts = ctx.UserSystemPrompts.Where(o => o.UserId == UserId).ToList();
+
+
+        var defaultPrompt = new UserSystemPrompt
+            { UserId = UserId, Name = DefaultKey, Text = Configuration["PipelineOptions:DefaultSystemPrompt"] ?? "You are a helpful assistant" };
+
+
+        var savedId = await LocalStorage!.GetItemAsStringAsync(StoreKey);
+
+        if (savedId != null)
+        {
+            var id = Guid.Parse(savedId);
+            SelectedPrompt = Prompts.SingleOrDefault(o => o.Id == id, defaultPrompt);
+        }
+        else
+        {
+            SelectedPrompt = Prompts.SingleOrDefault(o => o.Name == DefaultKey, defaultPrompt);
         }
     }
 
