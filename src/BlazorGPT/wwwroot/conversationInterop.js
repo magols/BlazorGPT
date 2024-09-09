@@ -5,11 +5,19 @@ export function showPrompt(msg) {
 
 export function scrollToBottom(elementId) {
     if (elementId == null) {
+        console.log("scrolling to bottom, could not find " + elementId);
         window.scrollTo(0, document.body.scrollHeight);
         return;
     }
     var objDiv = document.getElementById(elementId);
-    objDiv.scrollTop = objDiv.scrollHeight;
+
+    // todo: make this great again
+
+    //console.log("scrolling to bottom of " + elementId);
+    //console.log("scrollHeight: " + objDiv.scrollHeight);
+    //console.log("scrollTop: " + objDiv.scrollTop);
+    //    objDiv.scrollTop = objDiv.scrollHeight + 400;
+    objDiv.scrollTo(0, objDiv.scrollHeight + 400);
 }
 
 export function focusElement(element) {
