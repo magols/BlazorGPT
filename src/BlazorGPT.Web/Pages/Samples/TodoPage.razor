@@ -7,6 +7,7 @@
         <div class="col-12 col-md-6 mx-auto">
             <ConversationPage @ref="ConversationPage" Style="z-index: 50;" 
                               UserId="@UserId" 
+                              ShowActionLog="false"
                               BotMode="true"
                               BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Doo not insert duplicates, handle dupes without mentioning them"
                               NewDestinationPrefix="/todo"

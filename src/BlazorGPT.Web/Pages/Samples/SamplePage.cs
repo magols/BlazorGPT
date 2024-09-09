@@ -65,7 +65,7 @@ namespace BlazorGPT.Web.Pages.Samples
 
         protected void GoToNew()
         {
-            NavigationManager!.NavigateTo(NewPath, true);
+            NavigationManager!.NavigateTo(NewPath, false);
 
         }
 

@@ -4,6 +4,14 @@
     public bool ShowActionLog { get; set; } 
     [Parameter] public string? PlanAsString { get; set; }
     [Parameter] public string? Title { get; set; }
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        ShowActionLog = NavigationManager.Uri.Contains("actionlog=true");
+        return base.OnParametersSetAsync();
+    }
 }
 @if (ShowActionLog)
 {
