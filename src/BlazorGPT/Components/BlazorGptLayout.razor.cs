@@ -53,6 +53,6 @@ public partial class BlazorGptLayout
 
     private void GoToNew()
     {
-        NavigationManager.NavigateTo("/conversation", true);
+        NavigationManager.NavigateTo("/conversation");
     }
 }

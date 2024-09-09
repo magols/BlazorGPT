@@ -50,7 +50,7 @@
                 
                 <AuthorizeView>
                     <Authorized>
-                        <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top"/>
+                        <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" Click="GoToNew" />
                         <RadzenPanelMenuItem Icon="history" Text="History" Path="conversations" />
                         <hr/>
                         <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts" />
