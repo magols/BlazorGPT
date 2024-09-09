@@ -9,7 +9,10 @@
 
     protected override Task OnParametersSetAsync()
     {
-        ShowActionLog = NavigationManager.Uri.Contains("actionlog=true");
+        if (!ShowActionLog)
+        {
+            ShowActionLog = NavigationManager.Uri.Contains("actionlog=true");
+        }
         return base.OnParametersSetAsync();
     }
 }
