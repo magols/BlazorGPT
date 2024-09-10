@@ -117,6 +117,12 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
         var nativePlugins = new List<Plugin>();
         nativePlugins.AddRange(  _pluginsRepository.GetCoreNative());
         nativePlugins.AddRange(_pluginsRepository.GetExternalNative());
+        nativePlugins.AddRange(_pluginsRepository.GetSemanticKernelPlugins());
+        nativePlugins.AddRange(await _pluginsRepository.GetKernelMemoryPlugins());
+        var bing = _pluginsRepository.CreateBingPlugin();
+        if (bing != null) nativePlugins.Add(bing);
+        var google = _pluginsRepository.CreateGooglePlugin();
+        if (google != null) nativePlugins.Add(google);
 
         nativePlugins = nativePlugins.Where(o => enabledNames.Contains(o.Name)).ToList();
 
