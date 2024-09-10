@@ -11,7 +11,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <NoWarn>SKEXP0001,SKEXP0060, SKEXP0010, SKEXP0011, SKEXP0020, SKEXP0027, SKEXP0028, CS8981</NoWarn>
+    <NoWarn>SKEXP0001,SKEXP0060, SKEXP0010, SKEXP0011, SKEXP0020, SKEXP0027, SKEXP0028, SKEXP0070, CS8981</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +24,6 @@
 
     <PackageReference Include="BlazorPro.BlazorSize" Version="8.0.0" />
 
-    <PackageReference Include="Codeblaze.SemanticKernel.Connectors.Ollama" Version="1.3.1" />
     <PackageReference Include="Markdig" Version="0.37.0" />
     <PackageReference Include="Markdown.ColorCode" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
@@ -42,6 +41,7 @@
 
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.19.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.19.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.19.0-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.19.0-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.19.0-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.19.0-preview" />

@@ -1,10 +1,10 @@
-﻿using Codeblaze.SemanticKernel.Connectors.Ollama;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Connectors.Ollama;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Connectors.Redis;
 using Microsoft.SemanticKernel.Connectors.Sqlite;
@@ -92,14 +92,12 @@ public class KernelService
                 .AddOpenAIChatCompletion(model, _options.Providers.OpenAI.ApiKey)
                 .AddOpenAITextEmbeddingGeneration(_options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
                 .AddOpenAITextToImage(_options.Providers.OpenAI.ApiKey);
-
         }
 
         if (provider == ChatModelsProvider.Ollama)
         {
             model ??= _options.Providers.Ollama.ChatModel;
-            builder.Services.AddTransient<HttpClient>();
-            builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl);
+            builder.AddOllamaChatCompletion(model, new Uri(_options.Providers.Ollama.BaseUrl));
         }
 
         if (promptRenderFilters != null)
@@ -197,14 +195,7 @@ public class KernelService
         
         if (provider == EmbeddingsModelProvider.Ollama)
         {
-            
-            var httpClient = new HttpClient();
-            
-           var generation = new OllamaTextEmbeddingGeneration(model ?? _options.Providers.Ollama.ChatModel,
-               _options.Providers.Ollama.BaseUrl,
-               httpClient,
-               null);
-
+            var generation = new OllamaTextEmbeddingGenerationService(model ?? _options.Providers.Ollama.EmbeddingsModel,  new Uri(_options.Providers.Ollama.BaseUrl));
             var mem = new MemoryBuilder()
 				.WithTextEmbeddingGeneration(generation)
 				.WithMemoryStore(memoryStore)
