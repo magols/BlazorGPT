@@ -46,11 +46,12 @@ public partial class PluginsList
     protected override async Task OnInitializedAsync()
     {
         _selPlugins = new List<Plugin>();
-        foreach (var plugin in await PluginsRepository.All())
+        var all = await PluginsRepository.All();
+        foreach (var plugin in all)
         {
             _plugins.Add(plugin);
- 
         }
+        StateHasChanged();
     }
 
     private async Task GetSelectionsFromLocalStorage()

@@ -147,7 +147,7 @@ public class BotFunctionsInterceptor : InterceptorBase, IInterceptor
 
     private async Task LoadPluginsAsync(Kernel kernel)
     {
-        var semanticPlugins = await _pluginsRepository.GetSemanticPlugins();
+        var semanticPlugins = _pluginsRepository.GetSemanticPlugins();
 
         List<Plugin> pluginsEnabledInSettings = new List<Plugin>();
         IEnumerable<string> enabledNames = Enumerable.Empty<string>();

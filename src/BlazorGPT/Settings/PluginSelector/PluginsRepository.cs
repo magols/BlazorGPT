@@ -38,9 +38,9 @@ public class PluginsRepository
     public async Task<List<Plugin>> All()
     {
         var coreNative = GetCoreNative();
-        var semanticPlugins = await GetSemanticPlugins();
+        var semanticPlugins = GetSemanticPlugins();
         var externalNative = GetExternalNative();
-        var kernelMemory = await GetKernelMemoryPlugins();
+        var kernelMemory = GetKernelMemoryPlugins();
         var semanticKernelCore =  GetSemanticKernelPlugins();
         var plugins = new List<Plugin>();
         plugins.AddRange(coreNative);
@@ -140,7 +140,7 @@ public class PluginsRepository
     public  async Task<List<Plugin>> GetCore()
     {
         var internalNative = GetCoreNative();
-        var semanticPlugins =  await  GetSemanticPlugins();
+        var semanticPlugins =  GetSemanticPlugins();
 
         var plugins = new List<Plugin>();
         plugins.AddRange(internalNative);
@@ -198,7 +198,7 @@ public class PluginsRepository
         return plugins;
     }
 
-    public async Task <List<Plugin>> GetSemanticPlugins()
+    public List<Plugin> GetSemanticPlugins()
     {
 
         var plugins = new List<Plugin>();
@@ -214,7 +214,7 @@ public class PluginsRepository
 
             foreach (var pluginFile in pluginDirectory.EnumerateDirectories())
             {
-                var configString = await File.ReadAllTextAsync(Path.Join(pluginFile.FullName, "config.json"));
+                var configString = File.ReadAllText(Path.Join(pluginFile.FullName, "config.json"));
 
                 SemanticPluginConfig?
                     config = JsonSerializer.Deserialize<SemanticPluginConfig>(configString);
@@ -243,7 +243,7 @@ public class PluginsRepository
 
 
     // get kernel memory plugins
-    public async Task<List<Plugin>> GetKernelMemoryPlugins()
+    public List<Plugin> GetKernelMemoryPlugins()
     {
 
         var options = _serviceProvider.GetRequiredService<IOptions<PipelineOptions>>().Value;
