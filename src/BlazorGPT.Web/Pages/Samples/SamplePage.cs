@@ -44,7 +44,7 @@ namespace BlazorGPT.Web.Pages.Samples
         public NavigationManager? NavigationManager { get; set; }
 
         [Inject]
-        public IOptions<PipelineOptions>? PipelineOptions { get; set; }
+        public required IOptions<PipelineOptions> PipelineOptions { get; set; }
 
         [Inject]
         public required PluginsConfigurationService PluginsConfigurationService { get; set; }

@@ -66,7 +66,9 @@
             await SetUser();
 
             var cfg = ModelConfigurationService.GetDefaultConfig();
-            cfg.MaxTokens = 1500;
+            cfg.Provider = ChatModelsProvider.Ollama;
+            cfg.Model = PipelineOptions.Value.Providers.Ollama.ChatModel;
+            cfg.MaxTokens = 2000;
             await ModelConfigurationService.SaveConfig(cfg);
 
             List<PluginSelection> config =
