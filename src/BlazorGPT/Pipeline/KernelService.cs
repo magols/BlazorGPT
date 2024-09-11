@@ -97,7 +97,7 @@ public class KernelService
         if (provider == ChatModelsProvider.Ollama)
         {
             model ??= _options.Providers.Ollama.ChatModel;
-            builder.AddOllamaChatCompletion(model, new Uri(_options.Providers.Ollama.BaseUrl));
+            builder.AddOpenAIChatCompletion(model, new Uri(_options.Providers.Ollama.BaseUrl), null);
         }
 
         if (promptRenderFilters != null)
