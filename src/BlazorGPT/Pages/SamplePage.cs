@@ -1,13 +1,12 @@
 ﻿using Blazored.LocalStorage;
-using BlazorGPT.Data.Model;
-using BlazorGPT.Pages;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Settings;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace BlazorGPT.Web.Pages.Samples
+namespace BlazorGPT.Pages
 {
     public abstract class SamplePage : ComponentBase
     {
