@@ -65,14 +65,18 @@
     <Content Include="wwwroot\state\**" Watch="false" />
   </ItemGroup>
 
- 
+
   <!--<ItemGroup>
-    
-     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.OpenAI\Connectors.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.AzureOpenAI\Connectors.AzureOpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.OpenAI\Connectors.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Ollama\Connectors.Ollama.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.Redis\Connectors.Memory.Redis.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Connectors\Connectors.Memory.SQLIte\Connectors.Memory.SQLIte.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Planners\Planners.Handlebars\Planners.Handlebars.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Planners\Planners.OpenAI\Planners.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Plugins\Plugins.Core\Plugins.Core.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Plugins\Plugins.Memory\Plugins.Memory.csproj" />
+    <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\Plugins\Plugins.Web\Plugins.Web.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel.Abstractions\SemanticKernel.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\semantic-kernel\dotnet\src\SemanticKernel.Core\SemanticKernel.Core.csproj" />
   </ItemGroup>-->
