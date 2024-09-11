@@ -1,20 +1,21 @@
-@page "/todo/{ConversationId:guid?}"
+@page "/samples/todo/{ConversationId:guid?}"
 @inherits SamplePage
 @layout EmptyLayout
 <PageTitle>Todo sample</PageTitle>
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-7 mx-auto">
-            <ConversationPage @ref="ConversationPage" Style="z-index: 50;" 
-                              UserId="@UserId" 
+            @systemPrompt
+            <ConversationPage @ref="ConversationPage" Style="z-index: 50;"
+                              UserId="@UserId"
                               ShowActionLog="false"
                               BotMode="true"
-                              BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Doo not insert duplicates, handle dupes without mentioning them"
-                              NewDestinationPrefix="/todo"
+                              BotSystemInstruction="@systemPrompt"
+                              NewDestinationPrefix="@NewPath"
                               ConversationId="@ConversationId"
                               MessageId="@MessageId">
                 <ChildContent>
-                        
+
                     @if (ConversationId == null)
                     {
                         <div class="card bg-dark">
@@ -24,7 +25,7 @@
                                     This is a simple bot that can be used to test the BlazorGPT library.
                                     <p>
                                         You can add, delete and update the todo list here.
-                                   <br>
+                                        <br>
                                         The list is shared among all users.
                                     </p>
                                 </div>
@@ -34,9 +35,9 @@
 
                     <div class="container mt-5 mb-5">
                         <div class="row row-cols-1 row-cols-md-3">
-                            <PromptExampleCard Icon="list" IconColor="lightgreen" TextColor="lightblue" Title="List"  Body="List my todos" OnClick="@(message => ConversationPage.SendMessage(message))"/>
-                            <PromptExampleCard Icon="edit" IconColor="yellow" TextColor="lightblue" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => ConversationPage!.SendMessage(message))" />
-                            <PromptExampleCard Icon="check" Body="I bought milk" TextColor="lightblue" Title="Completing" OnClick="@(message => ConversationPage!.SendMessage(message))" />
+                            <PromptExampleCard Icon="list" IconColor="lightgreen" TextColor="lightblue" Title="List" Body="List my todos" OnClick="@(message => ConversationPage.SendMessage(message))"/>
+                            <PromptExampleCard Icon="edit" IconColor="yellow" TextColor="lightblue" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => ConversationPage!.SendMessage(message))"/>
+                            <PromptExampleCard Icon="check" Body="I bought milk" TextColor="lightblue" Title="Completing" OnClick="@(message => ConversationPage!.SendMessage(message))"/>
                         </div>
                     </div>
                 </ChildContent>
@@ -47,15 +48,27 @@
                     }
                 </ButtonContent>
             </ConversationPage>
-    </div>
+        </div>
     </div>
 </div>
 
 @code
 {
+
+    string systemPrompt = @"""
+                          You are an assistant who helps keep a todo list. The list is shared by all users.
+                          
+                          Do not insert duplicates, handle dupes without mentioning them. 
+                          Answer in a thoughtful layout in the markdown format.
+                          
+                          Use your tools to call functions to complete tasks or add new ones.
+                          
+                          End each reply with a word in swedish and an emoji
+                          """;
+
     protected override Task OnInitializedAsync()
     {
-        NewPath = "/todo";
+        NewPath = "/samples/todo";
         return base.OnInitializedAsync();
     }
 
@@ -82,6 +95,9 @@
               "BotFunctionsInterceptor"
             });
         }
+
+        await base.OnAfterRenderAsync(firstRender);
+
     }
 
 }

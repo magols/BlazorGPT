@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace BlazorGPT.Pages
 {
@@ -24,17 +25,11 @@ namespace BlazorGPT.Pages
 
         protected ConversationPage? ConversationPage;
 
-        [CascadingParameter]
-        private Task<AuthenticationState>? AuthenticationState { get; set; }
-
         [Parameter]
         public Guid? ConversationId { get; set; }
 
         [Parameter]
         public Guid? MessageId { get; set; }
-
-        [CascadingParameter]
-        public string? UserId { get; set; }
 
         [Inject]
         public IConfiguration? Configuration { get; set; }
@@ -69,5 +64,27 @@ namespace BlazorGPT.Pages
         }
 
 
+        [CascadingParameter]
+        private Task<AuthenticationState>? authenticationState { get; set; }
+        public string? UserId { get; set; } = null!;
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await SetUser();
+            }
+        }
     }
 }

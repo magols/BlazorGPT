@@ -53,6 +53,18 @@ public partial class BlazorGptLayout
 
     private void GoToNew()
     {
+        var uri = NavigationManager.Uri;
+        // the uri contains protocl and domain, so we need to remove it
+        uri = "/" + uri.Replace(NavigationManager.BaseUri, "");
+        // if the url is /samples/something/ or /samples/something/somethingmore , then we want to navigate to /samples/something
+        if (uri.Contains("/samples/"))
+        {
+            var parts = uri.Split("/");
+     
+            NavigationManager.NavigateTo($"/{parts[1]}/{parts[2]}");
+            return;
+        }
+
         NavigationManager.NavigateTo("/conversation");
     }
 }

@@ -277,8 +277,6 @@ namespace BlazorGPT.Pages
 
             if (ConversationId != _loadedConversationId)
             {
-                var a = "change!";
-
                 var loaded = await ConversationsRepository.GetConversation(ConversationId);
                 if (loaded != null)
                 {
@@ -518,9 +516,8 @@ namespace BlazorGPT.Pages
 
                 if (isNew)
                 {
-                   
                     NavigationManager.NavigateTo(
-                        BotMode ? NewDestinationPrefix + "/" + Conversation.Id
+                        (BotMode || !string.IsNullOrEmpty(NewDestinationPrefix)) ? NewDestinationPrefix + "/" + Conversation.Id
                                 : "/conversation/" + Conversation.Id, 
                         false);
                 }
