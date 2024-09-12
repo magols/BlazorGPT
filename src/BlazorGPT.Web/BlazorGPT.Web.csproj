@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Plugins\BlazorGPT.PrivatePlugins.dll" Condition="Exists('Plugins\BlazorGPT.PrivatePlugins.dll')">
+    <Content Include="Plugins\*.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
