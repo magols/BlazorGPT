@@ -370,3 +370,5 @@ src/BlazorGPT.Web/wwwroot/README.md
 /src/BlazorGPT.Web/wwwroot/Uploads/
 /docs/Imported/
 /src/BlazorGPT.Web/Plugins/PrivatePlugins
+/src/BlazorGPT.Web/Plugins/SamplesProjectPlugins
+
