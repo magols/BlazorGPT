@@ -133,12 +133,8 @@ namespace BlazorGPT.Pages
         public string? UserId { get; set; } = null!;
 
         [Parameter]
-        public Guid? ConversationId
-        {
-            get { return _currentConversationId; }
-            set { _currentConversationId = value; }
-        }
-        private Guid? _currentConversationId;
+        public Guid? ConversationId { get; set; }
+
         private Guid _loadedConversationId = default;
 
         [Parameter]
@@ -273,7 +269,6 @@ namespace BlazorGPT.Pages
                 StateHasChanged();
                 return;
             }
- 
 
             if (ConversationId != _loadedConversationId)
             {
@@ -297,20 +292,12 @@ namespace BlazorGPT.Pages
                     }
                     Conversation = loaded;
                 }
-
-
                 else
                 {
                     NavigationManager.NavigateTo("/conversation");
                 }
-
-
-
             }
-
-           
  
-
             StateHasChanged();
         }
 
@@ -363,6 +350,7 @@ namespace BlazorGPT.Pages
 
             var interceptorKeyExists = await LocalStorageService.ContainKeyAsync("bgpt_interceptors");
             var interceptorNames = interceptorKeyExists ? await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors") : [];
+
 
 
             Model.Prompt = Model.Prompt?.TrimEnd('\n');
