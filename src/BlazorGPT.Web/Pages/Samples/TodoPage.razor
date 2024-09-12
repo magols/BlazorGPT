@@ -5,7 +5,6 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-7 mx-auto">
-            @systemPrompt
             <ConversationPage @ref="ConversationPage" Style="z-index: 50;"
                               UserId="@UserId"
                               ShowActionLog="false"
@@ -62,8 +61,6 @@
                           Answer in a thoughtful layout in the markdown format.
                           
                           Use your tools to call functions to complete tasks or add new ones.
-                          
-                          End each reply with a word in swedish and an emoji
                           """;
 
     protected override Task OnInitializedAsync()

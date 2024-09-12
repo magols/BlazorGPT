@@ -253,8 +253,8 @@ namespace BlazorGPT.Pages
 
                 await Interop.SetupCopyButtons();
 
-                await Interop.ScrollToBottom("message-pane");
                 await Interop.ScrollToBottom("layout-body");
+                await Interop.ScrollToBottom("message-pane");
             }
 
             if (! _browserIsSmall && (BotMode || selectedTabIndex == 0))

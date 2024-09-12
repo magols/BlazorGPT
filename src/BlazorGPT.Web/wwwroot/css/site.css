@@ -65,6 +65,10 @@ body {
     --rz-link-hover-color: #89f89e;
 }
 
+.rz-body {
+    padding: 3px;
+}
+
 .rz-card {
     margin: 8px;
 }
