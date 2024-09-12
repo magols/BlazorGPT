@@ -13,9 +13,9 @@ export function scrollToBottom(elementId) {
 
     // todo: make this great again
 
-    console.log("scrolling to bottom of " + elementId);
-    console.log("scrollHeight: " + objDiv.scrollHeight);
-    console.log("scrollTop: " + objDiv.scrollTop);
+    //console.log("scrolling to bottom of " + elementId);
+    //console.log("scrollHeight: " + objDiv.scrollHeight);
+    //console.log("scrollTop: " + objDiv.scrollTop);
     objDiv.scrollTop = objDiv.scrollHeight + 20000;
     objDiv.scrollTo(0, objDiv.scrollHeight + 20000);
 }
