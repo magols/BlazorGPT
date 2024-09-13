@@ -74,7 +74,7 @@ else
                     </ConversationDisplay>
 
                         <div class="row sticky-bottom mt-auto">
-                            <div id="control" class="col m-3 p-1 mb-0 mt-0 pt-0">
+                            <div id="control" class="col m-3 mb-0 p-1 pb-2 mb-0 mt-2 pt-0">
                                 @if (BotMode)
                                 {
                                     <div id="bot-control">
@@ -194,17 +194,12 @@ else
                                                     <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
                                                 }
                                             </RadzenTabsItem>
-                                            <RadzenTabsItem Text="Tools">
-                                                <RadzenButton class="" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
-                                            </RadzenTabsItem>
                                         </Tabs>
                                     </RadzenTabs>
                                 }
 
                             </div>
-
                         </div>
-
                 </div>
                 @if (!BotMode)
                 {

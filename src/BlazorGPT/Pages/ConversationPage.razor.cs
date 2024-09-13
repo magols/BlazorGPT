@@ -243,7 +243,7 @@ namespace BlazorGPT.Pages
             {
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
-                initialControlHeight = _browserIsSmall ? 320 : 350;
+                initialControlHeight = _browserIsSmall ? 320 : 330;
                 initialControlHeight = BotMode ? 150 : initialControlHeight;
                 controlHeight = initialControlHeight;
 
@@ -303,22 +303,6 @@ namespace BlazorGPT.Pages
 
         [Inject]
         public required UserStorageService UserStorage { get; set; }
-        private async Task Summarize()
-        {
-            IsBusy = true;
-
-            Conversation.AddMessage(new ConversationMessage("user", "Summarize this conversation in 10 words"));
-            await SendConversation(rerun: true);
-
-            await using var ctx = await DbContextFactory.CreateDbContextAsync();
-            ctx.Attach(Conversation);
-            Conversation.Summary = Conversation.Messages.Last(m => m.Role == ConversationRole.Assistant).Content;
-            await ctx.SaveChangesAsync();
-
-            await _conversations.LoadConversations();
-            IsBusy = false;
-
-        }
 
         public async Task SendMessage(string message, string role = "user")
         {
