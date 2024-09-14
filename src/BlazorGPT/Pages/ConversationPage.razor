@@ -81,10 +81,9 @@ else
                                         <EditForm Model="@Model" OnValidSubmit="@SendConversation">
                                             <div id="message-box" @onkeydown="async obj => await OnPromptKeyUp(obj)"
                                                  @onkeydown:preventDefault="@preventDefaultKey">
-
-
+                                                 
                                                 <div class="row">
-                                                    <div class="col col-8 col-md-8 col-lg-8">
+                                                    <div class="input-group">
                                                         <RadzenTextArea @ref="_promptField2"
                                                                         @bind-value="@Model.Prompt"
                                                                         class="form-control"
@@ -92,16 +91,14 @@ else
                                                                         Disabled="IsBusy"
                                                                         @oninput="@OnPromptInput"
                                                                         @onkeyup="OnPromptKeyUp" />
-                                                    </div>
-                                                    <div class="col col-2 col-md-2 col-lg-2">
-
                                                         <RadzenButton Class="m-0" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
                                                         <RadzenButton Class="mt-1" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
 
                                                     </div>
+                                                </div>
 
-                                                    <div class="col-2">
-
+                                                <div class="row">
+                                                    <div class="col mt-3">
                                                         @ButtonContent
                                                     </div>
                                                 </div>
@@ -134,7 +131,7 @@ else
                                                     <div id="message-box">
 
                                                         <div class="row">
-                                                            <div class="col col-10 col-md-10 col-lg-10">
+                                                            <div class="input-group">
                                                                 <RadzenTextArea @ref="_promptField2"
                                                                                 @bind-value="@Model.Prompt"
                                                                                 class="form-control"
@@ -142,10 +139,9 @@ else
                                                                                 Disabled="IsBusy"
                                                                                 @oninput="@OnPromptInput"
                                                                                 @onkeyup="OnPromptKeyUp" />
-                                                            </div>
-                                                            <div class="col col-2 col-md-2 col-lg-2">
                                                                 <RadzenButton Class="m-0" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
                                                                 <RadzenButton Class="mt-1" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
+
                                                             </div>
                                                         </div>
 
@@ -153,11 +149,9 @@ else
                                                     </div>
 
                                                     <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClicked="ApplyEndProfile" />
+                                                    <SettingsButtonPanel />
 
-                                                    <div class="mt-1">
-                                                        <SettingsButtonPanel />
-                                                    </div>
-
+                                              
                                                     <span class="float-end mt-2 mb-0">
                                                         <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
                                                         <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
@@ -201,6 +195,8 @@ else
                             </div>
                         </div>
                 </div>
+               
+                
                 @if (!BotMode)
                 {
                     <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">

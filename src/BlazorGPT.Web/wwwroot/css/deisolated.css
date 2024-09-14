@@ -1,0 +1,38 @@
+﻿#conversationframe {
+    --rz-layout-body-padding: 0;
+    --rz-layout-body-margin: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#control {
+   
+    border-radius: 10px 10px 10px 10px;
+    background-color: var(--rz-body-background-color);
+}
+
+#bot-control {
+    padding: 20px;
+    margin: 0;
+    width: 100%;
+}
+
+.scroll-pane {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+#message-pane {
+    font-size: 0.8rem;
+}
+ 
+#layout-body {
+    padding:6px;
+    margin: 0px;
+}
+
+#layout-body:has(.conversationframe) {
+    overflow: inherit;
+    padding-bottom: 6px
+}

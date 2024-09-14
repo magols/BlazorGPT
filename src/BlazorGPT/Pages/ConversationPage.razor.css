@@ -1,37 +1,4 @@
-﻿#conversationframe {
-    --rz-layout-body-padding: 0;
-    --rz-layout-body-margin: 0;
-
-    margin: 0;
-    padding: 0;
-}
-
-#control {
-    /*padding: 15px;*/
-    /*margin: 20px;*/
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    /* rounded corners */
-    border-radius: 10px 10px 0 0;
-    background-color: var(--rz-body-background-color);
-    /*border: 1px red solid;*/
-}
-
-#bot-control {
-    padding: 20px;
-    margin: 0;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 10px 10px 0 0;
-}
-
-.scroll-pane {
-
-    
-    background-color: #363636;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-}
+﻿
 
 .rz-tabview-panel {
     padding: 0;
@@ -45,14 +12,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+    
 @media screen and (min-width: 769px) {
     .truncate {
         width: 600px;
     }
-}
-
-.rz-body {
-    padding: 0;
-    margin: 0;
 }

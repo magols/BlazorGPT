@@ -12,26 +12,20 @@
     <link href="/lib/font-awesome/css/fontawesome.css" rel="stylesheet">
     <link href="/lib/font-awesome/css/solid.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    @* <link rel="stylesheet" href="/css/material3-dark-base.css"> *@
     <link rel="stylesheet" href="/css/dark.css">
-
     <link href="BlazorGPT.Web.styles.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
+    <link href="css/deisolated.css" rel="stylesheet" />
+
 
     <HeadOutlet @rendermode="@RenderModeForPage" />
 
 </head>
 
 <body class="d-flex flex-column h-100">
-@* <CascadingAuthenticationState> *@
-    
     <CascadingValue Name="UserId" Value="UserId">
-
-    <Routes @rendermode="@RenderModeForPage"/>
+        <Routes @rendermode="@RenderModeForPage"/>
     </CascadingValue>
-
-
-@* </CascadingAuthenticationState> *@
 
 <div id="blazor-error-ui">
     <environment include="Staging,Production">

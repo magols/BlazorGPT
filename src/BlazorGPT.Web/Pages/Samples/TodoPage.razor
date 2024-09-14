@@ -12,7 +12,8 @@
                               BotSystemInstruction="@systemPrompt"
                               NewDestinationPrefix="@NewPath"
                               ConversationId="@ConversationId"
-                              MessageId="@MessageId">
+                              MessageId="@MessageId"
+                              >
                 <ChildContent>
 
                     @if (ConversationId == null)
@@ -21,7 +22,7 @@
                             <div class="card-body">
                                 <h3 class="card-title">Welcome to the todolist</h3>
                                 <div class="card-text">
-                                    This is a simple bot that can be used to test the BlazorGPT library.
+                                    This is a simple bot that can be used to test BlazorGPT.
                                     <p>
                                         You can add, delete and update the todo list here.
                                         <br>
@@ -58,8 +59,7 @@
                           You are an assistant who helps keep a todo list. The list is shared by all users.
                           
                           Do not insert duplicates, handle dupes without mentioning them. 
-                          Answer in a thoughtful layout in the markdown format.
-                          
+                                              
                           Use your tools to call functions to complete tasks or add new ones.
                           """;
 

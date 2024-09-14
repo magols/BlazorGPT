@@ -11,11 +11,22 @@ export function scrollToBottom(elementId) {
     }
     var objDiv = document.getElementById(elementId);
 
-    // todo: make this great again
+    console.log(elementId + " scrollHeight: " + objDiv.scrollHeight);
+    console.log(elementId + " scrollTop: " + objDiv.scrollTop);
 
-    //console.log("scrolling to bottom of " + elementId);
-    //console.log("scrollHeight: " + objDiv.scrollHeight);
-    //console.log("scrollTop: " + objDiv.scrollTop);
+    // calculate how to scroll to the bottom of the element.
+
+    let scrollHeight = objDiv.scrollHeight;
+    let clientHeight = objDiv.clientHeight;
+    let scrollBottom = scrollHeight - clientHeight;
+    console.log(elementId + " scrollBottom: " + scrollBottom);
+
+    objDiv.scroll(0, 10000);
+
+
+
+
+
     objDiv.scrollTop = objDiv.scrollHeight + 20000;
     objDiv.scrollTo(0, objDiv.scrollHeight + 20000);
 }

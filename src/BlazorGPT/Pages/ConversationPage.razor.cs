@@ -243,8 +243,8 @@ namespace BlazorGPT.Pages
             {
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
-                initialControlHeight = _browserIsSmall ? 320 : 330;
-                initialControlHeight = BotMode ? 150 : initialControlHeight;
+                initialControlHeight = _browserIsSmall ? 335 : 335;
+                initialControlHeight = BotMode ? 200 : initialControlHeight;
                 controlHeight = initialControlHeight;
 
                 await Interop.SetupCopyButtons();
@@ -412,6 +412,8 @@ namespace BlazorGPT.Pages
                 await Interop.FocusElement(_promptField2.Element);
             }
             StateHasChanged();
+            await Interop.ScrollToBottom("message-pane");
+
         }
 
         private async Task Send()
