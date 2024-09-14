@@ -26,6 +26,7 @@ namespace BlazorGPT.Pages
         private async Task CancelSend()
         {
             await _cancellationTokenSource.CancelAsync();
+            
         }
 
         [Inject]
@@ -325,6 +326,8 @@ namespace BlazorGPT.Pages
 
         private async Task SendConversation(bool rerun)
         {
+            if (IsBusy) return;
+
             IsBusy = true;
 
             _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
@@ -366,8 +369,8 @@ namespace BlazorGPT.Pages
             {
                 var c = Conversation;
                 Conversation = await InterceptorHandler.Send(_kernel,
-                    Conversation, 
-                    enabledInterceptors:null,
+                    Conversation,
+                    enabledInterceptors: null,
                     enabledInterceptorNames: interceptorNames,
                     OnStreamCompletion,
                     cancellationToken: _cancellationTokenSource.Token);
@@ -390,21 +393,24 @@ namespace BlazorGPT.Pages
                         }
                 }
             }
-            catch (InvalidOperationException )
-            {
-                // todo: handle this
-            }
-            catch (Exception)
-            {
-                // todo: handle this
-                throw;
 
+            catch (OperationCanceledException)
+            {
+                var res = await DialogService.Alert("The operation was cancelled");
+                Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
+            }
+
+            catch (Exception e)
+            {
+                var res = await DialogService.Alert(e.StackTrace,
+                    "An error occurred. Please try again/later. " + e.Message);
+                Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
             }
             finally
             {
-                _cancellationTokenSource.TryReset();
-                StateHasChanged();
+                semaphoreSlim.Release();
             }
+   
 
             IsBusy = false;
             if (selectedTabIndex == 0)
@@ -499,33 +505,24 @@ namespace BlazorGPT.Pages
                 StateHasChanged();
 
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 var res = await DialogService.Alert("The operation was cancelled");
                 Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
-
-                semaphoreSlim.Release();
-                StateHasChanged();
-                return;
             }
             catch (Exception e)
             {
                 var res = await DialogService.Alert(e.StackTrace,
                     "An error occurred. Please try again/later. " + e.Message);
                 Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
-                Console.WriteLine(e.StackTrace);
-                StateHasChanged();
-                return;
             }
             finally
             {
-               
-                    _cancellationTokenSource?.TryReset();
-                    semaphoreSlim.Release();
+                IsBusy = false;
+                semaphoreSlim.Release();
 
             }
 
-            //Conversation = conv;
             Model.Prompt = "";
             promptIsReady = false;
         }

@@ -222,16 +222,8 @@ public class KernelService
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(chatHistory,
                            requestSettings, cancellationToken: cancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return chatHistory.ToConversation();
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return chatHistory.ToConversation();
-            }
- 
             fullMessage += completionResult.Content;
             if (onStreamCompletion != null) await onStreamCompletion.Invoke(completionResult.Content);
  
@@ -256,16 +248,8 @@ public class KernelService
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(history,
                            requestSettings, cancellationToken: cancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return conversation;
-            }
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return conversation;
-            }
- 
+            cancellationToken.ThrowIfCancellationRequested();
             fullMessage += completionResult.Content;
             if (onStreamCompletion != null) await onStreamCompletion.Invoke(completionResult.Content);
  
