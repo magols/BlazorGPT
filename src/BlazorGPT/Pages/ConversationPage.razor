@@ -37,25 +37,14 @@ else
 <SectionContent SectionName="heading">
     @if (!BotMode)
     {
-        
                 <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="ms-1 me-3"/>
-
                 <span class="truncate">@Conversation.Summary</span>
- 
-
-   
     }
-
-
-
-
 </SectionContent>
 
 <CascadingValue Name="Conversation" Value="Conversation">
 <CascadingValue Name="BotMode" Value="BotMode">
     <CascadingValue Name="ShowActionLog" Value="ShowActionLog">
-
-
 
         <!-- conv page start -->
         <div id="conversationframe" class="container-fluid @Class conversationframe m-0" style="@Style">
@@ -91,8 +80,8 @@ else
                                                                         Disabled="IsBusy"
                                                                         @oninput="@OnPromptInput"
                                                                         @onkeyup="OnPromptKeyUp" />
-                                                        <RadzenButton Class="m-0" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
-                                                        <RadzenButton Class="mt-1" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
+                                                        <RadzenButton Class="m-0"  Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary"   ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
+                                                        <RadzenButton Class="mt-1" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
 
                                                     </div>
                                                 </div>
@@ -139,19 +128,16 @@ else
                                                                                 Disabled="IsBusy"
                                                                                 @oninput="@OnPromptInput"
                                                                                 @onkeyup="OnPromptKeyUp" />
-                                                                <RadzenButton Class="m-0" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
-                                                                <RadzenButton Class="mt-1" Size="ButtonSize.Large" Text="" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
+                                                                <RadzenButton Class="m-0" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary"  ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
+                                                                <RadzenButton Class="mt-1" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
 
                                                             </div>
                                                         </div>
-
-
                                                     </div>
 
                                                     <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClicked="ApplyEndProfile" />
                                                     <SettingsButtonPanel />
 
-                                              
                                                     <span class="float-end mt-2 mb-0">
                                                         <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
                                                         <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
@@ -183,7 +169,6 @@ else
                                                             <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
                                                         </div>
                                                     </div>
-
                                                     <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
                                                     <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
                                                 }
@@ -196,17 +181,13 @@ else
                         </div>
                 </div>
                
-                
                 @if (!BotMode)
                 {
                     <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">
                         <Conversations @ref="_conversations"></Conversations>
                     </div>
                 }
-
             </div>
-
-
         </div>
     </CascadingValue>
 </CascadingValue>

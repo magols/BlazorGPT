@@ -60,7 +60,7 @@ public partial class SystemPromptSelect
                 Text = Conversation!.GetSystemMessage()!.Content
             };
 
-            Conversation.SetSystemMessage(SelectedPrompt!.Text);
+            Conversation.SetSystemMessage(Conversation.Messages.First().Content);
             StateHasChanged();
             grid?.Reload();
         }
@@ -68,8 +68,6 @@ public partial class SystemPromptSelect
         {
             await LoadPrompts();
         }
-
-      
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
