@@ -326,6 +326,7 @@ namespace BlazorGPT.Pages
 
         private async Task SendConversation(bool rerun)
         {
+            // todo: is this necessary anymore? k
             if (IsBusy) return;
 
             IsBusy = true;
@@ -637,9 +638,7 @@ namespace BlazorGPT.Pages
         {
             if (obj.Key == "Enter" && obj.ShiftKey == false)
             {
-                // move mouse focus from prompt field
                 await Interop.Blurelement(_promptField2.Element);
-                IsBusy = true;
                 StateHasChanged();
                 await SendConversation();
             }
