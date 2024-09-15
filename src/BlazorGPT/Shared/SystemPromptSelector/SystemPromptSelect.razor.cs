@@ -9,7 +9,6 @@ namespace BlazorGPT.Shared.SystemPromptSelector;
 
 public partial class SystemPromptSelect
 {
-
     const string StoreKey = "sysprompt";
     const string DefaultKey = "Default";
 
@@ -21,13 +20,12 @@ public partial class SystemPromptSelect
 
     [CascadingParameter(Name = "Conversation")]
     public Conversation? Conversation { get; set; }
-
+    private Guid? _loadedId;
 
     [Inject] private IDbContextFactory<BlazorGptDBContext>? ContextFactory { get; set; }
 
     [Parameter] public string? InitialSystemPrompt { get; set; }
 
-    // export values 
     public UserSystemPrompt? SelectedPrompt { get; set; } = null;
 
     private IEnumerable<UserSystemPrompt>? Prompts { get; set; }
@@ -48,12 +46,15 @@ public partial class SystemPromptSelect
             if (user.Identity is not null && user.Identity.IsAuthenticated)
                 UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         }
+
+        await LoadFromDb();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Conversation != null &&  Conversation.HasStarted())
+        if (Conversation != null && _loadedId != Conversation.Id && Conversation.HasStarted())
         {
+
             SelectedPrompt = new UserSystemPrompt
             {
                 Name = "",
@@ -63,20 +64,18 @@ public partial class SystemPromptSelect
             Conversation.SetSystemMessage(Conversation.Messages.First().Content);
             StateHasChanged();
             grid?.Reload();
+            _loadedId = Conversation.Id;
         }
-        else
-        {
-            await LoadPrompts();
-        }
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender || _loadedId != Conversation?.Id)
         {
             if (!Conversation.HasStarted())
             {
-                await LoadPrompts();
+                await SetPromptPreference();
             }
 
             if (Conversation != null && SelectedPrompt != null)
@@ -88,15 +87,17 @@ public partial class SystemPromptSelect
         }
     }
 
-    private async Task LoadPrompts()
+    private async Task LoadFromDb()
     {
         await using var ctx = await ContextFactory!.CreateDbContextAsync();
         Prompts = ctx.UserSystemPrompts.Where(o => o.UserId == UserId).ToList();
 
+    }
 
+    private async Task SetPromptPreference()
+    {
         var defaultPrompt = new UserSystemPrompt
             { UserId = UserId, Name = DefaultKey, Text = Configuration["PipelineOptions:DefaultSystemPrompt"] ?? "You are a helpful assistant" };
-
 
         var savedId = await LocalStorage!.GetItemAsStringAsync(StoreKey);
 
