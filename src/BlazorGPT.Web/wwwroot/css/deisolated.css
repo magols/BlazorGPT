@@ -36,3 +36,9 @@
     overflow: inherit;
     padding-bottom: 6px
 }
+
+
+.actionlog .rz-panel {
+    padding: 8px;
+    font-size: 0.8rem;
+}
