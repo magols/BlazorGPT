@@ -44,8 +44,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddBlazorGPT(builder.Configuration);
-// web mode, uter apps use FunctionCallingUserConsoleProvider
+// web mode, other apps use FunctionCallingUserConsoleProvider
 builder.Services.AddTransient<IFunctionCallingUserProvider, FunctionCallingUserWebProvider>();
+
+builder.Services.AddTransient<FunctionApprovalFilter>();
+builder.Services.AddTransient<IFunctionApprovalService, FunctionCallingDialogApprovalService>();
 
 
 builder.Services.AddCascadingAuthenticationState();

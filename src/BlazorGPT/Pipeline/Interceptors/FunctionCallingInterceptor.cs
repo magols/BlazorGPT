@@ -49,8 +49,12 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
         conversationState.SetCurrentConversationForUser(conversation);
 
         var functionFilter = _serviceProvider.GetRequiredService<FunctionCallingFilter>();
+
+        var approvalFilter = _serviceProvider.GetRequiredService<FunctionApprovalFilter>();
+
         var config = await _modelConfigurationService.GetConfig();
-       kernel  = await _kernelService.CreateKernelAsync(config.Provider, config.Model, functionInvocationFilters: new List<IFunctionInvocationFilter>(){functionFilter});
+       
+        kernel  = await _kernelService.CreateKernelAsync(config.Provider, config.Model, functionInvocationFilters: new List<IFunctionInvocationFilter>(){functionFilter, approvalFilter });
 
 
         await LoadPluginsAsync(kernel);
