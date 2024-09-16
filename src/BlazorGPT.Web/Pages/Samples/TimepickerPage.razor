@@ -1,0 +1,114 @@
+@page "/samples/timepicker"
+@using System.Timers
+@using BlazorGPT.Components
+@using BlazorGPT.Pipeline
+@using Microsoft.SemanticKernel
+@inherits BlazorGPT.Pages.SamplePage
+@layout EmptyLayout
+
+<PageTitle>Timepicker sample</PageTitle>
+
+<div class="container">
+    <div>
+        <h1>Timepicker by natural language</h1>
+        <i>
+            (Note: runs on Ollama with llama3.1 so it can be a bit slow the first run before hot)
+        </i>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-4 col-lg-3">
+            <PromptExampleCard Icon="schedule" IconColor="lightgreen" Body="Tomorrow at noon" OnClick="@(message => Example(message))"/>
+        </div>
+        <div class="col-12 col-md-4 col-lg-3">
+            <PromptExampleCard Icon="schedule" IconColor="yellow" Body="Last year on Christmas evening" OnClick="@(message => Example(message))"/>
+        </div>
+        <div class="col-12 col-md-4 col-lg-3">
+            <PromptExampleCard Icon="schedule" Body="In 5 minues" OnClick="@(message => Example(message))"/>
+        </div>
+    </div>
+
+    <div class="row p-3">
+        <div class="col-12">
+
+            Enter a point in time using natural language or click the examples above
+            <div class="input-group">
+                <RadzenTextBox @bind-Value="_time" Placeholder=".. in three days and two hours" />
+                <RadzenButton Text="Send" Click="Calculate" Disabled="string.IsNullOrEmpty(_time) && !_busy"/>
+            </div>
+            Result:<br/>
+            <RadzenDatePicker @bind-Value="@_calculatedTime" ShowTime="true" ShowSeconds="true" HoursStep="1.5" MinutesStep="5" DateFormat="@Format" Name="DatePickerWithTime"/><br />
+            <i>
+                Current time: @_currentTime.ToString(Format)
+            </i>
+            @if (_prompt != "")
+            {
+                <p class="pt-5" style="font-size:smaller;">
+                    Prompt: @_prompt
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Inject] public required KernelService KernelService { get; set; }
+    Kernel? _kernel;
+    string _time = "";
+    string _result = "";
+    DateTime? _calculatedTime;
+    DateTime _currentTime;
+    string? _prompt = "";
+    private const string Format = "yyyy-MM-dd HH:mm:ss";
+    bool _busy;
+
+    async Task Calculate()
+    {
+        _busy = true;
+
+        _prompt = $@"
+The time is now: {_currentTime:yyyy-MM-dd HH:mm:ss}
+Calculate the time by adjusting it by ""{_time}""  and give the result in the format {Format}
+Only respond with the date
+Result: 
+";
+
+        _calculatedTime = null;
+        var res = await _kernel!.InvokePromptAsync(_prompt);
+        _result = res.ToString();
+
+        if (DateTime.TryParse(_result, out var dt))
+        {
+            _calculatedTime = dt;
+            _prompt += _result;
+        }
+        else
+        {
+            _prompt = "I'm sorry, I couldn't understand the time you entered. Please try again.";
+        }
+
+        _busy = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var timer = new Timer(1000);
+        timer.Elapsed += async (sender, e) =>
+        {
+            _currentTime = DateTime.Now;
+            await InvokeAsync(StateHasChanged);
+        };
+        timer.Start();
+
+        _kernel = await KernelService.CreateKernelAsync(ChatModelsProvider.Ollama, PipelineOptions.Value.Providers.Ollama.ChatModel);
+    }
+
+    async Task Example(string message)
+    {
+        _time = message;
+        await Calculate();
+    }
+}
