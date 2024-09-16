@@ -49,7 +49,7 @@ public class TodoPlugin(IServiceProvider serviceProvider)
 
     [KernelFunction("list_todos")]
     [Description("List all todos")]
-    public async Task<List<string>> ListTodos()
+    public async Task<ReturnStringList> ListTodos()
     {
         var query = """
                     List all my todos
@@ -58,7 +58,7 @@ public class TodoPlugin(IServiceProvider serviceProvider)
         var store = await GetStore();
         var todos = store.SearchAsync(Collection, query, 500, 0.4);
 
-        var todoList = new List<string>();
+        var todoList = new ReturnStringList();
         await foreach (var todo in todos)
         {
             var text = todo.Metadata.Text;
@@ -68,9 +68,8 @@ public class TodoPlugin(IServiceProvider serviceProvider)
         return todoList;
     }
 
-    // clear all items from the todo list
     [KernelFunction("clear_todos")]
-    [Description("Clear all todos")]
+    [Description("Clear all todos. Requires approval")]
     public async Task ClearTodos()
     {
         var store = await GetStore();
