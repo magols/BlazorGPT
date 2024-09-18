@@ -1,0 +1,109 @@
+<style>
+#components-reconnect-modal {
+    display: block;
+    position: fixed; /* Change to fixed to cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 12px;
+    z-index: -100;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+#components-reconnect-modal.components-reconnect-show,
+#components-reconnect-modal.components-reconnect-failed,
+#components-reconnect-modal.components-reconnect-rejected
+{
+    display: block !important;
+    z-index: 90000 !important;
+}
+
+#components-reconnect-modal > .show,
+#components-reconnect-modal > .failed,
+#components-reconnect-modal > .rejected {
+    display: none;
+}
+
+#components-reconnect-modal.components-reconnect-show > .show,
+#components-reconnect-modal.components-reconnect-failed > .failed,
+#components-reconnect-modal.components-reconnect-rejected > .rejected {
+    display: block;
+}
+
+#reconnect-overlay {
+    display: none;
+}
+
+#components-reconnect-modal.components-reconnect-show > #reconnect-overlay,
+#components-reconnect-modal.components-reconnect-failed > #reconnect-overlay,
+#components-reconnect-modal.components-reconnect-rejected > #reconnect-overlay {
+    display: block;
+    top: 0;
+    left: 0;
+    background-color: black;
+    opacity: 0.5;
+    z-index: 40000;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+
+.loader {
+    border: 16px solid #d7d7d7;
+    border-top: 16px solid #000000;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.state {
+    overflow: hidden;
+    background-color: #ececec;
+    color: black;
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+    z-index: 99999;
+    width: 50%;
+    position: relative;
+    transform: translate(50%, 50%);  
+}
+</style>
+
+
+
+<div id="components-reconnect-modal">
+    <div class="state show">
+        <svg class="loader me-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" style="display: inline-block; width: 3em; height: 3em; vertical-align: middle;">
+        </svg>
+        Reconnecting. Please wait...
+    </div>
+
+    <div class="state failed">
+        Connection failed.<br />
+        <a href="javascript:window.location.reload();">Click here</a> to reload the page.
+    </div>
+    
+    <div class="state rejected">
+        Connection rejected.<br />
+        <a href="javascript:window.location.reload();">Click here</a> to reload the page.
+    </div>
+    
+    <div id="reconnect-overlay"></div>
+</div>
+
+

@@ -11,21 +11,17 @@ export function scrollToBottom(elementId) {
     }
     var objDiv = document.getElementById(elementId);
 
-    console.log(elementId + " scrollHeight: " + objDiv.scrollHeight);
-    console.log(elementId + " scrollTop: " + objDiv.scrollTop);
+    //console.log(elementId + " scrollHeight: " + objDiv.scrollHeight);
+    //console.log(elementId + " scrollTop: " + objDiv.scrollTop);
 
     // calculate how to scroll to the bottom of the element.
 
     let scrollHeight = objDiv.scrollHeight;
     let clientHeight = objDiv.clientHeight;
     let scrollBottom = scrollHeight - clientHeight;
-    console.log(elementId + " scrollBottom: " + scrollBottom);
+    //console.log(elementId + " scrollBottom: " + scrollBottom);
 
     objDiv.scroll(0, 10000);
-
-
-
-
 
     objDiv.scrollTop = objDiv.scrollHeight + 20000;
     objDiv.scrollTo(0, objDiv.scrollHeight + 20000);
@@ -129,7 +125,10 @@ export function getWindowByStateTypeAndSubIdAndId(stateType, stateSubId, stateId
 }
 
 export function setupFileArea() {
-    document.getElementById('upload-button').addEventListener('click', function () {
-        document.getElementById('file-input').click();
-    });
+    var button = document.getElementById('upload-button');
+    if (button != null) {
+        button.addEventListener('click', function () {
+            document.getElementById('file-input').click();
+        });
+    }
 }

@@ -12,6 +12,7 @@
   
   <PropertyGroup>
     <NoWarn>SKEXP0001,SKEXP0060, SKEXP0010, SKEXP0011, SKEXP0020, SKEXP0027, SKEXP0028, SKEXP0070, CS8981</NoWarn>
+    <UserSecretsId>4665e21b-76c2-4212-bf3f-5e42dfbfce5e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
