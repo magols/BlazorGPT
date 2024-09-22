@@ -164,12 +164,10 @@ else
                                                 }
                                                 else
                                                 {
-                                                    <div>
-                                                        <div>
-                                                            <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
-                                                        </div>
-                                                    </div>
                                                     <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
+                                                    <div>
+                                                        <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
+                                                    </div> 
                                                     <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
                                                 }
                                             </RadzenTabsItem>
