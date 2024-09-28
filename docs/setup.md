@@ -1,5 +1,5 @@
 ## Prerequisites
-.NET 7 SDK
+.NET 8 SDK
 SQL Server 
 OpenAI API Key (or Azure OpenAI endpoint, resource name and key)
 
@@ -13,19 +13,19 @@ OpenAI API Key (or Azure OpenAI endpoint, resource name and key)
 
 
 
-3. Run the following commands from the **BlazorGPT** directory:
+3. Run the following commands from the **src/BlazorGPT** directory:
 
    ```bash 
     dotnet ef database update -s '..\BlazorGPT.Web\' --context BlazorGptDBContext
    ```
    
-4. Run the following commands from the **BlazorGPT.Web** directory:
+4. Run the following commands from the **src/BlazorGPT.Web** directory:
    ```bash
     dotnet ef database update --context ApplicationDbContext
    ```
    
 
-5. Update the OpenAI API Key and primary model in appsettings.json (secrets.json) in the **BlazorGPT.Web** directory
+5. Update the OpenAI API Key and primary model in appsettings.json (secrets.json) in the **src/BlazorGPT.Web** directory
     For OpenAI:
     ```json
     "PipelineOptions:Model": "gpt-3.5-turbo", // or gpt-4
@@ -44,7 +44,7 @@ OpenAI API Key (or Azure OpenAI endpoint, resource name and key)
     }
     ```
 
-6. Run the application from the **BlazorGPT.Web** directory:
+6. Run the application from the **src/BlazorGPT.Web** directory:
    ```bash
     dotnet run
 
