@@ -1,0 +1,30 @@
+﻿@code
+{
+    [CascadingParameter(Name = "ShowActionLog")]
+    public bool ShowActionLog { get; set; } 
+    [Parameter] public string? PlanAsString { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        if (!ShowActionLog)
+        {
+            ShowActionLog = NavigationManager.Uri.Contains("actionlog=true");
+        }
+        return base.OnParametersSetAsync();
+    }
+}
+@if (ShowActionLog)
+{
+    <div class="actionlog">
+        <RadzenPanel AllowCollapse="true" Collapsed="true" Text="Action log">
+            <ChildContent>
+                <div class="pt-3 md-content">
+                    <MarkdownContent Content="@PlanAsString"/>
+                </div>
+            </ChildContent>
+        </RadzenPanel>
+    </div>
+}

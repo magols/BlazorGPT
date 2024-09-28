@@ -1,7 +1,8 @@
 ﻿using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
-using BlazorGPT.Shared.PluginSelector;
+using BlazorGPT.Settings.PluginSelector;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,9 +10,13 @@ namespace BlazorGPT
 {
     public static class BuilderExtensions
     {
-        public static void AddBlazorGPT(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddBlazorGPT(this IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<IConfiguration>(config);
+
+            services.AddMemoryCache();
+
+
             services.Configure<PipelineOptions>(config.GetSection("PipelineOptions")); ;
 
             services.AddDbContextFactory<BlazorGptDBContext>(options =>
@@ -35,15 +40,31 @@ namespace BlazorGPT
             services.AddScoped<IQuickProfileHandler, QuickProfileHandler>();
             services.AddScoped<IInterceptorHandler, InterceptorHandler>();
             services.AddScoped<IInterceptor, JsonStateInterceptor>();
-            services.AddScoped<IInterceptor, StructurizrDslInterceptor>();
             services.AddScoped<IInterceptor, StateFileSaveInterceptor>();
             services.AddSingleton<StateHasChangedInterceptorService>();
             services.AddScoped<IInterceptor, StateHasChangedInterceptor>();
             services.AddScoped<IInterceptor, EmbeddingsInterceptor>();
-            services.AddScoped<IInterceptor, PluginInterceptor>();
+            services.AddScoped<IInterceptor, HandleBarsPluginsInterceptor>();
             services.AddScoped<PluginsRepository>();
             services.AddScoped<InterceptorRepository>();
-            services.AddScoped<IInterceptor, PluginInterceptor>();
+            services.AddScoped<IInterceptor, HandleBarsPluginsInterceptor>();
+
+            services.AddScoped<ConversationInterop>();
+
+            services.AddScoped<ModelConfigurationService>();
+            services.AddScoped<InterceptorConfigurationService>();
+            services.AddScoped<PluginsConfigurationService>();
+
+            services.AddSingleton<ConversationTreeState>();
+
+            services.AddScoped<UserStorageService>();
+
+            services.AddSingleton<CurrentConversationState>();
+            services.AddTransient<FunctionCallingFilter>();
+
+
+            return services;
         }
+
     }
 }

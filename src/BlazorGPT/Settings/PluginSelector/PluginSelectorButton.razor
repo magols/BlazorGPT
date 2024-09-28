@@ -1,0 +1,44 @@
+ <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings" Disabled="!Enabled">
+    Plugins
+    @if (BrowserData != null && BrowserData.Any())
+    {
+        <RadzenBadge Text="@BrowserData.Count.ToString()" BadgeStyle="BadgeStyle.Success" />
+    }
+</RadzenButton>
+@code
+{
+    [Parameter]  public string? Class { get; set; }
+    [Parameter]  public bool Enabled { get; set; }
+    [Inject] DialogService? DialogService { get; set; }
+
+    [Inject] public required PluginsConfigurationService PluginsConfigurationService { get; set; }
+    [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+
+    List<PluginSelection>? BrowserData { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+             await GetSelectionsFromLocalStorage();
+            StateHasChanged();
+        }
+    }
+
+    private async Task OpenSettings()
+    {
+        await DialogService!.OpenAsync<PluginsList>("Plugin selection", options: new DialogOptions()
+        {
+            CloseDialogOnOverlayClick = true,
+        });
+
+        await GetSelectionsFromLocalStorage();
+    }
+
+    private async Task GetSelectionsFromLocalStorage()
+    {
+        BrowserData = await PluginsConfigurationService!.GetConfig();
+        StateHasChanged();
+    }
+}

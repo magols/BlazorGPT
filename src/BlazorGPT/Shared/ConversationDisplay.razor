@@ -3,6 +3,8 @@
 {
     <div id="message-pane" class="scroll-pane" style="@Style">
         <BranchedFrom Conversation="@Conversation"/>
+        
+        @Head
 
         @if (Conversation.Messages.Any())
         {
@@ -14,7 +16,7 @@
                     InitialSystemPrompt="@InitialSystemPrompt"
                     Message="Conversation.Messages.FirstOrDefault()"
                     MessagesCount="Conversation.Messages.Count()" 
-                    ShowEditButton="Conversation.IsStarted()"
+                    ShowEditButton="false"
                 />
                 
             }
@@ -38,7 +40,7 @@
                     @if (Conversation.Messages.IndexOf(message) == 1 && Conversation.SKPlan != null)
                     {
 
-                        <SKPlan PlanAsString="@Conversation.SKPlan"></SKPlan>
+                        <ActionLog Title="Planner log" PlanAsString="@Conversation.SKPlan"></ActionLog>
                     }
             }
         }
@@ -55,6 +57,9 @@
 
     [Parameter]
     public Conversation? Conversation { get; set; }
+
+    [Parameter]
+    public RenderFragment Head { get; set; }
 
     [Parameter]
     public string? Style { get; set; }

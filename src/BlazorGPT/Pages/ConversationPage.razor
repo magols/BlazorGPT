@@ -1,278 +1,192 @@
 ﻿@page "/conversation/{ConversationId:guid?}"
 @page "/conversation/{ConversationId:guid?}/{MessageId:guid?}"
-
 @attribute [Authorize]
 
 @code {
-    private bool _browserIsSmall = true;
-
-    private async Task CancelSend()
-    {
-        await _cancellationTokenSource.CancelAsync();
-    }
-
-    [Inject]
-    public NotificationService NotificationService { get; set; } = null!;
-
-    private async Task RestartConversation(ConversationMessage msg)
-    {
-        var result = await DialogService.Confirm("Restart conversation from here?", "Restart");
-        if (result.HasValue && result.Value)
-        {
-            var isUserMsg = msg.Role == "user";
-            if (isUserMsg)
-            {
-                Model.Prompt = msg.Content.Trim();
-            }
-
-            var messageCutoff = Conversation.Messages.IndexOf(msg) + 1;
-
-            var messagesToRemove = Conversation.Messages.Skip(messageCutoff).ToList();
-            await ConversationsRepository.DeleteMessages(messagesToRemove);
-
-            Conversation.Messages = Conversation.Messages.Take(messageCutoff).ToList();
-
-            await SendConversation(rerun: true);
-
-            StateHasChanged();
-
-            NotificationService.Notify(NotificationSeverity.Success, "Conversation restarted");
-        }
-    }
-
 
     private async Task CopyConversation(ConversationMessage msg)
     {
         var result = await DialogService.OpenAsync("Copy conversation from here?", ds =>
-    @<div>
-        <div class="row">
-            <div class="col">
-                @{
-                    var newName = "";
-                }
-                <RadzenLabel Text="Enter a name for the copied conversation"></RadzenLabel><br />
-                <RadzenTextBox class="mt-2 mb-2 textarea-full-width" @bind-Value="newName">as</RadzenTextBox><br />
-                <RadzenButton Text="Ok" Click="async () => {await Copy(msg, newName); ds.Close(newName);}" class="me-1" Style="width: 80px;" />
-                <RadzenButton Text="Cancel" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Light" class="me-1" />
+            @<div>
+                <div class="row">
+                    <div class="col">
+                        @{
+                            var newName = "";
+                        }
+                        <RadzenLabel Text="Enter a name for the copied conversation"></RadzenLabel><br />
+                        <RadzenTextBox class="mt-2 mb-2 textarea-full-width" @bind-Value="newName">as</RadzenTextBox><br />
+                        <RadzenButton Text="Ok" Click="async () => {await Copy(msg, newName); ds.Close(newName);}" class="me-1" Style="width: 80px;" />
+                        <RadzenButton Text="Cancel" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Light" class="me-1" />
 
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>);
+    );
     }
-
-    private async Task StateClicked()
-    {
-        if (Interop != null)
-        {
-            var srs = await RenderType();
-            await Interop.OpenStateViewer("conversation", Conversation.Id!.ToString() ?? string.Empty, srs);
-        }
-    }
-
-    private async Task Copy(ConversationMessage msg, string newName)
-    {
-        var newConvo = await ConversationsRepository.BranchFromMessage(UserId, msg, newName, Conversation);
-
-        //msg.BranchedConversations.Add(newConvo);
-
-        //await ConversationsRepository.SaveMessage(msg);
-
-        NavigationManager.NavigateTo("/conversation/" + newConvo.Id);
-        await _conversations.LoadConversations();
-        NotificationService.Notify(NotificationSeverity.Success, "Conversation branched");
-    }
-
-    private string ConversationDisplayStyle()
-    {
-        if (browser.Height == 0 || controlHeight == 0)
-        {
-            return "";
-        }
-        var height = browser.Height - controlHeight;
-        return $"height: {height}px";
-    }
-
-    private async Task ShareClicked()
-    {
-        await Interop.OpenWindow("/share/" + ConversationId);
-    }
+}
+@if (Conversation.HasStarted())
+{
+    <PageTitle>@Conversation?.Summary</PageTitle>
+}
+else
+{
+    <PageTitle>New Conversation</PageTitle>
 
 }
 
 <SectionContent SectionName="heading">
     @if (!BotMode)
     {
-        <div class="m-0 p-0">
-            <a href="#" class="rz-link" @onclick="GoToNew">
-                <span class="material-symbols-outlined">
-                    add_circle
-                </span>
-            </a>
-            @Conversation.Summary
-        </div>
+                <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="ms-1 me-3"/>
+                <span class="truncate">@Conversation.Summary</span>
     }
 </SectionContent>
 
-
 <CascadingValue Name="Conversation" Value="Conversation">
+<CascadingValue Name="BotMode" Value="BotMode">
+    <CascadingValue Name="ShowActionLog" Value="ShowActionLog">
 
-<!-- conv page start -->
-<div class="container-fluid demodemo @Class" style="@Style">
-    <div class="row">
-        <div class="col">
-            @if (!Conversation.IsStarted())
-            {
-                @ChildContent
-            }
-            @if (Conversation != null)
-            {
-                <ConversationDisplay  BotMode="BotMode"
-                                     InitialSystemPrompt="@(Conversation.HasStarted() ? Conversation.Messages.FirstOrDefault(o => o.Role == "system")?.Content : null)"
-                                     Conversation="Conversation"
-                                     ShowBranches="true"
-                                     RestartConversation="RestartConversation"
-                                     CopyConversation="CopyConversation"
-                                     Style="@ConversationDisplayStyle()"/>
+        <!-- conv page start -->
+        <div id="conversationframe" class="container-fluid @Class conversationframe m-0" style="@Style">
+            <div class="row">
+                <div class="col">
+                    <ConversationDisplay BotMode="BotMode"
+                                         InitialSystemPrompt="@(Conversation.HasStarted() ? Conversation.Messages.FirstOrDefault(o => o.Role == "system")?.Content : null)"
+                                         Conversation="Conversation"
+                                         ShowBranches="true"
+                                         RestartConversation="RestartConversation"
+                                         CopyConversation="CopyConversation"
+                                         Style="@ConversationDisplayStyle()">
+                        <Head>
+                            @ChildContent
+                        </Head>
+                    </ConversationDisplay>
 
-            }
-        </div>
-        @if (!BotMode)
-        {
-            <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">
-                <Conversations @ref="_conversations"></Conversations>
-
-            </div>
-        }
- 
-    </div>
-    
- 
-    <div class="row sticky-bottom mt-auto mb-0 pb-0 pt-0">
-        <div id="control" class="col mt-0 mb-0 pb-0 pt-0 me-3">
-            @if (BotMode)
-            {
-                <EditForm Model="@Model" OnValidSubmit="@SendConversation">
-                    <div id="message-box" @onkeydown="async obj => await OnPromptKeyUp(obj)"
-                         @onkeydown:preventDefault="@preventDefaultKey">
-
-                        <RadzenTextArea @ref="_promptField2"
-                                        @bind-value="@Model.Prompt"
-                                        class="form-control"
-                                        Rows="2"
-                                        Disabled="IsBusy">
-                        </RadzenTextArea>
-                    </div>
-                    <div class="mt-4">
-                        <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-                        <ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
-                        @if (UseFileUpload)
-                        {
-                            <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
-                                      OnSyncFiles="FileAreaSynced" 
-                                      FolderName="@Conversation.Id?.ToString()" />
-                        }
-                    </div>
-
-                    <span class="float-end mt-2 mb-0">
-                        <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
-                        <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
-                    </span>
-
-                </EditForm>
-            } 
-            else {
-            
-                <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
-                    <Tabs>
-                        <RadzenTabsItem Text="Conversation" class="m-0 p-0">
-
-                            <EditForm Model="@Model" OnValidSubmit="@SendConversation">
-                                <QuickProfileSelector @ref="_profileSelectorStart" InsertAt="InsertAt.Before" ShowLegend="true" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
-
-                                <div id="message-box"  @onkeydown="async obj => await OnPromptKeyUp(obj)"
-                                     @onkeydown:preventDefault="@preventDefaultKey">
-
-                                    <RadzenTextArea   @ref="_promptField2"
-                                                      @bind-value="@Model.Prompt" 
-                                            
-                                                      class="form-control" 
-                                                      Rows="2"
-                                                
-                                                      Disabled="IsBusy">
-                                    </RadzenTextArea>
-                                </div>
-
-
-                                <RadzenButton Disabled="!Conversation.HasStarted()" Icon="share" Click="ShareClicked" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Class="float-end mt-3" />
-                                <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClickedd="ApplyEndProfile" />
-
-
-                                <div class="mt-4">
-                                    <RadzenButton Class="m-0" Size="ButtonSize.Medium" Text="Send" ButtonType="ButtonType.Submit" IsBusy="IsBusy" BusyText="Working..." Icon="send" Disabled="@(!promptIsReady)"></RadzenButton>
-
-                                    <PluginSelectorButton Class="m-1 me-3 p-1 float-end" />
-                                    <InterceptorSettingsButton Class="m-1 me-3 p-1  float-end" />
-                                    <ModelSettingsButton Class="m-1 me-3 p-1 float-end" />
-
-                                    <RadzenButton Class="mt-1" Size="ButtonSize.Small" Text="Cancel" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend"></RadzenButton>
-
-                                </div>
-
-                                <span class="float-end mt-2 mb-0">
-
-                                    <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
-
-                                    <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
-
-                                </span>
-                                
-                                @if (UseFileUpload)
+                        <div class="row sticky-bottom mt-auto">
+                            <div id="control" class="col m-3 mb-0 p-1 pb-2 mb-0 mt-2 pt-0">
+                                @if (BotMode)
                                 {
-                                    <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))" 
-                                              OnSyncFiles="FileAreaSynced" 
-                                              FolderName="@Conversation.Id?.ToString()" />
-                                }
-                          
+                                    <div id="bot-control">
+                                        <EditForm Model="@Model" OnValidSubmit="@SendConversation">
+                                            <div id="message-box" @onkeydown="async obj => await OnPromptKeyUp(obj)"
+                                                 @onkeydown:preventDefault="@preventDefaultKey">
+                                                 
+                                                <div class="row">
+                                                    <div class="input-group">
+                                                        <RadzenTextArea @ref="_promptField2"
+                                                                        @bind-value="@Model.Prompt"
+                                                                        class="form-control"
+                                                                        Rows="2"
+                                                                        Disabled="IsBusy"
+                                                                        @oninput="@OnPromptInput"
+                                                                        @onkeyup="OnPromptKeyUp" />
+                                                        <RadzenButton Class="m-0"  Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary"   ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
+                                                        <RadzenButton Class="mt-1" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
 
-                            </EditForm>
-                        </RadzenTabsItem>
-                        <RadzenTabsItem Text="Scripts">
-                            @if (ScriptsDdn?.Scripts.Count() == -1)
-                            {
-                                <div>
-                                    <RadzenText>
-                                        You do not have any scripts.
-                                        <RadzenLink Path="/scripts"> Create one here</RadzenLink>.
-                                    </RadzenText>
-                                </div>
-                            }
-                            else
-                            {
-                                <div>
-                                    <div>
-                                        <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col mt-3">
+                                                        @ButtonContent
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @if (UseFileUpload)
+                                            {
+                                                <div class="mt-4">
+
+                                                    <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"
+                                                              OnSyncFiles="FileAreaSynced"
+                                                              FolderName="@Conversation.Id?.ToString()" />
+                                                </div>
+
+                                            }
+                                        </EditForm>
                                     </div>
 
-                                </div>
+                                }
+                                else
+                                {
+                                    <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
+                                        <Tabs>
+                                            <RadzenTabsItem Text="Conversation" class="m-0 p-0">
 
-                                <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
-                                <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
-                            }
-                        </RadzenTabsItem>
-                        <RadzenTabsItem Text="Tools">
-                            <RadzenButton class="" Icon="" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Click="Summarize" Disabled="@(Conversation.Messages.Count < 3)">Summarize to title</RadzenButton>
+                                                <EditForm Model="@Model" OnValidSubmit="@SendConversation">
+                                                    <QuickProfileSelector @ref="_profileSelectorStart" InsertAt="InsertAt.Before" ShowLegend="true" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClicked="StartProfileClicked" />
 
-                        </RadzenTabsItem>
-                    </Tabs>
-                </RadzenTabs>
-            }
+
+                                                    <div id="message-box">
+
+                                                        <div class="row">
+                                                            <div class="input-group">
+                                                                <RadzenTextArea @ref="_promptField2"
+                                                                                @bind-value="@Model.Prompt"
+                                                                                class="form-control"
+                                                                                Rows="2"
+                                                                                Disabled="IsBusy"
+                                                                                @oninput="@OnPromptInput"
+                                                                                @onkeyup="OnPromptKeyUp" />
+                                                                <RadzenButton Class="m-0" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary"  ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
+                                                                <RadzenButton Class="mt-1" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClicked="ApplyEndProfile" />
+                                                    <SettingsButtonPanel />
+
+                                                    <span class="float-end mt-2 mb-0">
+                                                        <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
+                                                        <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
+                                                    </span>
+
+                                                    @if (UseFileUpload)
+                                                    {
+                                                        <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"
+                                                                  OnSyncFiles="FileAreaSynced"
+                                                                  FolderName="@Conversation.Id?.ToString()" />
+                                                    }
+
+                                                </EditForm>
+                                            </RadzenTabsItem>
+                                            <RadzenTabsItem Text="Scripts">
+                                                @if (ScriptsDdn?.Scripts.Count() == -1)
+                                                {
+                                                    <div>
+                                                        <RadzenText>
+                                                            You do not have any scripts.
+                                                            <RadzenLink Path="/scripts"> Create one here</RadzenLink>.
+                                                        </RadzenText>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <ScriptsDropdown @ref="ScriptsDdn" OnClickCallbackGuid="RunScript" SetInitial="false" SetIsWorking="@IsBusy" />
+                                                    <div>
+                                                        <RadzenTextArea @bind-Value="scriptInput" Rows="2" class="form-control" Disabled="IsBusy" />
+                                                    </div> 
+                                                    <RadzenText TextStyle="TextStyle.Overline" class="float-end p-3">Tip: If your scripts first step includes a {0} your prompt will be inserted there</RadzenText>
+                                                }
+                                            </RadzenTabsItem>
+                                        </Tabs>
+                                    </RadzenTabs>
+                                }
+
+                            </div>
+                        </div>
+                </div>
+               
+                @if (!BotMode)
+                {
+                    <div class="col-sm-4 d-none d-lg-block" style="overflow-x: hidden; overflow-y: auto;">
+                        <Conversations @ref="_conversations"></Conversations>
+                    </div>
+                }
+            </div>
         </div>
-        <div class="col-sm-4 d-none d-lg-block"></div>
-    
-  
-      
-    </div>
-
-</div>
-
+    </CascadingValue>
+</CascadingValue>
 </CascadingValue>

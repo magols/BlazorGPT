@@ -1,14 +1,16 @@
 ﻿@inherits LayoutComponentBase
 @layout AccountLayout
 
-<h1>Manage your account</h1>
-
 <div>
+    
+    <!-- link back to start page -->
+    <a href="/" class="btn btn-secondary mb-5">Back</a>
+
     <h2>Change your account settings</h2>
-    <hr />
+    <hr/>
     <div class="row">
         <div class="col-md-3">
-            <ManageNavMenu />
+            <ManageNavMenu/>
         </div>
         <div class="col-md-9">
             @Body

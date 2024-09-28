@@ -9,57 +9,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/" />
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css" type="text/css" />
-    <link href="/lib/font-awesome/css/fontawesome.css" rel="stylesheet">
-
-    <link href="/lib/font-awesome/css/solid.css" rel="stylesheet">
-    
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-
-    <link rel="stylesheet" href="/css/material-dark-base.css">
+    <link rel="stylesheet" href="/css/dark.css">
     <link href="BlazorGPT.Web.styles.css" rel="stylesheet" />
-
-    <link href="_content/BlazorGPT/BlazorGPT.bundle.scp.css" rel="stylesheet" />
-    
-
-    <link rel="stylesheet" href="/css/radzen-custom.css">
     <link href="css/site.css" rel="stylesheet" />
+    <link href="css/deisolated.css" rel="stylesheet" />
 
-    <HeadOutlet @rendermode="@RenderModeForPage" />
+    <HeadOutlet/>
 
 </head>
 
-<body class="d-flex flex-column h-100">
-@* <CascadingAuthenticationState> *@
-    
-    <CascadingValue Name="UserId" Value="UserId">
+    <body class="d-flex flex-column h-100">
+        <CascadingValue Name="UserId" Value="UserId">
+            <Routes @rendermode="RenderModeForPage" />
+        </CascadingValue>
 
-    <Routes @rendermode="@RenderModeForPage"/>
-    </CascadingValue>
+    <script src="_framework/blazor.web.js" autostart="false"></script>
+        <script src="js/boot.js"></script>
+        <script src="/lib/bootstrap/js/bootstrap.js"></script>
+        <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+        <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
 
-
-@* </CascadingAuthenticationState> *@
-
-<div id="blazor-error-ui">
-    <environment include="Staging,Production">
-        An error has occurred. This application may no longer respond until reloaded.
-    </environment>
-    <environment include="Development">
-        An unhandled exception has occurred. See browser dev tools for details.
-    </environment>
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
-
-
-<script src="_framework/blazor.web.js"></script>
-<script src="/lib/bootstrap/js/bootstrap.js"></script>
-
-<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-<script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
-
-
-</body>
+        <ReconnectPanel />
+    </body>
 
 </html>
 

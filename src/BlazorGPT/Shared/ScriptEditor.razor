@@ -1,15 +1,15 @@
 @using BlazorGPT.Data
 
-<RadzenCard Style="margin-bottom:20px">
-
-    <b>@Script?.Name</b>
-    <RadzenButton Click="SaveScript" class="float-end">Save Script</RadzenButton>
-
-</RadzenCard>
 
 
 @if (Script != null)
 {
+    <RadzenCard Style="margin-bottom:20px">
+        
+        <RadzenTextBox @bind-Value="@Script.Name" class="w-75" /> 
+        <RadzenButton Click="SaveScript" class="float-end">Save Script</RadzenButton>
+
+    </RadzenCard>
 
     <div class="row">
         <span class="col-3">

@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BlazorGPT.Web-c48be10f-d69c-4f07-a429-1e1b836ce01d</UserSecretsId>
-    <AssemblyVersion>2.7.2.0</AssemblyVersion>
+    <AssemblyVersion>3.0.1.0</AssemblyVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -14,26 +14,33 @@
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="BlazorPro.BlazorSize" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.4" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.46.0" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Radzen.Blazor" Version="4.34.4" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
+    <PackageReference Include="Radzen.Blazor" Version="5.2.4" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="Toolbelt.Blazor.ViewTransition" Version="1.0.3" />
 
   </ItemGroup>
@@ -53,11 +60,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Plugins\BlazorGPT.PrivatePlugins.dll" Condition="Exists('Plugins\BlazorGPT.PrivatePlugins.dll')">
+    <Content Include="Plugins\*.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
 
   <Target Name="CopyDocs" BeforeTargets="Build">
     <ItemGroup>
@@ -66,14 +72,11 @@
     <Copy SourceFiles="@(DocFiles)" DestinationFolder="wwwroot\docs\%(RecursiveDir)" />
   </Target>
 
-
   <Target Name="CopyReadme" BeforeTargets="Build">
     <ItemGroup>
       <ReadMe Include="..\..\README.md" />
     </ItemGroup>
-
-    <!-- only copy if the file exists-->
-        <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" Condition="Exists('..\..\README.md')" />
-    <!--<Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" />-->
+    <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(ProjectDir)\wwwroot\docs\" Condition="Exists('..\..\README.md')" />
   </Target>
+
 </Project>

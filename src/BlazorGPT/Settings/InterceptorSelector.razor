@@ -1,11 +1,6 @@
-@using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Options
 @using BlazorGPT.Pipeline.Interceptors
 @using BlazorGPT.Pipeline
-@using Blazored.LocalStorage
-@using System.Text.Json
-
-
 
 <RadzenCheckBoxList  @ref="list" @bind-Value=@Selected TValue="string" Orientation="Orientation.Vertical"
                     Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
@@ -13,11 +8,14 @@
                     class="@Class">
 </RadzenCheckBoxList>
 
-
 @code {
 
     [Parameter]
     public string? Class { get; set; }
+
+    // event callback parameter
+    [Parameter]
+    public EventCallback<IEnumerable<string>> SelectedInterceptorsChanged { get; set; }
 
     [Inject]
     public IServiceProvider ServiceProvider { get; set; } = null!;
@@ -29,7 +27,7 @@
     public DialogService DialogService { get; set; } = null!;
 
     [Inject] 
-    private ILocalStorageService? LocalStorage { get; set; }
+    public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
 
     [Inject]
     public required InterceptorRepository InterceptorRepository { get; set; }
@@ -53,7 +51,7 @@
     {
         if (firstRender)
         {
-            Selected = await GetSelectionsFromLocalStorage();
+            Selected = await GetBrowserSettings();
             StateHasChanged();
         }
     }
@@ -72,29 +70,17 @@
     public RadzenCheckBoxList<string> list { get; set; }
 
 
-    private async Task<ICollection<string>>  GetSelectionsFromLocalStorage()
-    {
-        if (LocalStorage != null)
-        {
-            var data = await LocalStorage.GetItemAsync<ICollection<string>>("bgpt_interceptors");
-            if (data != null)
-                return data;
-        }
-        return new List<string>();
-    }
+    private async Task<IEnumerable<string>?> GetBrowserSettings() => await InterceptorConfigurationService.GetConfig();
+    // {
+ 
+    //     var data = await InterceptorConfigurationService.GetConfig();
+    //     return data;
+    // }
 
     List<string>? BrowserData { get; set; }
 
     private async Task SetSelectionsInLocalStorage()
-    {
-        if (LocalStorage != null)
-        {
-            await LocalStorage.SetItemAsync("bgpt_interceptors", Selected);
-        }
-    }
-
-    class InterceptorSettings
-    {
-
+    { 
+        await InterceptorConfigurationService.SaveConfig(Selected);
     }
 }

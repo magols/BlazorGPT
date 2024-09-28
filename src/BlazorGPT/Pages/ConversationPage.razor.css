@@ -1,38 +1,20 @@
-﻿#control {
-    /*  position: fixed;
-    bottom: 0;*/
-    /*left: 0;*/
-    width: 100%;
-
-
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
-@media screen and (min-width: 769px) {
-    #message-box {
-        max-width: 85%;
-
-    }
-}
-
-#message-pane {
-    font-size: 13px;
-}
-
-#message-pane pre {
-    background-color: red;
-    padding: 100px;
-}
-
-.scroll-pane {
-
-    
-    background-color: #363636;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-}
+﻿
 
 .rz-tabview-panel {
     padding: 0;
+
+}
+
+.truncate {
+    display: inline-block;
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+    
+@media screen and (min-width: 769px) {
+    .truncate {
+        width: 600px;
+    }
 }

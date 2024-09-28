@@ -1,17 +1,20 @@
-@using BlazorGPT.Data
-
-
-<RadzenDataGrid @ref="grid" TItem="Conversation" Data="Convos"  PageSize="10" AllowPaging="true" class="hide-grid-header" EmptyText="Previous conversations">
+@page "/clist"
+<RadzenDataGrid @ref="grid" id="DAGRID" TItem="Conversation" Data="Convos" ShowPagingSummary="true" class="hide-grid-header" Density="Density.Compact" EmptyText="">
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">
             <Template Context="c">
-                
+                @if (CurrentConversation?.Id == c.Id)
+                {
+                    <RadzenIcon Icon="arrow_right" />
+                }
                 @{
                     string link = "/conversation/" +c.Id;
                     string text = !string.IsNullOrEmpty(c.Summary) ? c.Summary : "No summary";
-
                 }
-                <a href="@link">@text</a>
+                <a href="@link">
+                    
+                    @text
+                </a>
             </Template>
             <EditTemplate Context="c">
                 <RadzenTextBox @bind-Value="@c.Summary" Rows="3" Class="textarea-full-width"></RadzenTextBox>
@@ -39,12 +42,9 @@
 
 </RadzenDataGrid>
 
-@if (Convos.Any())
-{
-    <RadzenLink Path="/conversations" class="">See all</RadzenLink>    
-}
-
-
+<div class="float-end m-3" style="z-index: 1000">
+    <RadzenButton Icon="history" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => NavigationManager.NavigateTo("/conversations"))" @onclick:stopPropagation="true" />
+</div>
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
@@ -52,12 +52,15 @@
     public string? UserId { get; set; } = null!;
 
 
+    [CascadingParameter(Name = "Conversation")]
+    public Conversation? CurrentConversation { get; set; }
+
     [Inject]
     public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
     [Inject]
     public ConversationsRepository ConversationsRepository{ get; set; } = null!;
     [Inject]
-public DialogService DialogService { get; set; } = null!;
+    public DialogService DialogService { get; set; } = null!;
 
 
     [Inject]
@@ -84,8 +87,16 @@ public DialogService DialogService { get; set; } = null!;
 
     public async Task LoadConversations()
     {
-        Convos = await ConversationsRepository.GetConversationsByUserId(UserId);
-    ;
+        Convos = await ConversationsRepository.GetConversationsByUserIdSimple(UserId, 10);
+
+        if (CurrentConversation != null 
+        && CurrentConversation.Id != null
+            
+            && Convos.All(o => o.Id != CurrentConversation?.Id))
+        {
+            Convos.Insert(0, CurrentConversation!);
+        }
+
         StateHasChanged();
     }
 

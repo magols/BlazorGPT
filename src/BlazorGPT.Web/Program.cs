@@ -10,10 +10,33 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using BlazorGPT.Data.Model;
-using BlazorGPT.Settings;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using OpenTelemetry.Logs;
+using Serilog;
+using BlazorGPT.Pipeline;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Services.AddSerilog();
+builder.Services.AddTransient<ILoggerFactory>(b =>
+{
+    var loggerFactory = LoggerFactory.Create(logBuilder =>
+    {
+        logBuilder.SetMinimumLevel(LogLevel.Information);
+        logBuilder.AddOpenTelemetry(options =>
+        {
+            options.AddConsoleExporter();
+
+        });
+    });
+    loggerFactory.AddSerilog();
+    return loggerFactory;
+});
 
 var connectionString = builder.Configuration.GetConnectionString("UserDB") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -21,6 +44,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddBlazorGPT(builder.Configuration);
+// web mode, other apps use FunctionCallingUserConsoleProvider
+builder.Services.AddTransient<IFunctionCallingUserProvider, FunctionCallingUserWebProvider>();
+
+builder.Services.AddTransient<FunctionApprovalFilter>();
+builder.Services.AddTransient<IFunctionApprovalService, FunctionCallingDialogApprovalService>();
+
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -56,12 +85,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddScoped<DialogService>();
-builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<TooltipService>();
-builder.Services.AddScoped<ContextMenuService>();
-builder.Services.AddScoped<ModelConfigurationService>();
-builder.Services.AddScoped<ConversationInterop>();
+builder.Services.AddRadzenComponents();
+
 
 builder.Services.AddMediaQueryService();
 builder.Services.AddScoped<IResizeListener, ResizeListener>();

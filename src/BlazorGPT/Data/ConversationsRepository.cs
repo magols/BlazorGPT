@@ -28,6 +28,26 @@ public class ConversationsRepository
         return res;
     }
 
+
+    // just return the name, id and date started
+    public async Task<List<Conversation>> GetConversationsByUserIdSimple(string userId, int count = 10)
+    {
+        await using var ctx = await _dbContextFactory.CreateDbContextAsync();
+        var res = ctx.Conversations
+            .Where(c => c.UserId == userId && c.Summary != null)
+            .OrderByDescending(c => c.DateStarted)
+            .Select(c => new Conversation
+            {
+                Id = c.Id,
+                Summary = c.Summary,
+                DateStarted = c.DateStarted
+            })
+            .Take(count)
+            .ToList();
+        return res;
+    }
+
+
     // delete all conversations for a user
     public async Task DeleteConversationsByUserId(string userId)
     {

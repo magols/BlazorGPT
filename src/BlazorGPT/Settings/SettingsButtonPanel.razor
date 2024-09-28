@@ -1,0 +1,37 @@
+﻿
+
+<div class="float-end">
+    <ModelSettingsButton />
+    <InterceptorSettingsButton OnSettingsChangedAction="@InterceptorSettingsChanged" />
+    <PluginSelectorButton Enabled="@_showPlugins" />
+</div>
+
+
+@code {
+    [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+    bool _showPlugins;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var list = await InterceptorConfigurationService.GetConfig();
+            InterceptorSettingsChanged(list);
+        }
+    }
+ 
+
+    private void InterceptorSettingsChanged(IEnumerable<string> selectedInterceptors)
+    {
+        if (selectedInterceptors.Any(o => o.ToLower().StartsWith("function calling") || o.ToLower().StartsWith("plugins with handlebars")))
+        {
+            _showPlugins = true;
+        }
+        else
+        {
+            _showPlugins = false;
+        }
+        StateHasChanged();
+    }
+}

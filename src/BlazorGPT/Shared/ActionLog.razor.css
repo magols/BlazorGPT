@@ -1,0 +1,17 @@
+﻿.skplan-step-pending {
+    background-color: grey;
+}
+
+.skplan-step-running {
+background-color: blue;
+
+}
+
+.skplan-step-done {
+    background-color: green;
+}
+
+
+.md-content {
+    font-size: 0.8rem
+}

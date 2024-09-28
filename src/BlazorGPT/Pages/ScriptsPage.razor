@@ -1,112 +1,124 @@
 @page "/scripts"
 @page "/scripts/{ScriptId:guid}"
-@using BlazorGPT.Data
 @using BlazorGPT.Components.Account
-@using System.Security.Claims
 @inject IdentityUserAccessor UserAccessor
 
 @attribute [Authorize]
+<PageTitle>Scripts</PageTitle>
+<div class="container-fluid">
+    <div class="row">
+        <h3>Scripts</h3>
 
-<RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Scripts</RadzenText>
-
-<div class="row">
-    <div class="col-12 col-md-4">
-        
-        <div class="row py-3">
-            <div class="col-12">
-                <RadzenTextBox @bind-Value="newName" Class="textarea-full-width" Placeholder="Enter name" />
-        
-                <RadzenButton Click="CreateScript" Class="textarea-full-width" >Create script</RadzenButton>
-
-            </div>
-        </div>
-        @if (Scripts.Any())
-        {
-            <div>
-                Click on a Script below to edit.
-            </div>
-        }
+    </div>
+    
+    <div class="row">
+        <div class="col">
   
-        
-        <div class="row mt-3"> 
-            <div class="col" id="script-list">
-                <RadzenDataGrid Class="hide-grid-header" @ref="_grid" TItem="Script" Data="@Scripts" 
-                                AllowPaging="true" 
-                                PageSize="5"
-                                SelectionMode="DataGridSelectionMode.Single"
-                                RowSelect="OnSelect"
-                                @bind-Value=@selectedScripts EditMode="DataGridEditMode.Single" 
-                                EmptyText="You don't have any scripts. Create one above.">
-                    <Columns>
-                        <RadzenDataGridColumn TItem="Script" Property="Name" Title="Name">
-                            <Template Context="script">
-                                @script.Name
-                            </Template>
-                            <EditTemplate Context="script">
-                                <RadzenTextBox @bind-Value="@script.Name" ></RadzenTextBox>
-                            </EditTemplate>
+            
+            <div class="row">
+                <div class="col-12 col-md-4">
 
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="Script" TextAlign="TextAlign.End">
-                            <Template Context="script">
-                                @*<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => EditRow(script))" @onclick:stopPropagation="true" />*@
-                                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" Size="ButtonSize.Small" Click="async () => await Del(script)" @onclick:stopPropagation="true" />
+                    <div class="row py-3">
+                        <div class="col-12">
+                            <RadzenTextBox @bind-Value="newName" Class="textarea-full-width" Placeholder="Enter name" />
 
-                            </Template>
-                            <EditTemplate Context="script">
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Outlined" Size="ButtonSize.Small" Click="@(args => SaveRow(script))" />
-                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => CancelEdit(script))" />
+                            <RadzenButton Click="CreateScript" Class="textarea-full-width">Create script</RadzenButton>
 
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
+                        </div>
+                    </div>
+                    @if (Scripts.Any())
+                    {
+                        <div>
+                            Click on a Script below to edit.
+                        </div>
+                    }
 
-                    </Columns>
-                    
-                </RadzenDataGrid>
+
+                    <div class="row mt-3">
+                        <div class="col" id="script-list">
+                            <RadzenDataGrid Class="hide-grid-header" @ref="_grid" TItem="Script" Data="@Scripts"
+                                            AllowPaging="true"
+                                            PageSize="5"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            RowSelect="OnSelect"
+                                            @bind-Value=@selectedScripts EditMode="DataGridEditMode.Single"
+                                            EmptyText="You don't have any scripts. Create one above.">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="Script" Property="Name" Title="Name">
+                                        <Template Context="script">
+                                            @script.Name
+                                        </Template>
+                                        <EditTemplate Context="script">
+                                            <RadzenTextBox @bind-Value="@script.Name"></RadzenTextBox>
+                                        </EditTemplate>
+
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="Script" TextAlign="TextAlign.End">
+                                        <Template Context="script">
+                                            @*<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(args => EditRow(script))" @onclick:stopPropagation="true" />*@
+                                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" Size="ButtonSize.Small" Click="async () => await Del(script)" @onclick:stopPropagation="true" />
+
+                                        </Template>
+                                        <EditTemplate Context="script">
+                                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Outlined" Size="ButtonSize.Small" Click="@(args => SaveRow(script))" />
+                                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => CancelEdit(script))" />
+
+                                        </EditTemplate>
+                                    </RadzenDataGridColumn>
+
+                                </Columns>
+
+                            </RadzenDataGrid>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-12 col-md-8">
+                    @if (selectedScripts != null && selectedScripts.Any())
+                    {
+
+                        <ScriptEditor ScriptId="SelectedScript.Id"></ScriptEditor>
+
+
+                    }
+                </div>
 
             </div>
+
+
+            <hr />
+
+
+            <RadzenCard class="col-12 col-md-8">
+
+
+                <RadzenText TextStyle="TextStyle.Subtitle1">
+                    For each Script, define one or more Script Steps.
+
+                </RadzenText>
+
+                <RadzenText TextStyle="TextStyle.Body2">
+                    Each step will be executed in order as a follow up question/instruction to the previous step.
+                </RadzenText>
+            </RadzenCard>
+            <RadzenCard class="col-12 col-md-8">
+
+                <RadzenText TextStyle="TextStyle.Subtitle1">If your first step includes {0} your prompt will be inserted there.</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body2">
+                    Example: Your script step is "Write an blog post about {0}" <br />
+                    And your prompt is "Jerry Seinfeld" the message sent is "Write an blog post about Jerry Seinfeld"<br />
+
+                </RadzenText>
+                @*<b ></b> *@
+                <br />
+
+            </RadzenCard>
+
+
         </div>
-
-    </div>
-    <div class="col-12 col-md-8">
-        @if (selectedScripts != null && selectedScripts.Any()) {
-    
-            <ScriptEditor ScriptId="SelectedScript.Id"></ScriptEditor>
-        
-    
-        }
-    </div>
-
+        </div>
 </div>
-
-
-<hr/>
-
-
-<RadzenCard class="col-12 col-md-8">
-    
-    
-    <RadzenText TextStyle="TextStyle.Subtitle1">
-        For each Script, define one or more Script Steps.
-
-    </RadzenText>
-    
-    <RadzenText TextStyle="TextStyle.Body2">
-        Each step will be executed in order as a follow up question/instruction to the previous step.
-    </RadzenText>
-</RadzenCard>
-<RadzenCard class="col-12 col-md-8">
-
-    <RadzenText TextStyle="TextStyle.Subtitle1">If your first step includes {0} your prompt will be inserted there.</RadzenText>
-    <RadzenText TextStyle="TextStyle.Body2">
-        Example: Your script step is "Write an blog post about {0}" <br/>
-        And your prompt is "Jerry Seinfeld" the message sent is "Write an blog post about Jerry Seinfeld"<br />
-
-    </RadzenText>
-    @*<b ></b> *@
-    <br />
-       
-</RadzenCard>
 
 
 @code {

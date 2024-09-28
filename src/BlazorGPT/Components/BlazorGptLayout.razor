@@ -1,58 +1,92 @@
-﻿@using BlazorPro.BlazorSize
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
+@rendermode  InteractiveServer
 <MediaQueryList>
     <RadzenDialog/>
     <RadzenNotification/>
     <RadzenTooltip/>
     <RadzenContextMenu/>
 
-    <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
+    <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'">
+
         <RadzenHeader>
+
             <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <RadzenButton Click="@SidebarToggleClick"
+                                      Icon="menu"
+                                      Variant="Variant.Outlined"
+                                      ButtonStyle="ButtonStyle.Info"
+                                      Visible="!sidebarExpanded"
+                                      class=""/>
 
-                <div class="row me-0 pe-0  justify-content-start align-items-center bg-dark">
+                        <AuthorizeView>
+                            <Authorized>
+                                <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
 
-                    <div class="col-9 p-0 m-0">
+                            </Authorized>
+                        </AuthorizeView>
 
-
-                        <div class="p-2">
-                            <RadzenIcon @onclick="@SidebarToggleClick"
-                                        Icon="menu"
-                                        IconStyle="IconStyle.Info"
-                                        class="float-start m-2 mt-0  p-0" />
-                            <SectionOutlet SectionName="heading" />
-                        </div>
+                        <SectionOutlet SectionName="heading"/>
 
                     </div>
-                    <div class="col-3 d-flex align-items-center justify-content-end">
-                        <LoginDisplay/>
-                    </div>
+
                 </div>
             </div>
         </RadzenHeader>
-        <RadzenBody Expanded="@sidebarExpanded">
-            <div class="container-fluid ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
+    
+        <RadzenSidebar id="sidebar" Expanded="sidebarExpanded" Responsive="false">
+           
+            <RadzenButton Click="@SidebarToggleClick"
+                          Icon="menu_open"
+                          Variant="Variant.Outlined"
+                          ButtonStyle="ButtonStyle.Info"
+                          Visible="sidebarExpanded"
+                          class="float-end m-2"/>
+
+            <RadzenPanelMenu>
+
+
+                <RadzenPanelMenuItem Text="BlazorGPT" Path="/"/>
+                
+                <AuthorizeView>
+                    <Authorized>
+                        <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" Click="GoToNew" />
+                        <RadzenPanelMenuItem Icon="history" Text="History" Path="conversations" />
+                        <hr/>
+                        <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts" />
+
+                        <RadzenPanelMenuItem Icon="people" Text="Quick profiles" Path="quickprofiles"/>
+                        <RadzenPanelMenuItem Icon="format_list_numbered" Text="Scripts" Path="scripts"/>
+                    </Authorized>
+                </AuthorizeView>
+
+
+
+            </RadzenPanelMenu>
+            <hr/>
+            <LoginDisplay/>
+
+
+            <div class="py-3 py-md-4" style="padding: var(--rz-panel-menu-item-padding);">
+                <RadzenText Text="BlazorGPT v3" TextStyle="TextStyle.Caption" style="color: var(--rz-text-disabled-color);" TagName="TagName.P" TextAlign="TextAlign.Center"/>
+            </div>
+        </RadzenSidebar>
+
+        <RadzenBody id="layout-body">
+            <div class="container-fluid p-0 ps-0 pe-0 pt-2 pt-md-2 pt-lg-2 pt-xl-2" style="max-width: 1440px;">
                 <div class="row">
                     <div class="col">
                         @Body
                     </div>
                 </div>
             </div>
-        </RadzenBody>
-        <RadzenSidebar Expanded="@sidebarExpanded" style="z-index: 2">
-            <RadzenPanelMenu>
-                <RadzenPanelMenuItem Text="Home" Path="/"/>
-                <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" @onclick:stopPropagation="true" Target="_top" />
-                <RadzenPanelMenuItem Icon="question_answer" Text="Conversations" Path="conversations"/>
-                <RadzenPanelMenuItem Icon="people" Text="Quick profiles" Path="quickprofiles"/>
-                <RadzenPanelMenuItem Icon="format_list_numbered" Text="Scripts" Path="scripts"/>
-                <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts"/>
-
-            </RadzenPanelMenu>
-
-            <div class="py-3 py-md-4" style="padding: var(--rz-panel-menu-item-padding);">
-                <RadzenText Text="BlazorGPT v2" TextStyle="TextStyle.Caption" style="color: var(--rz-text-disabled-color);" TagName="TagName.P" TextAlign="TextAlign.Center"/>
+            <div id="blazor-error-ui" data-nosnippet>
+                An unhandled error has occurred.
+                <a href="." class="reload">Reload</a>
+                <span class="dismiss">🗙</span>
             </div>
-        </RadzenSidebar>
+        </RadzenBody>
+
     </RadzenLayout>
 </MediaQueryList>

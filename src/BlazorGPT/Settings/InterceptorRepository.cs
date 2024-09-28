@@ -18,7 +18,7 @@ namespace BlazorGPT.Settings
 
 
             var externalInterceptors = LoadExternal();
-            return internalInterceptors.Concat(externalInterceptors);
+            return internalInterceptors.Concat(externalInterceptors).OrderBy(o => o.Name);
         }
 
         public IEnumerable<IInterceptor> LoadInternal()

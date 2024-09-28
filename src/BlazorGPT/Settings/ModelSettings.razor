@@ -11,10 +11,18 @@
     </div>
     <RadzenRadioButtonList TValue="ChatModelsProvider" @bind-Value=@model.Provider Change="OnModelsProviderChange">
         <Items>
-            <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI"/>
-            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="ChatModelsProvider.AzureOpenAI"/>
-            <RadzenRadioButtonListItem Text="Ollama" Value="ChatModelsProvider.Ollama"/>
-            @* <RadzenRadioButtonListItem Text="Local" Value="ChatModelsProvider.Local"/> *@
+            @if (!PipelineOptions.Value.Providers.OpenAI.ApiKey.IsNullOrEmpty())
+            {
+                <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI"/>
+            }
+            @if (!PipelineOptions.Value.Providers.AzureOpenAI.ApiKey.IsNullOrEmpty())
+            {
+                <RadzenRadioButtonListItem Text="AzureOpenAI" Value="@ChatModelsProvider.AzureOpenAI"/>
+            }
+            @if (!PipelineOptions.Value.Providers.Ollama.ChatModel.IsNullOrEmpty())
+            {
+                <RadzenRadioButtonListItem Text="Ollama" Value="@ChatModelsProvider.Ollama"/>
+            }
         </Items>
     </RadzenRadioButtonList>
     <div class="row m-3">
@@ -61,10 +69,19 @@
     </div>
     <RadzenRadioButtonList TValue="EmbeddingsModelProvider" @bind-Value=@model.EmbeddingsProvider Change="OnEmbeddingsModelsProviderChange">
         <Items>
-            <RadzenRadioButtonListItem Text="OpenAI" Value="@EmbeddingsModelProvider.OpenAI" />
-            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="EmbeddingsModelProvider.AzureOpenAI" />
-            <RadzenRadioButtonListItem Text="Ollama" Value="EmbeddingsModelProvider.Ollama" />
-            @* <RadzenRadioButtonListItem Text="Local" Value="EmbeddingsModelProvider.Local" /> *@
+            @if (!PipelineOptions.Value.Providers.OpenAI.ApiKey.IsNullOrEmpty())
+            {
+                <RadzenRadioButtonListItem Text="OpenAI" Value="@EmbeddingsModelProvider.OpenAI"/>
+            }
+            @if (!PipelineOptions.Value.Providers.AzureOpenAI.ApiKey.IsNullOrEmpty())
+            {
+                <RadzenRadioButtonListItem Text="AzureOpenAI" Value="EmbeddingsModelProvider.AzureOpenAI"/>
+            }
+            
+            @if ((!PipelineOptions.Value.Providers.Ollama.ChatModel.IsNullOrEmpty()))
+            {
+                <RadzenRadioButtonListItem Text="Ollama" Value="EmbeddingsModelProvider.Ollama"/>
+            }
         </Items>
     </RadzenRadioButtonList>
     <div class="row m-3">
@@ -91,7 +108,6 @@
 
     [Inject]
     ModelConfigurationService? ModelConfigurationService { get; set; }
-
     ModelConfiguration model = new();
 
     

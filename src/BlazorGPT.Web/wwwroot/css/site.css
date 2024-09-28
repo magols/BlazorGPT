@@ -21,7 +21,7 @@
     padding: 0.6rem 1.25rem 0.7rem 1.25rem;
     position: fixed;
     width: 100%;
-    z-index: 1000;
+    z-index: 20000;
 }
 
     #blazor-error-ui .dismiss {
@@ -48,44 +48,28 @@ html {
 body {
     font-family: var(--rz-text-font-family);
     color: var(--rz-text-color);
-    font-size: var(--rz-body-font-size);
     line-height: var(--rz-body-line-height);
     background-color: var(--rz-body-background-color);
     width: 100%;
     height: auto;
     overflow-x: hidden;
+    --bs-code-color: #f0e68c;
+    font-size: 0.9rem;
+
+    --rz-grid-stripe-background-color: #252525;
 }
 
-
-:root {
-    /*font-size: var(--rz-root-font-size);*/
-    font-size: 14px;
-    --rz-body-background-color: #272727;
-    --rz-base-background-color: #202020;
-    --rz-secondary: #9E9E9E;
-    --rz-primary: #5c6bc0;
-    --rz-primary-dark: #283593;
-    --rz-primary-darker: #1a237e;
-    --rz-primary-light: #5c6bc0;
-    --rz-primary-lighter: #c5cae9;
-    --rz-secondary-dark: #616161;
-    --rz-secondary-darker: #424242;
-    --rz-secondary-lighter: #bdbdbd;
-    --rz-secondary-light: #f5f5f5;
+:root:has(.rz-layout) {
+    --rz-sidebar-width: 250px;
     --rz-link-color: #51b269;
     --rz-link-hover-color: #89f89e;
-    --rz-grid-stripe-background-color: #252525;
-    --rz-sidebar-width: 220px;
 }
+
+
 
 .rz-card {
     margin: 8px;
 }
-
-.rz-body {
-    --rz-body-padding: 0;
-}
-
  
 .hide-grid-header thead {
     display: none;
@@ -109,3 +93,73 @@ body {
     /*color: darkgreen;*/
     font-size: smaller;
 }
+
+#sysprompt-dropdown-label > span {
+    font-size: 0.8rem;
+}
+
+
+.qp-button {
+    margin: 2px;
+   
+}
+
+
+.message {
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+
+.message-role-system {
+    background-color: #181818;
+    border-color: #242424;
+}
+
+.message-role-user {
+    background-color: #212121;
+    border-color: #484848;
+}
+
+.message-role-assistant {
+    background-color: #141414;
+    border-color: #424242;
+}
+
+
+.message-icon-system {
+    color: #d4d3b3;
+}
+
+.message-icon-user {
+    color: #4a9f5e;
+}
+
+.message-icon-assistant {
+    color: #2dacc1;
+}
+
+
+.message-action-restart {
+    --rz-text-color: #99d7ff;
+}
+ 
+.message-action-state {
+}
+
+.message-action-edit {
+}
+
+.message-action-copy {
+    --rz-text-color: #099c1d;
+}
+
+
+
+.actionlog .rz-panel-titlebar {
+    flex-direction: row-reverse;
+    justify-content: left;
+ 
+}
+

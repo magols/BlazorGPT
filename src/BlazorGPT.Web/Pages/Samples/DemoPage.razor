@@ -1,0 +1,69 @@
+@page "/samples/demo/{ConversationId:guid?}"
+@inherits SamplePage
+@* @layout EmptyLayout *@
+<PageTitle>Demo todo sample</PageTitle>
+<div class="container">
+    <div class="row">
+        <div class="col-12  mx-auto">
+            <ConversationPage @ref="ConversationPage" Style="z-index: 50;" 
+                              UserId="@UserId" 
+                              ShowActionLog="true"
+                              BotMode="false"
+                              BotSystemInstruction="You are an assistant who helps keep a todo list. The list is shared by all users. Do not insert duplicates, handle dupes without mentioning them. Anwser in a thoughtful layout in the markdown format"
+                              NewDestinationPrefix="@NewPath"
+                              ConversationId="@ConversationId"
+                              MessageId="@MessageId">
+                <ChildContent>
+                    <div class="container mt-5 mb-5">
+                        <div class="row row-cols-1 row-cols-md-3">
+                            <PromptExampleCard Icon="list" IconColor="lightgreen" TextColor="lightblue" Title="List"  Body="List my todos" OnClick="@(message => ConversationPage.SendMessage(message))"/>
+                            <PromptExampleCard Icon="edit" IconColor="yellow" TextColor="lightblue" Body="Add buy milk and also call dad to my todos" Title="Adding" OnClick="@(message => ConversationPage!.SendMessage(message))" />
+                            <PromptExampleCard Icon="check" Body="I bought milk" TextColor="lightblue" Title="Completing" OnClick="@(message => ConversationPage!.SendMessage(message))" />
+                        </div>
+                    </div>
+                </ChildContent>
+                <ButtonContent>
+                    @if (ConversationPage.Conversation != null && ConversationPage.Conversation.IsStarted())
+                    {
+                        <RadzenButton Text="New" Variant="Variant.Outlined" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" Click="GoToNew"/>
+                    }
+                </ButtonContent>
+            </ConversationPage>
+    </div>
+    </div>
+</div>
+
+@code
+{
+    protected override Task OnInitializedAsync()
+    {
+        NewPath = "/samples/demo";
+        return base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var cfg = ModelConfigurationService.GetDefaultConfig();
+            cfg.Provider = ChatModelsProvider.Ollama;
+            cfg.Model = PipelineOptions.Value.Providers.Ollama.ChatModel;
+            cfg.MaxTokens = 2000;
+            await ModelConfigurationService.SaveConfig(cfg);
+
+            List<PluginSelection> config =
+            [
+                new() { Name = "Samples.Native.TodoPlugin", Selected = true }
+            ];
+            await PluginsConfigurationService.SaveConfig(config);
+            
+            await InterceptorConfigurationService.SaveConfig(new[]
+            {
+                "Function calling (select plugins)"
+            });
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}

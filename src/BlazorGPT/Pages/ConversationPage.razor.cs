@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Threading;
 using Blazored.LocalStorage;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
@@ -8,7 +9,9 @@ using BlazorGPT.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Radzen;
@@ -18,11 +21,87 @@ namespace BlazorGPT.Pages
 {
     public partial class ConversationPage : IDisposable
     {
+        private bool _browserIsSmall = true;
+
+        private async Task CancelSend()
+        {
+            await _cancellationTokenSource.CancelAsync();
+            
+        }
+
+        [Inject]
+        public NotificationService NotificationService { get; set; } = null!;
+
+        private async Task RestartConversation(ConversationMessage msg)
+        {
+            var result = await DialogService.Confirm("Restart conversation from here?", "Restart");
+            if (result.HasValue && result.Value)
+            {
+                var isUserMsg = msg.Role == "user";
+                if (isUserMsg)
+                {
+                    Model.Prompt = msg.Content.Trim();
+                }
+
+                var messageCutoff = Conversation.Messages.IndexOf(msg) + 1;
+
+                var messagesToRemove = Conversation.Messages.Skip(messageCutoff).ToList();
+                await ConversationsRepository.DeleteMessages(messagesToRemove);
+
+                Conversation.Messages = Conversation.Messages.Take(messageCutoff).ToList();
+
+                var lastUserMessage = Conversation.Messages.FindLast(o => o.Role == ConversationRole.User)!;
+                lastUserMessage.ActionLog = null;
+
+                await SendConversation(rerun: true);
+
+                StateHasChanged();
+
+                NotificationService.Notify(NotificationSeverity.Success, "Conversation restarted");
+            }
+        }
+
+
+
+        private async Task StateClicked()
+        {
+            if (Interop != null)
+            {
+                var srs = await RenderType();
+                await Interop.OpenStateViewer("conversation", Conversation.Id!.ToString() ?? string.Empty, srs);
+            }
+        }
+
+        private async Task Copy(ConversationMessage msg, string newName)
+        {
+            var newConvo = await ConversationsRepository.BranchFromMessage(UserId, msg, newName, Conversation);
+            NavigationManager.NavigateTo("/conversation/" + newConvo.Id);
+            await _conversations.LoadConversations();
+            NotificationService.Notify(NotificationSeverity.Success, "Conversation branched");
+        }
+
+        private string ConversationDisplayStyle()
+        {
+            if (browser.Height == 0 || controlHeight == 0)
+            {
+                return "";
+            }
+            var height = browser.Height - controlHeight;
+            return $"height: {height}px";
+        }
+
+        private async Task ShareClicked()
+        {
+            await Interop.OpenWindow("/share/" + ConversationId);
+        }
+
+
         public class PromptModel
         {
-            [Required]
-            public string? Prompt { get; set; }
+            [Required] public string? Prompt { get; set; } = "";
         }
+
+        [Parameter] public bool ShowActionLog { get; set; } = true;
 
         [Parameter]
         public bool UseFileUpload { get; set; }
@@ -39,6 +118,9 @@ namespace BlazorGPT.Pages
         [Parameter]
         public RenderFragment? ChildContent{ get; set; }
 
+        [Parameter]
+        public RenderFragment? ButtonContent { get; set; }
+
         [CascadingParameter]
         private Task<AuthenticationState>? AuthenticationState { get; set; }
 
@@ -53,6 +135,8 @@ namespace BlazorGPT.Pages
 
         [Parameter]
         public Guid? ConversationId { get; set; }
+
+        private Guid _loadedConversationId = default;
 
         [Parameter]
         public Guid? MessageId { get; set; }
@@ -73,6 +157,9 @@ namespace BlazorGPT.Pages
         [Inject]
         public required KernelService KernelService{ get; set; }
 
+        [Inject]
+        public required ILoggerFactory LoggerFactory { get; set; }
+        private ILogger<ConversationPage> _logger;
 
         [Inject]
         public IDbContextFactory<BlazorGptDBContext> DbContextFactory { get; set; } = null!;
@@ -90,7 +177,7 @@ namespace BlazorGPT.Pages
         [Inject]
         public required ConversationInterop Interop { get; set; }
        
-        private Conversation Conversation = new();
+        public Conversation Conversation = new();
 
         private ModelConfiguration? _modelConfiguration;
 
@@ -104,12 +191,13 @@ namespace BlazorGPT.Pages
         private CancellationTokenSource _cancellationTokenSource = null!;
         SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
-        [Inject] private ModelConfigurationService? _modelConfigurationService { get; set; } = null!;
+        [Inject] public required ModelConfigurationService _modelConfigurationService { get; set; }
 
          protected override async Task OnInitializedAsync()
          {
+             _logger = LoggerFactory.CreateLogger<ConversationPage>();
 
-             if (UserId == null && AuthenticationState != null)
+            if (UserId == null && AuthenticationState != null)
             {
                 var authState = await AuthenticationState;
                 var user = authState?.User;
@@ -122,9 +210,9 @@ namespace BlazorGPT.Pages
             BotSystemInstruction ??= PipelineOptions.Value.Bot.BotSystemInstruction;
 
             InterceptorHandler.OnUpdate += UpdateAndRedraw;
-            }
+         }
 
-        private async Task  UpdateAndRedraw()
+         private async Task  UpdateAndRedraw()
         {
             await InvokeAsync(StateHasChanged);
         }
@@ -133,9 +221,6 @@ namespace BlazorGPT.Pages
         {
             UseFileUpload = BotMode ? PipelineOptions!.Value.Bot.FileUpload.Enabled :
                     PipelineOptions!.Value.FileUpload.Enabled;
-
-            await SetupConversation();
-            StateHasChanged();
         }
 
 
@@ -144,37 +229,54 @@ namespace BlazorGPT.Pages
         {
             if (firstRender)
             {
+                if (BotMode && UserId == null) UserId = await UserStorage.GetUserIdFromLocalStorage();
+
+            }
+
+            if ((ConversationId == null && _loadedConversationId == default)
+                || (ConversationId != _loadedConversationId ))
+            {
+                await SetupConversation();
+            }
+
+
+            if (firstRender)
+            {
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
-
-
-                initialControlHeight = _browserIsSmall ? 290 : 290;
-
-                initialControlHeight = BotMode ? 150 : initialControlHeight;
-
+                initialControlHeight = _browserIsSmall ? 335 : 310;
+                initialControlHeight = BotMode ? 200 : initialControlHeight;
                 controlHeight = initialControlHeight;
-
 
                 await Interop.SetupCopyButtons();
 
+                await Interop.ScrollToBottom("layout-body");
+                await Interop.ScrollToBottom("message-pane");
             }
 
-            if (BotMode || selectedTabIndex == 0)
+            if (! _browserIsSmall && (BotMode || selectedTabIndex == 0))
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
-
-            await Interop.ScrollToBottom("message-pane");
         }
 
         async Task SetupConversation()
         {
-            if (ConversationId != null)
+            if (ConversationId == null)
             {
-                var ctx = DbContextFactory.CreateDbContext();
-                var loaded  = await ConversationsRepository.GetConversation(ConversationId);
+                Conversation = CreateDefaultConversation();
+                ConversationId = Guid.Empty;
+                _loadedConversationId = Guid.Empty;
+                StateHasChanged();
+                return;
+            }
+
+            if (ConversationId != _loadedConversationId)
+            {
+                var loaded = await ConversationsRepository.GetConversation(ConversationId);
                 if (loaded != null)
                 {
+                    _loadedConversationId = loaded.Id ?? default;
                     if (loaded.UserId != UserId)
                     {
                         throw new UnauthorizedAccessException();
@@ -190,38 +292,30 @@ namespace BlazorGPT.Pages
                         }
                     }
                     Conversation = loaded;
-
-
-
                 }
                 else
                 {
                     NavigationManager.NavigateTo("/conversation");
                 }
             }
+ 
+            StateHasChanged();
+        }
+
+        [Inject]
+        public required UserStorageService UserStorage { get; set; }
+
+        public async Task SendMessage(string message, string role = "user")
+        {
+            if (role == "user")
+            {
+                Model.Prompt += message;
+                await SendConversation();
+            }
             else
             {
-                Conversation = CreateDefaultConversation();
+                throw new NotImplementedException("Other types of messages than user is not supported");
             }
-            StateHasChanged();
-        } 
-
-
-        private async Task Summarize()
-        {
-            IsBusy = true;
-
-            Conversation.AddMessage(new ConversationMessage("user", "Summarize all in 10 words"));
-            await Send();
-
-            await using var ctx = await DbContextFactory.CreateDbContextAsync();
-            ctx.Attach(Conversation);
-            Conversation.Summary = Conversation.Messages.Last(m => m.Role == ConversationRole.Assistant).Content;
-            await ctx.SaveChangesAsync();
-
-            await _conversations.LoadConversations();
-            IsBusy = false;
-
         }
 
         private async Task SendConversation()
@@ -232,9 +326,20 @@ namespace BlazorGPT.Pages
 
         private async Task SendConversation(bool rerun)
         {
-            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
+            // todo: is this necessary anymore? k
+            if (IsBusy) return;
 
             IsBusy = true;
+
+            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
+
+            _modelConfiguration = await _modelConfigurationService.GetConfig();
+            _kernel = await KernelService.CreateKernelAsync(provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
+
+            var interceptorKeyExists = await LocalStorageService.ContainKeyAsync("bgpt_interceptors");
+            var interceptorNames = interceptorKeyExists ? await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors") : [];
+
+
 
             Model.Prompt = Model.Prompt?.TrimEnd('\n');
 
@@ -251,43 +356,27 @@ namespace BlazorGPT.Pages
                     Conversation.AddMessage(new ConversationMessage("user", startMsg + Model.Prompt!));
                     Conversation.DateStarted = DateTime.UtcNow;
                 }
-                StateHasChanged();
-
+            
             }
             else if (!rerun)
             {
                 Conversation.AddMessage(new ConversationMessage("user", Model.Prompt!));
-                StateHasChanged();  
-
+             
             }
-            
-            await semaphoreSlim.WaitAsync();
-
-            if ( BotMode)
-            {
-                _modelConfiguration =   _modelConfigurationService.GetDefaultConfig();
-            }
-            else
-            {
-                _modelConfiguration = await _modelConfigurationService.GetConfig();
-            }
-            _kernel = await KernelService.CreateKernelAsync( provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
+            StateHasChanged();
+            await Interop.ScrollToBottom("message-pane");
 
             try
             {
-                var hasKey = await LocalStorageService.ContainKeyAsync("bgpt_interceptors");
-                var strs = hasKey ? await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors") : [];
-
+                var c = Conversation;
                 Conversation = await InterceptorHandler.Send(_kernel,
-                    Conversation, 
-                    enabledInterceptors:null,
-                    enabledInterceptorNames: strs,
+                    Conversation,
+                    enabledInterceptors: null,
+                    enabledInterceptorNames: interceptorNames,
                     OnStreamCompletion,
                     cancellationToken: _cancellationTokenSource.Token);
 
-
                 await Send();
-
 
                 if (Conversation.InitStage())
                 {
@@ -305,34 +394,37 @@ namespace BlazorGPT.Pages
                         }
                 }
             }
-            catch (InvalidOperationException )
-            {
-                // todo: handle this
-            }
-            catch (Exception)
-            {
-                // todo: handle this
-                throw;
 
+            catch (OperationCanceledException)
+            {
+                var res = await DialogService.Alert("The operation was cancelled");
+                Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
+            }
+
+            catch (Exception e)
+            {
+                var res = await DialogService.Alert(e.StackTrace,
+                    "An error occurred. Please try again/later. " + e.Message);
+                Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
             }
             finally
             {
-                _cancellationTokenSource.TryReset();
                 semaphoreSlim.Release();
-                StateHasChanged();
             }
+   
 
             IsBusy = false;
             if (selectedTabIndex == 0)
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
+            StateHasChanged();
+            await Interop.ScrollToBottom("message-pane");
+
         }
 
         private async Task Send()
         {
-            promptIsReady = false;
-
             try
             {
                 if (!Conversation.StopRequested)
@@ -340,8 +432,9 @@ namespace BlazorGPT.Pages
                     _modelConfiguration ??= await _modelConfigurationService.GetConfig();
                     
                     Conversation.AddMessage("assistant", "");
-
                     StateHasChanged();
+                    await Interop.ScrollToBottom("message-pane");
+
 
                     var chatRequestSettings = new ChatRequestSettings();
                     chatRequestSettings.ExtensionData["max_tokens"] = _modelConfiguration!.MaxTokens;
@@ -404,9 +497,8 @@ namespace BlazorGPT.Pages
 
                 if (isNew)
                 {
-                   
                     NavigationManager.NavigateTo(
-                        BotMode ? NewDestinationPrefix + "/" + Conversation.Id
+                        (BotMode || !string.IsNullOrEmpty(NewDestinationPrefix)) ? NewDestinationPrefix + "/" + Conversation.Id
                                 : "/conversation/" + Conversation.Id, 
                         false);
                 }
@@ -414,34 +506,26 @@ namespace BlazorGPT.Pages
                 StateHasChanged();
 
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 var res = await DialogService.Alert("The operation was cancelled");
                 Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
-
-                semaphoreSlim.Release();
-                StateHasChanged();
-                return;
             }
             catch (Exception e)
             {
                 var res = await DialogService.Alert(e.StackTrace,
                     "An error occurred. Please try again/later. " + e.Message);
                 Conversation.Messages.RemoveAt(Conversation.Messages.Count - 1);
-                Console.WriteLine(e.StackTrace);
-                StateHasChanged();
-                return;
             }
             finally
             {
-               
-                    _cancellationTokenSource?.TryReset();
-                    semaphoreSlim.Release();
+                IsBusy = false;
+                semaphoreSlim.Release();
 
             }
 
-            //Conversation = conv;
             Model.Prompt = "";
+            promptIsReady = false;
         }
 
         private async Task<string> OnStreamCompletion(string s)
@@ -456,12 +540,6 @@ namespace BlazorGPT.Pages
         }
 
         private Conversations _conversations;
-
-        private void GoToNew()
-        {
-            NavigationManager.NavigateTo("/conversation", true);
-        }
-
 
         BrowserWindowSize browser = new BrowserWindowSize();
 
@@ -500,6 +578,9 @@ namespace BlazorGPT.Pages
             string formatted = string.Format(loadedScript.Steps.First().Message, new[] { scriptInput });
             Conversation.AddMessage(new ConversationMessage("user", formatted));
             StateHasChanged();
+
+            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
+
             await Send();
 
             foreach (var step in loadedScript.Steps.Skip(1))
@@ -525,48 +606,57 @@ namespace BlazorGPT.Pages
         ScriptsDropdown? ScriptsDdn { get; set; }
 
         public bool IsBusy { get; set; }
+        public bool SendButtonDisabled => SendDisabled();
 
-        private bool preventDefaultKey = false;
-        private async Task OnPromptKeyUp(KeyboardEventArgs obj)
+        public bool SendDisabled()
         {
-
-            if (!string.IsNullOrWhiteSpace(obj.Key))
+            if (IsBusy)
             {
-                promptIsReady = true;
+                return true;
             }
 
+
+            if (!Conversation.IsStarted() && _profileSelectorStart != null && _profileSelectorStart.SelectedProfiles.Any())
+            {
+                return false;
+            }
+
+            if (promptIsReady) return false;
+
+            return true;
+
+        }
+
+        private bool preventDefaultKey = false;
+
+        private async Task OnPromptInput(ChangeEventArgs args)
+        {
+            promptIsReady = !string.IsNullOrEmpty(args.Value?.ToString());
+        }
+
+        private async Task OnPromptKeyUp(KeyboardEventArgs obj)
+        {
             if (obj.Key == "Enter" && obj.ShiftKey == false)
             {
-                // move mouse focus from prompt field
                 await Interop.Blurelement(_promptField2.Element);
-                IsBusy = true;
                 StateHasChanged();
                 await SendConversation();
             }
-            else
-            {
-                
-            }
         }
 
-        private void PromptChanged()
+        private async Task StartProfileClicked(QuickProfile profile)
         {
-            if (Model.Prompt?.Length > 0)
-            {
-                promptIsReady = true;
-            }
-            else
-            {
-                promptIsReady = false;
-            }
+            await InvokeAsync(StateHasChanged);
         }
 
 
         private async Task ApplyEndProfile(QuickProfile profile)
         {
             IsBusy = true;
-
+            _modelConfiguration = await _modelConfigurationService.GetConfig();
+            _kernel = await KernelService.CreateKernelAsync(_modelConfiguration.Provider, _modelConfiguration.Model);
             Conversation.AddMessage(new ConversationMessage("user", profile.Content));
+            _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
             await Send();
             IsBusy = false;
 

@@ -1,10 +1,10 @@
-﻿using BlazorGPT.Ollama;
-using Codeblaze.SemanticKernel.Connectors.Ollama;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Connectors.Ollama;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Connectors.Redis;
 using Microsoft.SemanticKernel.Connectors.Sqlite;
@@ -34,10 +34,16 @@ public class KernelService
 
 
     public async Task<Kernel> CreateKernelAsync(ChatModelsProvider? provider, 
-        string? model = null)
+        string? model = null, IEnumerable<IPromptRenderFilter>? promptRenderFilters = null,
+        IEnumerable<IFunctionInvocationFilter>? functionInvocationFilters = null, ILoggerFactory? loggerFactory = null)
     {
         if (model == "") model = null;
         var builder = Kernel.CreateBuilder();
+
+        if (loggerFactory != null)
+        {
+            builder.Services.AddSingleton(loggerFactory);
+        }
 
         if (provider == null)
         {
@@ -86,14 +92,28 @@ public class KernelService
                 .AddOpenAIChatCompletion(model, _options.Providers.OpenAI.ApiKey)
                 .AddOpenAITextEmbeddingGeneration(_options.Providers.OpenAI.EmbeddingsModel, _options.Providers.OpenAI.ApiKey)
                 .AddOpenAITextToImage(_options.Providers.OpenAI.ApiKey);
-
         }
 
         if (provider == ChatModelsProvider.Ollama)
         {
-	        builder.Services.AddTransient<HttpClient>();
-			model ??= _options.Providers.Local.ChatModel;
-            builder.AddOllamaChatCompletion(model, _options.Providers.Ollama.BaseUrl); 
+            model ??= _options.Providers.Ollama.ChatModel;
+            builder.AddOpenAIChatCompletion(model, new Uri(_options.Providers.Ollama.BaseUrl), null);
+        }
+
+        if (promptRenderFilters != null)
+        {
+            foreach (var filter in promptRenderFilters)
+            {
+                builder.Services.AddSingleton(filter);
+            }
+        }
+
+        if (functionInvocationFilters != null)
+        {
+            foreach (var filter in functionInvocationFilters)
+            {
+                builder.Services.AddSingleton(filter);
+            }
         }
 
         return builder.Build();
@@ -175,13 +195,7 @@ public class KernelService
         
         if (provider == EmbeddingsModelProvider.Ollama)
         {
-            
-            var httpClient = new HttpClient();
-           var generation = new OllamaTextEmbeddingGenerationService(model ?? _options.Providers.Ollama.ChatModel,
-               _options.Providers.Ollama.BaseUrl,
-               httpClient,
-               null);
-
+            var generation = new OllamaTextEmbeddingGenerationService(model ?? _options.Providers.Ollama.EmbeddingsModel,  new Uri(_options.Providers.Ollama.BaseUrl));
             var mem = new MemoryBuilder()
 				.WithTextEmbeddingGeneration(generation)
 				.WithMemoryStore(memoryStore)
@@ -208,16 +222,8 @@ public class KernelService
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(chatHistory,
                            requestSettings, cancellationToken: cancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return chatHistory.ToConversation();
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return chatHistory.ToConversation();
-            }
- 
             fullMessage += completionResult.Content;
             if (onStreamCompletion != null) await onStreamCompletion.Invoke(completionResult.Content);
  
@@ -242,16 +248,8 @@ public class KernelService
         await foreach (var completionResult in chatCompletion.GetStreamingChatMessageContentsAsync(history,
                            requestSettings, cancellationToken: cancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return conversation;
-            }
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return conversation;
-            }
- 
+            cancellationToken.ThrowIfCancellationRequested();
             fullMessage += completionResult.Content;
             if (onStreamCompletion != null) await onStreamCompletion.Invoke(completionResult.Content);
  

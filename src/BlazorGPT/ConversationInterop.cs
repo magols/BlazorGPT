@@ -30,13 +30,15 @@ namespace BlazorGPT {
            await module.InvokeVoidAsync("scrollToBottom", elementId);
         }
 
-        public async ValueTask FocusElement(ElementReference elementId)
+        public async ValueTask FocusElement(ElementReference? elementId)
         {
+            if (elementId == null) return;
             var module = await moduleTask.Value;
             await module.InvokeVoidAsync("focusElement", elementId);
         }
 
-        public async ValueTask Blurelement(ElementReference elementId) {
+        public async ValueTask Blurelement(ElementReference? elementId) {
+            if (elementId == null) return;
             var module = await moduleTask.Value;
             await module.InvokeVoidAsync("blurElement", elementId);
         }

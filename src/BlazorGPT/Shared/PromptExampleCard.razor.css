@@ -1,0 +1,30 @@
+.card {
+    font-size: 0.8rem;
+    background-color: #282828;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 1rem;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+
+.card:hover {
+    background-color: #404040;
+}
+
+.card-body {
+    padding: 0px;
+    text-decoration: none;
+}
+
+.card:hover {
+    text-decoration: none;
+}
+
+.card-icon {
+    margin: 0;
+    padding: 0;
+    font-size: 0.3rem;
+}

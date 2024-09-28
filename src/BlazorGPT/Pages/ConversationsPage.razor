@@ -1,20 +1,23 @@
 ﻿@page "/conversations"
-@using BlazorGPT.Data
-@using System.Security.Claims
 @attribute [Authorize]
+<PageTitle>History</PageTitle>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h3>History</h3>
+        </div>
+        <div class="col">
+            @if (Conversations.Any())
+            {
+                <RadzenButton class="float-end" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Disabled="@(_selectedSummaries == null || !_selectedSummaries.Any())" Click="DeleteSelectedConversations">Delete selected</RadzenButton>
+            }
+        </div>
 
-<div class="row">
-    <div class="col">
-        <RadzenText TextStyle="TextStyle.H5">Conversations</RadzenText>
     </div>
-    <div class="col">
-        @if (Conversations.Any())
-        {
-            <RadzenButton class="float-end" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Disabled="@(_selectedSummaries == null || !_selectedSummaries.Any())" Click="DeleteSelectedConversations">Delete selected</RadzenButton>
-        }
-    </div>
-
 </div>
+
+ 
+
 <RadzenDataGrid @ref="grid" TItem="Conversation" 
                 Data="Conversations" 
                 @bind-Value=@_selectedSummaries
@@ -29,6 +32,7 @@
                 RowSelect="OnRowSelect"
                 RowRender="RowRender"
                 ExpandMode="@expandMode"
+                ShowPagingSummary="true"
                 >
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">
@@ -90,11 +94,6 @@
 
 </RadzenDataGrid>
 
-<pre class="position-absolute end-50">
-<ConversationsCost></ConversationsCost>
-
-</pre>
-
 @if (!Conversations.Any())
 {
     <div>
@@ -104,7 +103,6 @@
     </div>
 }
 
-@*<div>The Conversations are filterable by Quick Profile when clicked.</div>*@
 
 @code {
 

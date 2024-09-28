@@ -45,6 +45,9 @@ public class InterceptorHandler : IInterceptorHandler
 
         foreach (var interceptor in selected)
         {
+          
+            ct.ThrowIfCancellationRequested();
+            
             if (interceptor is InterceptorBase interceptorBase)
             {
                 interceptorBase.OnUpdate = OnUpdate;
@@ -92,6 +95,7 @@ public class InterceptorHandler : IInterceptorHandler
 
         foreach (var interceptor in all)
         {
+            ct.ThrowIfCancellationRequested();
             if (interceptor is InterceptorBase interceptorBase)
             {
                 interceptorBase.OnUpdate = OnUpdate;

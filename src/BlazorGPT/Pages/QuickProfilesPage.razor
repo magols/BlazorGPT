@@ -1,12 +1,17 @@
 ﻿@page "/quickprofiles"
-@using BlazorGPT.Data
-@using System.Security.Claims
 @attribute [Authorize]
+<PageTitle>Quick profiles</PageTitle>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h3>Quick Profiles</h3>
+        </div>
+        <div class="col">
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" class="mt-2 mb-4" Text="New" Click="@InsertRow" Disabled=@(profileToInsert != null || profileToUpdate != null) />
+        </div>
+    </div>
+</div>
 
-<h3>Quick Profiles</h3>
-
-
-<RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="add_circle_outline" class="mt-2 mb-4" Text="Add New Quick profile" Click="@InsertRow" Disabled=@(profileToInsert != null || profileToUpdate != null) />
 
 <RadzenDataGrid @ref="_grid" TItem="QuickProfile" Data="_quickProfiles" SelectionMode="DataGridSelectionMode.Single" AllowSorting="true" so RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow"
 AllowFiltering="true" FilterMode="FilterMode.Advanced"

@@ -1,6 +1,6 @@
 ﻿<div class="row mb-2">
     <div class="col-4">
-        <RadzenDropDownDataGrid @ref="grid" 
+        <RadzenDropDownDataGrid id="sysprompt-dropdown-label" @ref="grid"
                                 TValue="UserSystemPrompt"
                                 Data=@Prompts 
                                 TextProperty="Name"
@@ -11,6 +11,8 @@
                                 Change="SelectedItemChange"
                                 @bind-Value="SelectedPrompt"
                                 Disabled="Disabled"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                PageSize="8"
                                 >
             <Columns>
                 <RadzenDropDownDataGridColumn Property="Name" Title="Name" Width="100px"/>
@@ -21,7 +23,7 @@
     <div class="col-7">
         @if (SelectedPrompt != null)
         {
-            <RadzenTextBox Disabled="true" @bind-Value="SelectedPrompt.Text" class="mt-2 textarea-full-width"/>
+            <RadzenTextBox Disabled="true" @bind-Value="SelectedPrompt.Text" class="textarea-full-width"/>
         }
     </div>
 </div>

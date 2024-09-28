@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Radzen;
+using System.Drawing;
 
 namespace BlazorGPT.Shared
 {
     public partial class ConversationMessageDisplay
     {
-
-
         [Parameter] public bool EditMode { get; set; }
 
         [Parameter] public string? InitialSystemPrompt { get; set; }
@@ -16,9 +15,6 @@ namespace BlazorGPT.Shared
 
         [Parameter]
         public int MessagesCount { get; set; }
-
-        [Parameter]
-        public bool ShowTokens { get; set; }
 
         [Inject]
         public TooltipService? tooltipService { get; set; }
@@ -84,11 +80,29 @@ namespace BlazorGPT.Shared
 
 
         public string Style =>
-            GetBorder() +
-            Background() +
-            Color()
+         ""//   GetBorder() 
+            //Background() 
+          //  Color()
             ;
 
+        private string GetClass()
+        {
+            switch (Message.Role.ToLower())
+            {
+                case "system":
+                    return "";
+                    break;
+                case "assistant":
+
+                    break;
+                case "user":
+                    break;
+                case "tools":
+                    return "tools";
+            }
+
+            return "";
+        }
 
         private string Color()
         {
@@ -171,7 +185,7 @@ namespace BlazorGPT.Shared
 
                     break;
                 case "user":
-                    c = "#424242";
+                    c = "#505050";
                     break;
                 default:
                     return "";

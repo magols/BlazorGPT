@@ -215,6 +215,15 @@ public class PipelineOptions
 
     public Bot Bot { get; set; } = new Bot();
 
+    public MemoryOptions Memory { get; set; } = new MemoryOptions();
+
+}
+
+public class MemoryOptions
+{
+    public string Url { get; set; } = default!;
+    public string ApiKey { get; set; } = default!;
+
 }
 
 public class Bot

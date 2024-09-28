@@ -1,4 +1,3 @@
-
 ## Prerequisites
 .NET 8 SDK
 SQL Server 
@@ -48,6 +47,7 @@ OpenAI API Key (or Azure OpenAI endpoint, resource name and key)
 6. Run the application from the **src/BlazorGPT.Web** directory:
    ```bash
     dotnet run
-   ```
 
-7. Create a user account and login to the application
+7. Open the application in a browser at [http://localhost:5281/](`http://localhost:5281/`)
+
+8. Create a user account and login to the application

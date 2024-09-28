@@ -1,0 +1,48 @@
+@page "/settingsplugins"
+<p>
+    Select which plugins you want to use (@_selPlugins?.Count)
+
+    @if(_selPlugins != null && _selPlugins.Any())
+    {
+
+        <RadzenButton class="float-end" Icon="select_check_box" Size="ButtonSize.Small" IconColor="red" Variant="Variant.Outlined" Click="ClearAll" ButtonStyle="ButtonStyle.Danger" />
+    }
+
+</p>
+<hr />
+
+<RadzenDataGrid TItem="Plugin" Data="@_plugins" @bind-Value="_selPlugins" @ref="_grid" 
+                AllowRowSelectOnRowClick="true" SelectionMode="DataGridSelectionMode.Multiple"
+                RowSelect="RowSelect" RowDeselect="RowDeselect"
+                AllowPaging="true" PageSize="15" 
+                >
+    <Template Context="plugin">
+        <ul>
+            @foreach (var function in plugin.Functions)
+            {
+                <li style="font-size:0.8rem;">
+                    <strong>@function.Name</strong>
+               
+                    <br />
+                    <i>@function.Description</i>
+                    
+                </li>
+            }
+        </ul>
+
+    </Template>
+    <Columns>
+        <RadzenDataGridColumn TItem="Plugin" Property="@(nameof(Plugin.Name))" Title="Name">
+            <Template Context="plugin">
+                @plugin.Name
+
+                @if (_selPlugins != null && _selPlugins.Contains(plugin))
+                {
+                    <RadzenIcon Icon="select_check_box"  class="float-end" IconColor="green"/>
+                 
+                }
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+ 
