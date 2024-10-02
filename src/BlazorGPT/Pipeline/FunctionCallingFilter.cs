@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.SemanticKernel;
@@ -49,10 +50,16 @@ public class FunctionCallingFilter(CurrentConversationState conversationState, I
             throw new InvalidOperationException("Conversation is null. This filter requires a conversation to be set.");
         }
 
+        var sw = new Stopwatch();
+        sw.Start();
         await next(context);
+        sw.Stop();
+
+        var elapsedTime = sw.Elapsed.Seconds > 0 ? sw.Elapsed.Seconds + "s": sw.ElapsedMilliseconds + "ms"; 
 
         StringBuilder sb = new StringBuilder();
         sb.Append($"\n\n##### {context.Function.PluginName} {context.Function.Name}\n\n");
+        sb.Append($"<span style=\"font-size: smaller;color: green;\">{elapsedTime}" + "</span>  \n");
         foreach (var arg in context.Arguments.Names)
         {
             sb.Append("* " + arg + " : " + context.Arguments[arg] + "\n");
@@ -63,13 +70,10 @@ public class FunctionCallingFilter(CurrentConversationState conversationState, I
        var lastUserMessage =  conversation.Messages.FindLast(o => o.Role == ConversationRole.User)!;
 
        if (!string.IsNullOrEmpty(lastUserMessage?.ActionLog))
-       {
-            lastUserMessage.ActionLog += "\n\n---" + sb.ToString();
-        }
-        else
-        {
-            lastUserMessage.ActionLog = sb.ToString();
-
-        }
+           lastUserMessage.ActionLog += "\n\n---" + sb;
+       else
+           lastUserMessage.ActionLog = sb.ToString();
     }
 }
+
+
