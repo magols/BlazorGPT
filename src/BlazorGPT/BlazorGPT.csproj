@@ -38,6 +38,8 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
 
+    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.76.240930.3" />
+
     <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.76.240930.3" />
 
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.21.1" />
@@ -50,7 +52,7 @@
     <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.21.1-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NRedisStack" Version="0.12.0" />
+    <PackageReference Include="NRedisStack" Version="0.13.0" />
     <PackageReference Include="Radzen.Blazor" Version="5.2.4" />
     <PackageReference Include="SharpToken" Version="2.0.3" />
 
