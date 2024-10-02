@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using System.Threading;
 using Blazored.LocalStorage;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
@@ -9,7 +8,6 @@ using BlazorGPT.Shared;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -136,6 +134,9 @@ namespace BlazorGPT.Pages
         [Parameter]
         public Guid? ConversationId { get; set; }
 
+        [Parameter]
+        public Kernel? KernelToUse { get; set; }
+
         private Guid _loadedConversationId = default;
 
         [Parameter]
@@ -176,7 +177,7 @@ namespace BlazorGPT.Pages
 
         [Inject]
         public required ConversationInterop Interop { get; set; }
-       
+
         public Conversation Conversation = new();
 
         private ModelConfiguration? _modelConfiguration;
@@ -334,7 +335,8 @@ namespace BlazorGPT.Pages
             _cancellationTokenSource = new CancellationTokenSource(5 * 60 * 1000);
 
             _modelConfiguration = await _modelConfigurationService.GetConfig();
-            _kernel = await KernelService.CreateKernelAsync(provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
+
+            _kernel = KernelToUse ?? await KernelService.CreateKernelAsync(provider: _modelConfiguration.Provider, model: _modelConfiguration!.Model);
 
             var interceptorKeyExists = await LocalStorageService.ContainKeyAsync("bgpt_interceptors");
             var interceptorNames = interceptorKeyExists ? await LocalStorageService.GetItemAsync<List<string>>("bgpt_interceptors") : [];
