@@ -128,7 +128,6 @@
 
         foreach (var file in files)
         {
-            Console.WriteLine($"File: {file.Name} - {file.Size} bytes, last modified: {file.LastModified}");
             var documentId = file.Name.CleanKmDocumentId();
             var doc = new Document(documentId);
             var target = _filesToUpload.First(o => o.File.Name == file.Name);
@@ -170,7 +169,6 @@
                         var isReady = await docService.IsDocumentReady(file.DocumentId);
                         if (isReady)
                         {
-                            Console.WriteLine($"Document ready: {file.DocumentId}");
                             file.Status = 2;
                             await InvokeAsync(StateHasChanged);
                         }

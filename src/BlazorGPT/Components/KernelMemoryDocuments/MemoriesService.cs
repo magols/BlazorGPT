@@ -1,30 +1,11 @@
-﻿using System.ComponentModel;
-using BlazorGPT.Pipeline;
+﻿using BlazorGPT.Pipeline;
 using Microsoft.Extensions.Options;
 using Microsoft.KernelMemory;
 using System.Text.RegularExpressions;
 using Azure.Storage.Blobs;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel;
 using StackExchange.Redis;
 
 namespace BlazorGPT.Components.KernelMemoryDocuments;
-
-
-public class MemoriesPlugin(IServiceProvider serviceProvider)
-{
-    [KernelFunction]
-    [Description("Returns citations from users memories based on a query")]
-    [return: Description("A list of citations")]
-    public async Task<IEnumerable<Citation>> GetUserDocumentsFromMemory(
-        [Description("The topic, story, event etc that users needs to know more about")]
-        string query)
-    {
-
-        var docService = serviceProvider.GetRequiredService<MemoriesService>();
-        return await docService.SearchUserDocuments(query, 0.7, 3);
-    }
-}
 
 public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCallingUserProvider userProvider)
 {
@@ -63,18 +44,9 @@ public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCalling
         var userId = await userProvider.GetUserId();
         userId = userId.CleanKmDocumentId();
         doc.AddTag("user", userId);
-        
-        try
-        {
-            var documentId =  await client.ImportDocumentAsync(doc, indexName);
-            Console.WriteLine("Document saved with id: " + documentId);
-            return documentId;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+   
+        var documentId =  await client.ImportDocumentAsync(doc, indexName);
+        return documentId;
     }
 
 
@@ -129,13 +101,7 @@ internal class FileAreaCleaner(IOptions<PipelineOptions> options)
         var keysInDb = ((RedisResult[]?)keys).Select(o => o.ToString());
         var del = keysInDb.Select(o => new RedisKey(o)).ToArray();
         await db.KeyDeleteAsync(del, CommandFlags.None);
-
-
     }
-
-
-
-
 }
 
 
