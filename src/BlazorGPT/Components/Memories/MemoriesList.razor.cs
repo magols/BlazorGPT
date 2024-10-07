@@ -15,6 +15,7 @@ public partial class MemoriesList : IDisposable
 
     private bool _hasLoadedFirstTime;
 
+    private string _index = MemoriesService.IndexDefault;
     private string _imageExtensions = ".jpeg,.jpg,.png";
     private bool _isLoading;
     
@@ -23,6 +24,20 @@ public partial class MemoriesList : IDisposable
     private string _searchQuery = "";
 
     private MemoriesService _docService = null!;
+
+    [Parameter]
+    public string? Index
+    {
+        get => _index;
+        set
+        {
+            if (value != null)
+            {
+                _index = value;
+                InvokeAsync(Reload);
+            }
+        }
+    }
 
     [Inject]
     public required ConversationInterop Interop { get; set; }
@@ -64,8 +79,8 @@ public partial class MemoriesList : IDisposable
 
         try
         {
-            CitationsInKm = await _docService.SearchUserDocuments(_searchQuery, _relevance, 1000);
-      //      await _dataGrid!.Reload();
+            CitationsInKm = await _docService.SearchUserDocuments(_searchQuery, _index, _relevance, 1000);
+           await _dataGrid!.Reload();
         }
         catch (Exception e)
         {
@@ -116,7 +131,7 @@ public partial class MemoriesList : IDisposable
 
         FileAreaCleaner cleaner = new(ServiceProvider.GetRequiredService<IOptions<PipelineOptions>>());
 
-        await cleaner.DeleteAll();
+        await cleaner.DeleteAll(_index);
         await Reload();
     }
 

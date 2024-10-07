@@ -15,7 +15,7 @@ public class PluginsConfigurationService(ILocalStorageService localStorageServic
         if (data != null)
             return JsonSerializer.Deserialize<List<PluginSelection>>(data);
 
-        return null;
+        return new List<PluginSelection>();
     }
 
     public async Task SaveConfig(IEnumerable<PluginSelection> config)

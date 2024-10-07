@@ -6,7 +6,7 @@
         <RadzenButton class="mb-3" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" Text="Delete all" Icon="delete" Click="@DeleteAll" />
     }          
     
-    <RadzenFormField  Variant="Variant.Text"  Style="width: 100%;" class="input-group">
+    <RadzenFormField  Variant="Variant.Text"  Style="width: 100%;" class="input-group mb-4">
         <Start>
             <RadzenIcon Icon="weight" class="mb-3 me-3"/>
 
@@ -36,9 +36,6 @@
 
         </End>
     </RadzenFormField>
-         
-
-
  
     <RadzenDataGrid @ref="_dataGrid" class="hide-grid-header" AllowVirtualization="false"  Data="@CitationsInKm" 
                     AllowFiltering=true ColumnWidth="300px"
@@ -91,7 +88,7 @@
             </RadzenDataGridColumn>
         </Columns>
         <FooterTemplate>
-            <span class="m-2">Count: @CitationsInKm.Count()</span>
+            <span class="m-2 small" style="color: grey">Count: @CitationsInKm.Count()</span>
         </FooterTemplate>
     </RadzenDataGrid>
 

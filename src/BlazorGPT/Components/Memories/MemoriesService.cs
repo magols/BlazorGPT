@@ -12,10 +12,11 @@ public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCalling
     private readonly PipelineOptions _options = options.Value;
     private MemoryWebClient client = new MemoryWebClient(options.Value.Memory.Url, options.Value.Memory.ApiKey);
 
-    private string indexName = "filearea";
+    public const string IndexDefault = "memories";
 
     public async Task<IEnumerable<Citation>> SearchUserDocuments(
         string? query = null,
+        string? index = IndexDefault,
         double minRelevance = 0.0001,
         int docLimit = 5)
     {
@@ -23,11 +24,12 @@ public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCalling
         userId = userId.CleanKmDocumentId();
 
         if (string.IsNullOrWhiteSpace(query))
-        {
             query = "*";
-        }
 
-        var filtered = await client.SearchAsync(query, indexName, minRelevance: minRelevance, limit: docLimit, filter: MemoryFilters.ByTag("user", userId));
+        //if (string.IsNullOrWhiteSpace(index))
+        //    index = IndexDefault;
+ 
+        var filtered = await client.SearchAsync(query, index, minRelevance: minRelevance, limit: docLimit, filter: MemoryFilters.ByTag("user", userId));
 
         var ret = filtered.Results;
         foreach (var filteredResult in ret)
@@ -39,25 +41,28 @@ public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCalling
     }
 
 
-    public async Task<string> SaveDoc(Document doc)
+    public async Task<string> SaveDoc(Document doc, string? index  = IndexDefault)
     {
+        //if (string.IsNullOrWhiteSpace(index))
+        //    index = IndexDefault;
+
         var userId = await userProvider.GetUserId();
         userId = userId.CleanKmDocumentId();
         doc.AddTag("user", userId);
    
-        var documentId =  await client.ImportDocumentAsync(doc, indexName);
+        var documentId =  await client.ImportDocumentAsync(doc, index);
         return documentId;
     }
 
 
-    public async Task DeleteDoc(string documentId)
+    public async Task DeleteDoc(string documentId, string? index = IndexDefault)
     {
-        await client.DeleteDocumentAsync(documentId, indexName);
+        await client.DeleteDocumentAsync(documentId, index);
     }
 
     public async Task<bool> IsDocumentReady(string documentId)
     {
-        var doc = await client.IsDocumentReadyAsync(documentId, indexName);
+        var doc = await client.IsDocumentReadyAsync(documentId, IndexDefault);
         return doc;
     }
 
@@ -73,10 +78,10 @@ public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCalling
 
 internal class FileAreaCleaner(IOptions<PipelineOptions> options)
 {
-    public async Task DeleteAll()
+    public async Task DeleteAll(string index)
     {
         await DeleteBlobs();
-        await DeleteRedis();
+        await DeleteRedis(index);
 
     }
 
@@ -93,11 +98,11 @@ internal class FileAreaCleaner(IOptions<PipelineOptions> options)
 
     }
     // delete all keys in redis index
-    public async Task DeleteRedis()
+    public async Task DeleteRedis(string index)
     {
         var redis = ConnectionMultiplexer.Connect(options.Value.Memory.RedisConnectionString);
         var db = redis.GetDatabase();
-        var keys = db.Execute("KEYS", "km-filearea*");
+        var keys = db.Execute($"KEYS", $"km-{index}*");
         var keysInDb = ((RedisResult[]?)keys).Select(o => o.ToString());
         var del = keysInDb.Select(o => new RedisKey(o)).ToArray();
         await db.KeyDeleteAsync(del, CommandFlags.None);

@@ -1,0 +1,37 @@
+﻿@using BlazorGPT.Pipeline
+@using Microsoft.Extensions.Options
+@using StackExchange.Redis
+<RadzenDropDown TValue="string" @bind-Value="_selectedIndex" Data="_indexes" Change="OnChange" />
+@code {
+
+    [Inject]
+    public required IOptions<PipelineOptions> Options { get; set; }
+
+    [Parameter]
+    public Action<string>? OnIndexSelected { get; set; }
+
+    string _selectedIndex = MemoriesService.IndexDefault;
+    IEnumerable<string>? _indexes;
+
+    private void OnChange()
+    {
+        IndexSelected(_selectedIndex!);
+    }
+
+    void IndexSelected(string index)
+    {
+        _selectedIndex = index;
+        OnIndexSelected?.Invoke(index);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_indexes == null)
+        {
+            var redis = ConnectionMultiplexer.Connect(Options.Value.Memory.RedisConnectionString);
+            var db = redis.GetDatabase();
+            var indexes = db.Execute("FT._LIST");
+            _indexes = ((RedisResult[]?)indexes).Select(o => o.ToString().Replace("km-", ""));
+        }
+    }
+}

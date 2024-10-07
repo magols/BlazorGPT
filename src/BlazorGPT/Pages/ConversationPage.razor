@@ -108,18 +108,23 @@ else
                                                     <div id="message-box">
 
                                                         <div class="row">
-                                                            <div class="input-group">
-                                                                <RadzenTextArea @ref="_promptField2"
-                                                                                @bind-value="@Model.Prompt"
-                                                                                class="form-control"
-                                                                                Rows="2"
-                                                                                Disabled="IsBusy"
-                                                                                @oninput="@OnPromptInput"
-                                                                                @onkeyup="OnPromptKeyUp" />
-                                                                <RadzenButton Class="m-0" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary"  ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled" />
-                                                                <RadzenButton Class="mt-1" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" />
-
-                                                            </div>
+                                                            <RadzenFormField>
+                                                                
+                                                                <ChildContent>
+                                                                    <RadzenTextArea @ref="_promptField2"
+                                                                                    @bind-value="@Model.Prompt"
+                                                                                    class="form-control"
+                                                                                    Rows="2"
+                                                                                    Disabled="IsBusy"
+                                                                                    @oninput="@OnPromptInput"
+                                                                                    @onkeyup="OnPromptKeyUp"/>
+                                                                </ChildContent>
+                                                                <End>
+                                                                    <RadzenButton class="m-3" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled"/>
+                                                                    <RadzenButton class="m-3" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" IconColor="@Colors.Warning" />
+                                                                </End>
+                                                            </RadzenFormField>
+ 
                                                         </div>
                                                     </div>
 
@@ -136,7 +141,10 @@ else
 
                                                 @if (PipelineOptions.Value.Memory.Enabled)
                                                 {
-                                                    <Upload />
+                                                    <Upload>
+                                                        <MemoriesPluginToggler />
+                                                    </Upload>
+                                                    
                                                 }
                                                 
                                             </RadzenTabsItem>
