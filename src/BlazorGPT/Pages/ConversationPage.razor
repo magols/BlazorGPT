@@ -92,20 +92,8 @@ else
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            @if (UseFileUpload)
-                                            {
-                                                <div class="mt-4">
-
-                                                    <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"
-                                                              OnSyncFiles="FileAreaSynced"
-                                                              FolderName="@Conversation.Id?.ToString()" />
-                                                </div>
-
-                                            }
                                         </EditForm>
                                     </div>
-
                                 }
                                 else
                                 {
@@ -143,14 +131,14 @@ else
                                                         <RadzenButton Visible="Conversation.BranchedFromMessageId != null || Conversation.HiveState != null" Class="float-end" Click="HiveStateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show hive state", new TooltipOptions()))" Text="Hive state" />
                                                     </span>
 
-                                                    @if (UseFileUpload)
-                                                    {
-                                                        <FileArea AllowUpload="@(!Conversation.Messages.Any(m => m.Role == "assistant"))"
-                                                                  OnSyncFiles="FileAreaSynced"
-                                                                  FolderName="@Conversation.Id?.ToString()" />
-                                                    }
 
                                                 </EditForm>
+
+                                                @if (PipelineOptions.Value.Memory.Enabled)
+                                                {
+                                                    <Upload />
+                                                }
+                                                
                                             </RadzenTabsItem>
                                             <RadzenTabsItem Text="Scripts">
                                                 @if (ScriptsDdn?.Scripts.Count() == -1)

@@ -1,0 +1,267 @@
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.KernelMemory
+<div class="upload-wrapper">
+    <EditForm @ref="_form" Model="@_model">
+        <InputFile hidden id="file-input"
+                   ref="_fileFormField"
+                   @bind-Value="_model.Files"
+                   OnChange="HandleFileSelected"
+                   multiple
+                   accept="@_fileExtensions"/>
+
+
+        <RadzenButton id="upload-button" Size="ButtonSize.ExtraSmall" Text="Remember" Icon="upload" Variant="Variant.Flat"/>
+
+    </EditForm>
+
+
+    @if (_filesToUpload.Count > 0)
+    {
+        <div class="mt-3 p-2 upload-status-wrapper">
+            <span class="">
+                <strong>Upload, ingestion, chunking and embedding memory</strong>
+
+                <RadzenButton
+                    Size="ButtonSize.ExtraSmall"
+                    Icon="clear"
+                    ButtonStyle="UploadProgress < 100 ? ButtonStyle.Warning : ButtonStyle.Primary"
+                    Variant="Variant.Outlined"
+                    Click="_filesToUpload.Clear"
+                    class="float-end mb-3"/>
+            </span>
+
+            <RadzenProgressBar class="m-2"
+                               Mode="ProgressBarMode.Determinate"
+                               ShowValue="true"
+                               ProgressBarStyle="@(UploadProgress == 100 ? ProgressBarStyle.Success : ProgressBarStyle.Primary)"
+                               ShowLabel="true"
+                               Value="@UploadProgress"/>
+
+            @foreach (var f in _filesToUpload)
+            {
+                <div class="d-flex justify-content-between">
+                    <div class="text-nowrap">
+                        <RadzenIcon Icon="@GetIconByStatus(f.Status)" IconColor="@GetColorByStatus(f.Status)"/>
+                        <RadzenIcon Icon="@GetIconByExtension(f.File.Name)"/>
+                        @f.File.Name <small>(@GetFileSizeHumanFriendly(f.File.Size))</small>
+
+                    </div>
+                </div>
+            }
+            <hr/>
+            <div id="legend">
+                <RadzenIcon Icon="cloud_sync" IconColor="gray"/> Pending
+                <RadzenIcon Icon="cloud_upload" IconColor="lightblue"/> Uploaded
+                <RadzenIcon Icon="cloud_done" IconColor="green"/> Ingested
+                <RadzenIcon Icon="cloud_upload" IconColor="red"/> Error
+            </div>
+        </div>
+    }
+</div>
+
+
+@code
+{
+    [Inject] public ConversationInterop? Interop { get; set; }
+
+    [Inject] public required NotificationService NotificationService { get; set; }
+
+    [Inject] public required IServiceProvider ServiceProvider { get; set; }
+
+    private string _fileExtensions = ".txt,.md,.pdf";
+    //string _fileExtensions = ".txt,.md,.pdf,.jpeg,.jpg,.png";
+
+    private string _imageExtensions = ".jpeg,.jpg,.png";
+    private string[] ImageExtensions => _imageExtensions.Split(',');
+
+    private EditForm _form = new();
+    private FormModel _model = new();
+    private List<UploadingFileStatus> _filesToUpload = [];
+
+    private MemoriesService docService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        docService = ServiceProvider.GetRequiredService<MemoriesService>();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Interop!.SetupFileArea();
+            Interop = null;
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        IReadOnlyList<IBrowserFile>? files;
+        try
+        {
+            files = e.GetMultipleFiles(100);
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error", ex.Message);
+            return;
+        }
+
+        _filesToUpload = new List<UploadingFileStatus>();
+        _filesToUpload.AddRange(files.Select(f =>
+            new UploadingFileStatus
+            {
+                DocumentId = f.Name.CleanKmDocumentId(),
+                File = new FileMetadata
+                {
+                    DocumentId = f.Name.CleanKmDocumentId(),
+                    Name = f.Name,
+                    Size = f.Size,
+                    LastModified = f.LastModified
+                },
+                Status = 0
+            }
+        ));
+
+
+        foreach (var file in files)
+        {
+            Console.WriteLine($"File: {file.Name} - {file.Size} bytes, last modified: {file.LastModified}");
+            var documentId = file.Name.CleanKmDocumentId();
+            var doc = new Document(documentId);
+            var target = _filesToUpload.First(o => o.File.Name == file.Name);
+            try
+            {
+                // max bytes allowed in the server api is 30000000 bytes
+                var maxLength = 30000000;
+                var fileStream = file.OpenReadStream(maxLength);
+                var ms = new MemoryStream();
+                await fileStream.CopyToAsync(ms);
+                doc.AddStream(file.Name, ms);
+                await docService.SaveDoc(doc);
+                target.Status = 1;
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception exception)
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Error uploading " + file.Name,
+                    exception.Message);
+                target.Status = 3;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
+        await CheckUploadStatus();
+    }
+
+    private async Task CheckUploadStatus()
+    {
+        await Task.Run(async () =>
+        {
+            var howMany = _filesToUpload.Count(o => o.Status <= 1);
+            while (_filesToUpload.Any(o => o.Status <= 1))
+            {
+                foreach (var file in _filesToUpload.Where(o => o.Status == 1))
+                {
+                    try
+                    {
+                        var isReady = await docService.IsDocumentReady(file.DocumentId);
+                        if (isReady)
+                        {
+                            Console.WriteLine($"Document ready: {file.DocumentId}");
+                            file.Status = 2;
+                            await InvokeAsync(StateHasChanged);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        file.Status = 3;
+                    }
+
+                    await InvokeAsync(StateHasChanged);
+                }
+
+                await Task.Delay(800);
+            }
+
+            await docService.UploadFinished(howMany);
+        });
+    }
+
+    private int UploadProgress => (int)(_filesToUpload.Count(o => o.Status == 2) / (double)_filesToUpload.Count() * 100);
+
+    private string GetFileSizeHumanFriendly(long bytes)
+    {
+        if (bytes < 1024)
+            return $"{bytes} bytes";
+        if (bytes < 1024 * 1024)
+            return $"{bytes / 1024} KB";
+        if (bytes < 1024 * 1024 * 1024)
+            return $"{bytes / 1024 / 1024} MB";
+        return $"{bytes / 1024 / 1024 / 1024} GB";
+    }
+
+    #region styling
+
+    // render an icon basd on the file extension
+    public static string GetIconByExtension(string filename)
+    {
+        var extension = Path.GetExtension(filename).ToLower();
+        switch (extension)
+        {
+            case ".pdf":
+                return "picture_as_pdf";
+            case ".md":
+                return "markdown";
+            case ".txt":
+                return "description";
+            default:
+                return "file";
+        }
+    }
+
+    // get icon by status 0 = draft, 1 = uploaded, 2 = ingested
+    private string GetIconByStatus(int status)
+    {
+        switch (status)
+        {
+            case 0:
+                return "cloud_sync";
+            case 1:
+                return "cloud_upload";
+            case 2:
+                return "cloud_done";
+            case 3:
+                return "cloud_upload";
+            default:
+                return "cloud";
+        }
+    }
+
+    private string GetColorByStatus(int status)
+    {
+        switch (status)
+        {
+            case 0:
+                return "gray";
+            case 1:
+                return "lightblue";
+            case 2:
+                return "green";
+            case 3:
+                return "red";
+            default:
+                return "black";
+        }
+    }
+
+    #endregion
+
+    private class FormModel
+    {
+        public List<IFormFile> Files { get; set; } = new();
+    }
+}

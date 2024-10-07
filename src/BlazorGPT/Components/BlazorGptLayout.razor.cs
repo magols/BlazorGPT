@@ -1,6 +1,8 @@
 ﻿using Blazored.LocalStorage;
+using BlazorGPT.Pipeline;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using Radzen;
 
@@ -31,6 +33,10 @@ public partial class BlazorGptLayout
 
     [Inject]
     public required ILocalStorageService LocalStorage { get; set; }
+
+    [Inject]
+    public required IOptions<PipelineOptions> PipelineOptions { get; set; }
+
 
     private bool sidebarExpanded = false;
 

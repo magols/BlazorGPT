@@ -1,0 +1,33 @@
+@page "/memories"
+
+
+<PageTitle>Memories</PageTitle>
+<div class="container-fluid" id="filelist">
+
+    <div class="row">
+        <div class="col">
+            <h3>Memories</h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-3 mb-3" style="height: auto">
+        <div class="col-12">
+            <MemoriesList/>
+        </div>
+    </div>
+
+    <div class="row mt-3 mb-3" style="height: 300px">
+        <div class="col-12 col-md-7">
+            <p class="mb-3">
+                Here you can upload files to the memory of the kernel.<br/>
+                You can upload 100 documents at a time. 30MB max file size.
+            </p>
+            <Upload/>
+
+        </div>
+    </div>
+
+</div>

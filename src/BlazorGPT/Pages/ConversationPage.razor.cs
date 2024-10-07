@@ -102,10 +102,6 @@ namespace BlazorGPT.Pages
         [Parameter] public bool ShowActionLog { get; set; } = true;
 
         [Parameter]
-        public bool UseFileUpload { get; set; }
-
-
-        [Parameter]
         public string? NewDestinationPrefix { get; set; }
 
         [Parameter]
@@ -218,14 +214,7 @@ namespace BlazorGPT.Pages
             await InvokeAsync(StateHasChanged);
         }
 
-        protected override async Task OnParametersSetAsync()
-        {
-            UseFileUpload = BotMode ? PipelineOptions!.Value.Bot.FileUpload.Enabled :
-                    PipelineOptions!.Value.FileUpload.Enabled;
-        }
-
-
-
+ 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)

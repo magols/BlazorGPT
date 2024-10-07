@@ -1,0 +1,103 @@
+<div class="col-12 memories-list-wrapper">
+            
+
+    @if (CitationsInKm.Any())
+    {
+        <RadzenButton class="mb-3" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" Text="Delete all" Icon="delete" Click="@DeleteAll" />
+    }          
+    
+    <RadzenFormField  Variant="Variant.Text"  Style="width: 100%;" class="input-group">
+        <Start>
+            <RadzenIcon Icon="weight" class="mb-3 me-3"/>
+
+        </Start>
+        <ChildContent>
+            
+            <text class="ps-0 ms-0 ">
+
+                Relevance of memories:  
+            </text>
+            <RadzenNumeric  Style="width: 100px" TValue="double" @bind-Value="_relevance" Format="0.00" Min="0" Max="1" Step="0.01"/>
+            
+            <RadzenSlider TValue="double" Min="0" Max="1" Step="0.01" @bind-Value="_relevance" />
+        </ChildContent>
+      
+    </RadzenFormField>                         
+
+
+    <RadzenFormField Text="What are you trying to remember?" Variant="Variant.Text" Style="width: 100%;" class="input-group">
+        <ChildContent>
+            <RadzenTextArea Rows="2" @bind-Value="_searchQuery"/>
+        </ChildContent>
+        <End>
+            <RadzenButton Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Dark" Icon="clear" Click="Clear" style="font-size: 0.7rem" Visible="!string.IsNullOrWhiteSpace(_searchQuery)"/>
+
+            <RadzenButton Size="ButtonSize.ExtraSmall" Text="Search" ButtonStyle="ButtonStyle.Secondary" Click="Search" class="float-end"/>
+
+        </End>
+    </RadzenFormField>
+         
+
+
+ 
+    <RadzenDataGrid @ref="_dataGrid" class="hide-grid-header" AllowVirtualization="false"  Data="@CitationsInKm" 
+                    AllowFiltering=true ColumnWidth="300px"
+                    AllowPaging="true" PageSize="10"  EmptyText="No files" Density="Density.Compact" >
+        <HeaderTemplate>
+            
+            <div class="row">
+
+                <div class="col-12">
+                     
+                
+                </div>
+
+            </div>
+            <div class="row">
+           
+            </div>
+
+            
+            @if(_isLoading)
+            {
+                <div>Searching files...</div>
+            }
+        </HeaderTemplate>
+        <Columns>
+
+            <RadzenDataGridColumn  Width="60px" >
+                <Template Context="data">
+                    @if (ImageExtensions.Contains(Path.GetExtension(data.SourceName)))
+                    {
+                        <img class="file-thumbnail" src="@($"{data.SourceUrl}")"/>
+                    }
+                    else
+                    {
+                        <RadzenIcon Icon="@Upload.GetIconByExtension(data.SourceName)"/>
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false"    >
+                <Template Context="data">
+                  
+                    <a  href="@($"{data.SourceUrl}")" target="_blank">@data.SourceName</a>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false" Width="50px" >
+                <Template Context="data">
+                    <RadzenButton Size="ButtonSize.ExtraSmall" Icon="delete" Variant="Variant.Outlined" Click="() => DeleteFile(data.DocumentId)" ButtonStyle="ButtonStyle.Danger"/>
+
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+        <FooterTemplate>
+            <span class="m-2">Count: @CitationsInKm.Count()</span>
+        </FooterTemplate>
+    </RadzenDataGrid>
+
+   
+
+
+
+</div>
+ 
