@@ -152,6 +152,8 @@
             }
         }
 
+        NotificationService.Notify(NotificationSeverity.Success, "Upload",  (files.Count > 1? "Files" : "File") + " uploaded");
+
         await CheckUploadStatus();
     }
 
@@ -186,6 +188,8 @@
             }
 
             await docService.UploadFinished(howMany);
+            NotificationService.Notify(NotificationSeverity.Success, "Upload", (howMany> 1 ? "Files": "File") + " ingested");
+
         });
     }
 

@@ -7,7 +7,7 @@ using Microsoft.KernelMemory;
 using Radzen;
 using Radzen.Blazor;
 
-namespace BlazorGPT.Components.KernelMemoryDocuments;
+namespace BlazorGPT.Components.Memories;
 
 public partial class MemoriesList : IDisposable
 {

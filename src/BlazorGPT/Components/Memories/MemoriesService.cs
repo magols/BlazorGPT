@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Azure.Storage.Blobs;
 using StackExchange.Redis;
 
-namespace BlazorGPT.Components.KernelMemoryDocuments;
+namespace BlazorGPT.Components.Memories;
 
 public class MemoriesService(IOptions<PipelineOptions> options, IFunctionCallingUserProvider userProvider)
 {

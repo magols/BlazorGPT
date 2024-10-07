@@ -1,4 +1,4 @@
-﻿using BlazorGPT.Components.KernelMemoryDocuments;
+﻿using BlazorGPT.Components.Memories;
 using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;

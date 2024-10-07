@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using BlazorGPT.Components.KernelMemoryDocuments;
+using BlazorGPT.Components.Memories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.KernelMemory;
 using Microsoft.SemanticKernel;

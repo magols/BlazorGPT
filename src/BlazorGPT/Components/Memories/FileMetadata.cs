@@ -1,4 +1,4 @@
-namespace BlazorGPT.Components.KernelMemoryDocuments;
+namespace BlazorGPT.Components.Memories;
 
 internal class FileMetadata
 {
