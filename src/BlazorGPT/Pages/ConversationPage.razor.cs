@@ -471,8 +471,7 @@ namespace BlazorGPT.Pages
                 if (Conversation.Summary == null)
                 {
                     var last = Conversation.Messages.First(m => m.Role == ConversationRole.User).Content;
-                    Conversation.Summary =
-                        Model.Prompt?.Substring(0, Model.Prompt.Length >= 75 ? 75 : Model.Prompt.Length);
+                    Conversation.Summary = last.Substring(0, last.Length >= 75 ? 75 : last.Length);
                     wasSummarized = true;
                 }
 
