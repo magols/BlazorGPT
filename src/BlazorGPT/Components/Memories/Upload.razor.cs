@@ -185,7 +185,7 @@ public partial class Upload
             case ".txt":
                 return "description";
             default:
-                return "file";
+                return "draft";
         }
     }
 

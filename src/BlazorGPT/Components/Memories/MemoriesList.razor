@@ -37,9 +37,7 @@
         </End>
     </RadzenFormField>
  
-    <RadzenDataGrid @ref="_dataGrid" class="hide-grid-header" AllowVirtualization="false"  Data="@CitationsInKm" 
-                    AllowFiltering=true ColumnWidth="300px"
-                    AllowPaging="true" PageSize="10"  EmptyText="No files" Density="Density.Compact" >
+    <RadzenDataGrid @ref="_dataGrid" class="hide-grid-header" Data="@CitationsInKm" AllowPaging="true" PageSize="10"  EmptyText="No files" Density="Density.Compact" >
         <HeaderTemplate>
             
             <div class="row">
