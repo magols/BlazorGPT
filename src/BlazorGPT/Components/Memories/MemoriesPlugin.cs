@@ -13,15 +13,21 @@ public class MemoriesPlugin(IServiceProvider serviceProvider)
     [return: Description("A list of citations")]
     public async Task<ReturnCitationsList> GetMemories(
         [Description("The topic, story, event etc that users needs to know more about")]
-        string query, 
-        string? index = MemoriesService.IndexDefault)
+        string query,
+        [Description("The relevance of the search query, a value between 0 and 1")]
+        double relevance = 0.50,
+        [Description("The index to search in")]
+        string index = MemoriesService.IndexDefault,
+        [Description("The number of results to return")]
+        int limit = 3
+    )
     {
         var docService = serviceProvider.GetRequiredService<MemoriesService>();
-        var documents = await docService.SearchUserDocuments(query, index,0.65, 3);
+        var documents = await docService.SearchUserDocuments(query, index, relevance!, limit);
 
         var list = new ReturnCitationsList();
         list.AddRange(documents);
-       
+
         return list;
     }
 }
