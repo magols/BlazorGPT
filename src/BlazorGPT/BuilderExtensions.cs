@@ -1,4 +1,5 @@
-﻿using BlazorGPT.Pipeline;
+﻿using BlazorGPT.Components.Memories;
+using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
 using BlazorGPT.Settings.PluginSelector;
@@ -62,6 +63,7 @@ namespace BlazorGPT
             services.AddSingleton<CurrentConversationState>();
             services.AddTransient<FunctionCallingFilter>();
 
+            services.AddScoped<MemoriesService>();
 
             return services;
         }

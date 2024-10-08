@@ -1,0 +1,28 @@
+.upload-wrapper {
+    /* Add your styling here */
+    font-size: 0.8rem;
+    /*max-height: 300px;*/
+}
+
+#upload-button {
+    cursor: pointer;
+}
+
+.file-thumbnail {
+    border: 1px solid black;
+    cursor: pointer;
+    display: inline-block;
+    height: 20px;
+    /* Style the thumbnail */
+    width: 20px;
+}
+
+
+
+
+
+
+
+.upload-status-wrapper {
+    border: 1px solid gray;
+}

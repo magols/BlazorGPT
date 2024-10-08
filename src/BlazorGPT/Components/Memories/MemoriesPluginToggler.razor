@@ -1,0 +1,63 @@
+﻿<RadzenButton Icon="memory" Size="ButtonSize.ExtraSmall" Click="Toggle" Text="Memories" ButtonStyle="@(_enabled ? ButtonStyle.Success : ButtonStyle.Secondary)" Variant="Variant.Outlined"  class="ms-2"/> 
+ 
+@code {
+
+    [Inject]
+    public required PluginsConfigurationService PluginsConfigurationService { get; set; }
+
+    [Inject]
+    public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+
+    private bool _enabled;
+
+    string _interceptorName = "Function calling (select plugins)";
+    string _pluginName = "Memories.MemoriesPlugin";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var interceptorConfig = (await InterceptorConfigurationService.GetConfig()).ToList();
+            var pluginsConfig = await PluginsConfigurationService.GetConfig();  
+
+            _enabled = interceptorConfig.Any(x => x == _interceptorName) && pluginsConfig!.Any(x => x.Name == _pluginName);
+            StateHasChanged();
+        }
+    }
+
+    private async Task Toggle()
+    {
+        _enabled = !_enabled;
+        StateHasChanged();
+        var interceptorConfig = (await InterceptorConfigurationService.GetConfig()).ToList();
+        var pluginsConfig = await PluginsConfigurationService.GetConfig();  
+        
+        if (_enabled)
+        {
+            if (interceptorConfig.All(x => x != _interceptorName))
+            {
+                interceptorConfig.Add(_interceptorName);
+            }
+
+            if (pluginsConfig.All(x => x.Name != _pluginName))
+            {
+                pluginsConfig!.Add(new PluginSelection()
+                    {Name = _pluginName, Selected = true});
+            }
+        }
+        else
+        {
+            if (interceptorConfig.Any(x => x == _interceptorName))
+            {
+                interceptorConfig.Remove(_interceptorName);
+            }
+            if (pluginsConfig!.Any(x => x.Name == _pluginName))
+            {
+                pluginsConfig!.Remove(pluginsConfig!.First(x => x.Name == _pluginName));
+            }
+        }
+
+        await InterceptorConfigurationService.SaveConfig(interceptorConfig);
+        await PluginsConfigurationService.SaveConfig(pluginsConfig!);
+    }
+}

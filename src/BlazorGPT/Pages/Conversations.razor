@@ -1,4 +1,6 @@
 @page "/clist"
+@attribute [Authorize]
+
 <RadzenDataGrid @ref="grid" id="DAGRID" TItem="Conversation" Data="Convos" ShowPagingSummary="true" class="hide-grid-header" Density="Density.Compact" EmptyText="">
     <Columns>
         <RadzenDataGridColumn TItem="Conversation">

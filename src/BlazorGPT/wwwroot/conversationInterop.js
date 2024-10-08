@@ -132,3 +132,14 @@ export function setupFileArea() {
         });
     }
 }
+
+export function getElementDimensions(elementId) {
+    var element = document.getElementById(elementId);
+    if (element) {
+        return {
+            width: element.offsetWidth,
+            height: element.offsetHeight
+        };
+    }
+    return null;
+}

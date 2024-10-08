@@ -45,29 +45,27 @@
                           class="float-end m-2"/>
 
             <RadzenPanelMenu>
-
-
                 <RadzenPanelMenuItem Text="BlazorGPT" Path="/"/>
-                
                 <AuthorizeView>
                     <Authorized>
                         <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" Click="GoToNew" />
                         <RadzenPanelMenuItem Icon="history" Text="History" Path="conversations" />
                         <hr/>
                         <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts" />
-
                         <RadzenPanelMenuItem Icon="people" Text="Quick profiles" Path="quickprofiles"/>
                         <RadzenPanelMenuItem Icon="format_list_numbered" Text="Scripts" Path="scripts"/>
+                        @if (PipelineOptions.Value.Memory.Enabled)
+                        {
+                            <hr/>
+                            <RadzenPanelMenuItem Icon="memory" Text="Memories" Path="memories"/>
+                        }
                     </Authorized>
                 </AuthorizeView>
-
-
-
             </RadzenPanelMenu>
+
             <hr/>
             <LoginDisplay/>
-
-
+            
             <div class="py-3 py-md-4" style="padding: var(--rz-panel-menu-item-padding);">
                 <RadzenText Text="BlazorGPT v3" TextStyle="TextStyle.Caption" style="color: var(--rz-text-disabled-color);" TagName="TagName.P" TextAlign="TextAlign.Center"/>
             </div>

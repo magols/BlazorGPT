@@ -72,6 +72,25 @@ namespace BlazorGPT {
             var module = await moduleTask.Value;
             await module.InvokeVoidAsync("setupFileArea");
         }
-    }
 
+        // GetElementDimensions
+        public async ValueTask<(int Width, int Height)> GetElementDimensions(string elementId)
+        {
+            var module = await moduleTask.Value;
+
+            var ret = await module.InvokeAsync<Dimensions>("getElementDimensions", elementId);
+
+            return (ret.Width, ret.Height);
+        }
+
+        internal  struct Dimensions
+        {
+            public int Width { get; set; }
+            public int Height { get; set; }
+        }
+    }
 }
+
+
+
+

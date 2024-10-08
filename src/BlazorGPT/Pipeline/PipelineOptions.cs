@@ -211,8 +211,6 @@ public class PipelineOptions
     public string? GOOGLE_API_KEY { get; set; } = default!;
     public string? GOOGLE_SEARCH_ENGINE_ID { get; set; } = default!;
 
-    public FileUpload FileUpload { get; set; } = new FileUpload();
-
     public Bot Bot { get; set; } = new Bot();
 
     public MemoryOptions Memory { get; set; } = new MemoryOptions();
@@ -221,8 +219,13 @@ public class PipelineOptions
 
 public class MemoryOptions
 {
+    public bool Enabled { get; set; }
     public string Url { get; set; } = default!;
     public string ApiKey { get; set; } = default!;
+
+    public string AzureStorageConnectionString { get; set; } = default!;
+    // redis
+    public string RedisConnectionString { get; set; } = default!;
 
 }
 
@@ -230,9 +233,8 @@ public class Bot
 {
     public string BotSystemInstruction { get; set; } = default!;
     public string BotUserId { get; set; } = default!;
-    public FileUpload FileUpload { get; set; } = new FileUpload();
-
 }
+
 public class EmbeddingsSettings
 {
     public string RedisConfigurationString { get; set; } = default!;
@@ -241,9 +243,4 @@ public class EmbeddingsSettings
     public bool UseRedis { get; set; }
     public bool UseSqlite { get; set; }
     public string SqliteConnectionString { get; set; } = default!;
-}
-
-public class FileUpload
-{
-    public bool Enabled { get; set; }
 }
