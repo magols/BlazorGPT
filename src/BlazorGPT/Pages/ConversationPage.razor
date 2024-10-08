@@ -97,7 +97,7 @@ else
                                 }
                                 else
                                 {
-                                    <RadzenTabs class="" @bind-SelectedIndex=@selectedTabIndex>
+                                    <RadzenTabs @bind-SelectedIndex=@selectedTabIndex>
                                         <Tabs>
                                             <RadzenTabsItem Text="Conversation" class="m-0 p-0">
 
@@ -120,8 +120,8 @@ else
                                                                                     @onkeyup="OnPromptKeyUp"/>
                                                                 </ChildContent>
                                                                 <End>
-                                                                    <RadzenButton class="m-3" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" BusyText="Work" Icon="send" Disabled="@SendButtonDisabled"/>
-                                                                    <RadzenButton class="m-3" Size="ButtonSize.Small" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" IconColor="@Colors.Warning" />
+                                                                    <RadzenButton class="ms-2 me-2" Size="ButtonSize.Medium" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Visible="!IsBusy" IsBusy="IsBusy" Icon="send" Disabled="@SendButtonDisabled"/>
+                                                                    <RadzenButton class="ms-2 me-2" Size="ButtonSize.Medium" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" ButtonType="ButtonType.Submit" Visible="IsBusy" Icon="cancel" Disabled="@(!IsBusy)" Click="CancelSend" IconColor="@Colors.Warning" />
                                                                 </End>
                                                             </RadzenFormField>
  
@@ -129,7 +129,6 @@ else
                                                     </div>
 
                                                     <QuickProfileSelector @ref="_profileSelectorEnd" InsertAt="InsertAt.After" ShowLegend="false" ConversationsHasStarted="@(Conversation.Messages.Count() > 1)" OnProfileClicked="ApplyEndProfile" />
-                                                    <SettingsButtonPanel />
 
                                                     <span class="float-end mt-2 mb-0">
                                                         <RadzenButton Visible="Conversation.TreeStateList.Any()" Class="float-end" Click="StateClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="inventory" MouseEnter="@(args => ShowTooltip(args, "Show state", new TooltipOptions()))" Text="Conversation state" />
@@ -138,16 +137,22 @@ else
 
 
                                                 </EditForm>
-
-                                                @if (PipelineOptions.Value.Memory.Enabled)
-                                                {
-                                                    <Upload>
-                                                        <MemoriesPluginToggler />
-                                                    </Upload>
-                                                    
-                                                }
                                                 
+                                                <div class="mt-3">
+                                                    @if (PipelineOptions.Value.Memory.Enabled)
+                                                    {
+                                                        <Upload>
+                                                            <MemoriesPluginToggler/>
+                                                            <SettingsButtonPanel/>
+                                                        </Upload>
+                                                    }
+                                                    else
+                                                    {
+                                                        <SettingsButtonPanel/>
+                                                    }
+                                                </div>
                                             </RadzenTabsItem>
+
                                             <RadzenTabsItem Text="Scripts">
                                                 @if (ScriptsDdn?.Scripts.Count() == -1)
                                                 {

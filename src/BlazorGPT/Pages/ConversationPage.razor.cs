@@ -234,7 +234,7 @@ namespace BlazorGPT.Pages
             {
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
-                initialControlHeight = _browserIsSmall ? 335 : 310;
+                initialControlHeight = _browserIsSmall ? 335 : 320;
                 initialControlHeight = BotMode ? 200 : initialControlHeight;
                 controlHeight = initialControlHeight;
 
@@ -354,6 +354,8 @@ namespace BlazorGPT.Pages
                 Conversation.AddMessage(new ConversationMessage("user", Model.Prompt!));
              
             }
+
+            Model.Prompt = "";
             StateHasChanged();
             await Interop.ScrollToBottom("message-pane");
 
@@ -405,11 +407,12 @@ namespace BlazorGPT.Pages
    
 
             IsBusy = false;
+            StateHasChanged();
             if (selectedTabIndex == 0)
             {
                 await Interop.FocusElement(_promptField2.Element);
             }
-            StateHasChanged();
+            
             await Interop.ScrollToBottom("message-pane");
 
         }
