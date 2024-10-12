@@ -14,13 +14,21 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using OpenTelemetry.Logs;
 using Serilog;
 using BlazorGPT.Pipeline;
-
+using n8n;
 
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
+
+
+
+
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<N8NClient>();
+
 
 builder.Services.AddSerilog();
 builder.Services.AddTransient<ILoggerFactory>(b =>
