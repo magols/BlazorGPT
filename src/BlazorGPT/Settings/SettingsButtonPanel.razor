@@ -1,16 +1,22 @@
-﻿
+﻿@implements IDisposable
 
 <span class="float-end">
     <ModelSettingsButton />
     <InterceptorSettingsButton OnSettingsChangedAction="@InterceptorSettingsChanged" />
-    <PluginSelectorButton Enabled="@_showPlugins" />
+    <PluginSelectorButton/>
 </span>
 
 
 @code {
-    [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
+        [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
 
-    bool _showPlugins;
+        [Inject]
+        public required SettingsStateNotificationService SettingsStateNotificationService { get; set; }
+
+        [Inject]
+        public required NotificationService NotificationService { get; set; }
+
+       
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -20,18 +26,38 @@
             InterceptorSettingsChanged(list);
         }
     }
- 
+
+    protected override void OnInitialized()
+    {
+
+        SettingsStateNotificationService.OnUpdate  += SettingsChanged;
+    }
+
+    private async Task SettingsChanged(SettingsChangedNotification arg)
+    {
+
+        // NotificationService.Notify(new NotificationMessage()
+        //     {
+        //         Summary = "Change for InterceptorSettings detected for: " + arg.UserId + arg.Type,
+        //         Severity = NotificationSeverity.Info
+        //     });
+
+
+    }
+
+
 
     private void InterceptorSettingsChanged(IEnumerable<string> selectedInterceptors)
     {
-        if (selectedInterceptors.Any(o => o.ToLower().StartsWith("function calling") || o.ToLower().StartsWith("plugins with handlebars")))
-        {
-            _showPlugins = true;
-        }
-        else
-        {
-            _showPlugins = false;
-        }
+  
         StateHasChanged();
+
+
     }
+
+    public void Dispose()
+    {
+        SettingsStateNotificationService.OnUpdate -= SettingsChanged;
+    }
+
 }

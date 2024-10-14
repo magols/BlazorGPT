@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using Blazored.LocalStorage;
 using BlazorGPT.Settings.PluginSelector;
+using Elastic.Clients.Elasticsearch.IndexManagement;
 
 
 namespace BlazorGPT.Settings;
 
-public class PluginsConfigurationService(ILocalStorageService localStorageService)
+public class PluginsConfigurationService(ILocalStorageService localStorageService, SettingsStateNotificationService settingsState )
 {
     private const string StorageKey = "bgpt_plugins";
 

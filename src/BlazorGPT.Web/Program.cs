@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using OpenTelemetry.Logs;
 using Serilog;
 using BlazorGPT.Pipeline;
+using BlazorGPT.Settings;
 
 
 
@@ -49,7 +50,7 @@ builder.Services.AddTransient<IFunctionCallingUserProvider, FunctionCallingUserW
 
 builder.Services.AddTransient<FunctionApprovalFilter>();
 builder.Services.AddTransient<IFunctionApprovalService, FunctionCallingDialogApprovalService>();
-
+builder.Services.AddSingleton<SettingsStateNotificationService>();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();

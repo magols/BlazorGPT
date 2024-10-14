@@ -8,23 +8,61 @@
 
 @code
 {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    public string UserId { get; set; } = null!;
+
     [Parameter] public string? Class { get; set; }
-    
+
     [Parameter] public Action<IEnumerable<string>>? OnSettingsChangedAction { get; set; }
 
     [Inject] DialogService? DialogService { get; set; }
 
     [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
 
+    [Inject]
+    public required SettingsStateNotificationService SettingsStateNotificationService { get; set; }
+
+    bool _reload = false;
+
     private IEnumerable<string> _selected = new List<string>();
     private string SelectedCount => _selected.Count().ToString();
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            }
+        }
+
+        SettingsStateNotificationService.OnUpdate += SettingsChanged;
+    }
+
+    private async Task SettingsChanged(SettingsChangedNotification obj)
+    {
+        if (obj.UserId != UserId || obj.Type == typeof(InterceptorSelector))
+        {
+            return;
+        }
+
+        _reload = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+ 
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender || _reload)
         {
             _selected = await GetBrowserSettings();
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
+            _reload = false;
         }
     }
 
@@ -39,7 +77,6 @@
 
         if (OnSettingsChangedAction != null)
         {
-            Console.WriteLine("OnSettingsChangedAction is not null");
             OnSettingsChangedAction.Invoke(_selected);
         }
     }

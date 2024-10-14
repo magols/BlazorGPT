@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorGPT.Components.Memories;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Radzen;
 using Radzen.Blazor;
+using System.Security.Claims;
 
 namespace BlazorGPT.Settings.PluginSelector;
 
@@ -11,6 +14,13 @@ public partial class PluginsList
     private RadzenDataGrid<Plugin> _grid;
     private IList<Plugin> _selPlugins;
     List<PluginSelection>? BrowserData { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    public string UserId { get; set; } = null!;
+
+    [Inject]
+    public required SettingsStateNotificationService SettingsStateNotificationService { get; set; }
 
     [Inject] 
     public required PluginsConfigurationService PluginsConfigurationService { get; set; }
@@ -45,6 +55,16 @@ public partial class PluginsList
 
     protected override async Task OnInitializedAsync()
     {
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            }
+        }
+
         _selPlugins = new List<Plugin>();
         var all = await PluginsRepository.All();
         foreach (var plugin in all)
@@ -52,7 +72,24 @@ public partial class PluginsList
             _plugins.Add(plugin);
         }
         StateHasChanged();
+
+        SettingsStateNotificationService.OnUpdate += SettingsChanged;
     }
+
+    private async Task SettingsChanged(SettingsChangedNotification obj)
+    {
+        if (obj.UserId == UserId && obj.Type == typeof(PluginsList))
+        {
+            _plugins.Clear();
+            var all = await PluginsRepository.All();
+            foreach (var plugin in all)
+            {
+                _plugins.Add(plugin);
+            }
+            StateHasChanged();
+        }
+    }
+
 
     private async Task GetSelectionsFromLocalStorage()
     {
@@ -63,6 +100,13 @@ public partial class PluginsList
     {
         var pluginSelections = _selPlugins.Select( o => new PluginSelection() {Name = o.Name, Selected = true} );
         await PluginsConfigurationService.SaveConfig(pluginSelections);
+
+          SettingsStateNotificationService.NotifySettingsChanged(new SettingsChangedNotification()
+          {
+              UserId = UserId,
+              Type = typeof(PluginsList)
+          });
+
 
     }
 

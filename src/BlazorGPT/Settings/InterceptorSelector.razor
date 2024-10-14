@@ -1,7 +1,7 @@
 @using Microsoft.Extensions.Options
 @using BlazorGPT.Pipeline.Interceptors
 @using BlazorGPT.Pipeline
-
+@implements IDisposable
 <RadzenCheckBoxList  @ref="list" @bind-Value=@Selected TValue="string" Orientation="Orientation.Vertical"
                     Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
                     Change="OnListChanged"
@@ -10,13 +10,13 @@
 
 @code {
 
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    public string UserId { get; set; } = null!;
+
     [Parameter]
     public string? Class { get; set; }
-
-    // event callback parameter
-    [Parameter]
-    public EventCallback<IEnumerable<string>> SelectedInterceptorsChanged { get; set; }
-
+ 
     [Inject]
     public IServiceProvider ServiceProvider { get; set; } = null!;
 
@@ -32,6 +32,9 @@
     [Inject]
     public required InterceptorRepository InterceptorRepository { get; set; }
     
+    [Inject]
+    public required SettingsStateNotificationService SettingsStateNotificationService { get; set; }
+
     public IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
 
     private readonly object _model = new();
@@ -41,10 +44,25 @@
     IEnumerable<string> Selected = new List<string>();
     public IEnumerable<IInterceptor>? SelectedInterceptors => Interceptors.Where(i => Selected.Contains(i.Name) || i.Internal);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        if (AuthenticationState != null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                UserId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            }
+        }
+
+
         Interceptors = InterceptorRepository.LoadAll().ToList();
         Selected = Interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
+
+        SettingsStateNotificationService.OnUpdate += SettingsChanged;
+
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -65,17 +83,20 @@
         }
 
         await SetSelectionsInLocalStorage();
+
+        SettingsStateNotificationService.NotifySettingsChanged(new SettingsChangedNotification()
+        {
+            UserId = UserId,
+            Type = typeof(InterceptorSelector)
+        });
+    
+        StateHasChanged();
     }
 
     public RadzenCheckBoxList<string> list { get; set; }
 
 
     private async Task<IEnumerable<string>?> GetBrowserSettings() => await InterceptorConfigurationService.GetConfig();
-    // {
- 
-    //     var data = await InterceptorConfigurationService.GetConfig();
-    //     return data;
-    // }
 
     List<string>? BrowserData { get; set; }
 
@@ -83,4 +104,26 @@
     { 
         await InterceptorConfigurationService.SaveConfig(Selected);
     }
+ 
+
+    public void Dispose()
+    {
+        SettingsStateNotificationService.OnUpdate -= SettingsChanged;
+    }
+
+    private Task SettingsChanged(SettingsChangedNotification obj)
+    {
+        if (obj.UserId != UserId || obj.Type != typeof(InterceptorSelector))
+        {
+            return Task.CompletedTask ; 
+        }
+
+        Interceptors = InterceptorRepository.LoadAll().ToList();
+        Selected = Interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
+
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+
 }

@@ -1,3 +1,4 @@
+ @implements IDisposable
  <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings" Disabled="!Enabled">
     Plugins
     @if (BrowserData != null && BrowserData.Any())
@@ -14,13 +15,46 @@
     [Inject] public required PluginsConfigurationService PluginsConfigurationService { get; set; }
     [Inject] public required InterceptorConfigurationService InterceptorConfigurationService { get; set; }
 
+    [Inject]
+    public required SettingsStateNotificationService SettingsStateNotificationService { get; set; }
 
     List<PluginSelection>? BrowserData { get; set; } = new();
+
+
+    protected override void  OnInitialized()
+    {
+        SettingsStateNotificationService.OnUpdate += SettingsChanged;
+    }
+
+    private async Task<bool> IsEnabled()
+    {
+        var selectedInterceptors = await InterceptorConfigurationService.GetConfig();
+        return selectedInterceptors.Any(o => o.ToLower().StartsWith("function calling") || o.ToLower().StartsWith("plugins with handlebars"));
+    }
+
+    private async Task SettingsChanged(SettingsChangedNotification arg)
+    {
+        await InvokeAsync(GetSelectionsFromLocalStorage);
+
+        var selectedInterceptors = await InterceptorConfigurationService.GetConfig();
+        if (selectedInterceptors.Any(o => o.ToLower().StartsWith("function calling") || o.ToLower().StartsWith("plugins with handlebars")))
+        {
+            Enabled = true;
+        }
+        else
+        {
+            Enabled = false;
+        }
+
+        StateHasChanged();
+    }
+ 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            Enabled = await IsEnabled();
              await GetSelectionsFromLocalStorage();
             StateHasChanged();
         }
@@ -40,5 +74,11 @@
     {
         BrowserData = await PluginsConfigurationService!.GetConfig();
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+  
+        SettingsStateNotificationService.OnUpdate -= SettingsChanged;
     }
 }
