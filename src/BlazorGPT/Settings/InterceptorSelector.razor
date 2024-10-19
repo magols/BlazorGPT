@@ -2,8 +2,8 @@
 @using BlazorGPT.Pipeline.Interceptors
 @using BlazorGPT.Pipeline
 @implements IDisposable
-<RadzenCheckBoxList  @ref="list" @bind-Value=@Selected TValue="string" Orientation="Orientation.Vertical"
-                    Data="Interceptors.Where(i => !i.Internal).Select(i => i.Name)"
+<RadzenCheckBoxList  @ref="list" @bind-Value=@_selected TValue="string" Orientation="Orientation.Vertical"
+                    Data="_interceptors.Where(i => !i.Internal).Select(i => i.Name)"
                     Change="OnListChanged"
                     class="@Class">
 </RadzenCheckBoxList>
@@ -35,14 +35,13 @@
     [Inject]
     public required SettingsStateNotificationService SettingsStateNotificationService { get; set; }
 
-    public IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
+    private IEnumerable<string>? PreSelected => Options.Value.PreSelectedInterceptors;
+    
+    private IEnumerable<string> _selected = new List<string>();
+ 
+    private  IEnumerable<IInterceptor> _interceptors = new List<IInterceptor>();
 
-    private readonly object _model = new();
-
-
-    IEnumerable<IInterceptor> Interceptors;
-    IEnumerable<string> Selected = new List<string>();
-    public IEnumerable<IInterceptor>? SelectedInterceptors => Interceptors.Where(i => Selected.Contains(i.Name) || i.Internal);
+    public IEnumerable<IInterceptor>? SelectedInterceptors => _interceptors.Where(i => _selected.Contains(i.Name) || i.Internal);
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,20 +55,17 @@
             }
         }
 
-
-        Interceptors = InterceptorRepository.LoadAll().ToList();
-        Selected = Interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
+        _interceptors = InterceptorRepository.LoadAll().ToList();
+        _selected = _interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
 
         SettingsStateNotificationService.OnUpdate += SettingsChanged;
-
-
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            Selected = await GetBrowserSettings();
+            _selected = await GetBrowserSettings();
             StateHasChanged();
         }
     }
@@ -96,13 +92,13 @@
     public RadzenCheckBoxList<string> list { get; set; }
 
 
-    private async Task<IEnumerable<string>?> GetBrowserSettings() => await InterceptorConfigurationService.GetConfig();
+    private async Task<IEnumerable<string>> GetBrowserSettings() => await InterceptorConfigurationService.GetConfig();
 
-    List<string>? BrowserData { get; set; }
+//    List<string>? BrowserData { get; set; }
 
     private async Task SetSelectionsInLocalStorage()
     { 
-        await InterceptorConfigurationService.SaveConfig(Selected);
+        await InterceptorConfigurationService.SaveConfig(_selected);
     }
  
 
@@ -113,17 +109,16 @@
 
     private Task SettingsChanged(SettingsChangedNotification obj)
     {
-        if (obj.UserId != UserId || obj.Type != typeof(InterceptorSelector))
+        if (obj.UserId == UserId || obj.Type == typeof(InterceptorSelector))
         {
             return Task.CompletedTask ; 
         }
 
-        Interceptors = InterceptorRepository.LoadAll().ToList();
-        Selected = Interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
+        _interceptors = InterceptorRepository.LoadAll().ToList();
+        _selected = _interceptors.Where(i => PreSelected != null && PreSelected.Contains(i.Name)).Select(i => i.Name);
 
         StateHasChanged();
 
         return Task.CompletedTask;
     }
-
 }

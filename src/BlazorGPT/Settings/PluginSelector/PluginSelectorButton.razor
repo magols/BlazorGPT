@@ -46,7 +46,7 @@
             Enabled = false;
         }
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
  
 
