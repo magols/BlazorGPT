@@ -1,15 +1,14 @@
 using System.Security.Claims;
 using BlazorGPT.Settings;
-using BlazorGPT.Settings.PluginSelector;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Radzen;
 
-namespace BlazorGPT.Components.Memories;
+namespace BlazorGPT.Settings.PluginSelector;
 
 public abstract class PluginTogglerBase : ComponentBase
 {
-    [CascadingParameter] 
+    [CascadingParameter]
     public required Task<AuthenticationState> AuthenticationState { get; set; }
 
     private string UserId;
@@ -41,7 +40,7 @@ public abstract class PluginTogglerBase : ComponentBase
         {
             UserId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
         }
-    
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -106,14 +105,14 @@ public abstract class PluginTogglerBase : ComponentBase
         await InterceptorConfigurationService.SaveConfig(interceptorConfig);
         await PluginsConfigurationService.SaveConfig(pluginsConfig!);
 
-   
+
         StateHasChanged();
 
         if (OnToggle != null)
         {
-            OnToggle .Invoke(Enabled);
+            OnToggle.Invoke(Enabled);
         }
 
-        await SettingsState.NotifySettingsChanged(new SettingsChangedNotification(){UserId = UserId, Type = typeof(PluginTogglerBase)});
+        await SettingsState.NotifySettingsChanged(new SettingsChangedNotification() { UserId = UserId, Type = typeof(PluginTogglerBase) });
     }
 }
