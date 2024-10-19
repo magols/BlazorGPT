@@ -1,3 +1,4 @@
+@implements IDisposable
 <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Outlined" class="@Class" Click="OpenSettings">
     Interceptors
     @if (_selected.Any())
@@ -89,5 +90,10 @@
             var list = await InterceptorConfigurationService.GetConfig();
 
             return list;
+    }
+
+    public void Dispose()
+    {
+        SettingsStateNotificationService.OnUpdate -= SettingsChanged;
     }
 }
