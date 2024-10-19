@@ -1,6 +1,56 @@
 ﻿@inherits PluginTogglerBase
+@implements IDisposable
+
+
 <RadzenButton Icon="memory" Size="ButtonSize.ExtraSmall" Click="Toggle" Text="Memories" ButtonStyle="@(Enabled ? ButtonStyle.Success : ButtonStyle.Secondary)" Variant="Variant.Outlined" class="ms-2" />
 @code {
     protected override List<string> InterceptorNames => new List<string> { "Function calling (select plugins)" };
     protected override List<string> PluginNames => new List<string> { "Memories.MemoriesPlugin" };
+
+    protected override void OnInitialized()
+    {    base.OnInitialized();
+        SettingsState.OnUpdate += OnSettingsStateNotificationServiceUpdate;
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadState();
+        }
+    }
+
+    private async Task LoadState()
+    {
+        var pluginsRepo = await PluginsConfigurationService.GetConfig();
+        var plugin = pluginsRepo!.Any(p => p.Name == "Memories.MemoriesPlugin");
+        var interceptorsRepo = await InterceptorConfigurationService.GetConfig();
+        var interceptor = interceptorsRepo!.Any(i => i == "Function calling (select plugins)");
+
+        Enabled = plugin && interceptor;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnSettingsStateNotificationServiceUpdate(SettingsChangedNotification arg)
+    {
+
+        if (arg.Type == typeof(MemoriesPluginToggler) )
+        {
+            return;
+
+        }
+
+        await LoadState();
+
+    }
+
+
+    public new void Dispose()
+    {
+        SettingsState.OnUpdate -= OnSettingsStateNotificationServiceUpdate;
+
+    }
+
 }

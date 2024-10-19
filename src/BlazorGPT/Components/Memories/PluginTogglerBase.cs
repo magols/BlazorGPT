@@ -7,7 +7,7 @@ using Radzen;
 
 namespace BlazorGPT.Components.Memories;
 
-public abstract class PluginTogglerBase : ComponentBase, IDisposable
+public abstract class PluginTogglerBase : ComponentBase
 {
     [CascadingParameter] 
     public required Task<AuthenticationState> AuthenticationState { get; set; }
@@ -115,13 +115,5 @@ public abstract class PluginTogglerBase : ComponentBase, IDisposable
         }
 
         await SettingsState.NotifySettingsChanged(new SettingsChangedNotification(){UserId = UserId, Type = typeof(PluginTogglerBase)});
-    }
-
-    public void Dispose()
-    {
-        if (OnToggle != null)
-        {
-            OnToggle = null;
-        }
     }
 }
