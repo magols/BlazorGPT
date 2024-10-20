@@ -14,8 +14,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using OpenTelemetry.Logs;
 using Serilog;
 using BlazorGPT.Pipeline;
- 
+using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
+using _Imports = BlazorGPT._Imports;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +48,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddBlazorGPT(builder.Configuration);
+
+// scrutor is used to scan for services in plugins
+builder.Services.AddScrutorScanning();
+
 // web mode, other apps use FunctionCallingUserConsoleProvider
 builder.Services.AddTransient<IFunctionCallingUserProvider, FunctionCallingUserWebProvider>();
 
