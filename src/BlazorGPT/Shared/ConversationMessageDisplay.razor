@@ -4,10 +4,10 @@
         <ConversationRoleDisplay Role="@Message.Role" />
 
         <ul id="message-buttons" style="list-style-type: none" class="p-0 m-0 mt-1">
-            @if (ShowRestartButton)
+            @if (ShowRestart)
             {
                 <li class="m-1 ms-0">
-                    <RadzenButton Visible="ShowRestartButton" Class="message-action-restart" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))" />
+                    <RadzenButton Visible="ShowRestart" Class="message-action-restart" Click="RestartClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="restart_alt" MouseEnter="@(args => ShowTooltip(args, "Restart from here"))" />
 
                 </li>
             }
@@ -19,7 +19,7 @@
                 </li>
             }
 
-            @if (ShowEditButton)
+            @if (ShowEdit)
             {
                 <li class="m-1 ms-0">
                     <RadzenButton Visible="true" Class="message-action-edit" Click="EditClicked" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Icon="edit" MouseEnter="@(args => ShowTooltip(args, "Edit"))" />

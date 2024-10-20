@@ -109,22 +109,20 @@ body {
     border-radius: 8px;
     border-width: 1px;
     border-style: solid;
+    background-color: #141414;
+    border-color: #424242;
 }
 
-
 .message-role-system {
-    background-color: #181818;
-    border-color: #242424;
 }
 
 .message-role-user {
-    background-color: #212121;
-    border-color: #484848;
 }
 
 .message-role-assistant {
-    background-color: #141414;
-    border-color: #424242;
+}
+
+.message-role-tool {
 }
 
 

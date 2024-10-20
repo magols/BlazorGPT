@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿using Azure;
+using Blazored.LocalStorage;
 using BlazorGPT.Settings;
 using BlazorGPT.Settings.PluginSelector;
 
@@ -56,17 +57,15 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
        
         kernel  = await _kernelService.CreateKernelAsync(config.Provider, config.Model, functionInvocationFilters: new List<IFunctionInvocationFilter>(){functionFilter, approvalFilter });
 
-
         await LoadPluginsAsync(kernel);
 
-        var prompt = conversation.Messages.Last().Content;
-        var lastMsg = new ConversationMessage("assistant", "");
-        conversation.Messages.Add(lastMsg);
+        conversation.AddMessage("assistant", "");
         OnUpdate?.Invoke();
+
+        ChatHistory chatHistory = conversation.ToChatHistory();
 
         try
         {
-
             OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
             {
                 ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
@@ -76,23 +75,23 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
             };
 
             IChatCompletionService chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
-
-            ChatHistory chatHistory = conversation.ToChatHistory();
        
             var response = await chatCompletion.GetChatMessageContentAsync(
                 chatHistory,
                 executionSettings: openAIPromptExecutionSettings,
                 kernel: kernel, cancellationToken: cancellationToken);
 
-            lastMsg.Content = response.Content;
+            conversation.Messages.Last().Content = response.Content;
+
         }
         catch (Exception e)
         {
-            lastMsg.Content = e.Message + "\n";
-            OnUpdate?.Invoke();
+            conversation.Messages.Last().Content = e.Message;
         }
         finally
         {
+            OnUpdate?.Invoke();
+
             conversationState.RemoveCurrentConversation(conversation.UserId);
         }
     }

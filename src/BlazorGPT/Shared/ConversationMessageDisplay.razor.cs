@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Radzen;
-using System.Drawing;
 
 namespace BlazorGPT.Shared
 {
@@ -33,6 +32,8 @@ namespace BlazorGPT.Shared
 
         [Parameter]
         public bool ShowRestartButton { get; set; }
+        
+        bool ShowRestart => ShowRestartButton && Message.Role != "tool" && Message.Role != "assistant";
 
         [Parameter]
         public EventCallback<ConversationMessage>? OnRestartClicked { get; set; }
@@ -79,122 +80,117 @@ namespace BlazorGPT.Shared
         }
 
 
-        public string Style =>
-         ""//   GetBorder() 
-            //Background() 
-          //  Color()
-            ;
 
-        private string GetClass()
-        {
-            switch (Message.Role.ToLower())
-            {
-                case "system":
-                    return "";
-                    break;
-                case "assistant":
+        //private string GetClass()
+        //{
+        //    switch (Message.Role.ToLower())
+        //    {
+        //        case "system":
+        //            return "";
+        //            break;
+        //        case "assistant":
 
-                    break;
-                case "user":
-                    break;
-                case "tools":
-                    return "tools";
-            }
+        //            break;
+        //        case "user":
+        //            break;
+        //        case "tools":
+        //            return "tools";
+        //    }
 
-            return "";
-        }
+        //    return "";
+        //}
 
-        private string Color()
-        {
-            var color = "";
+        //private string Color()
+        //{
+        //    var color = "";
 
-            switch (Message.Role)
-            {
-                case "system":
+        //    switch (Message.Role)
+        //    {
+        //        case "system":
 
-                    break;
-                case "assistant":
+        //            break;
+        //        case "assistant":
 
-                    color = "white";
-                    break;
-                case "user":
-                    color = "white";
-                    break;
-            }
+        //            color = "white";
+        //            break;
+        //        case "user":
+        //            color = "white";
+        //            break;
+        //    }
 
-            return color != "" ? $" color:{color};" : "";
-        }
+        //    return color != "" ? $" color:{color};" : "";
+        //}
 
-        private string GetBorder()
-        {
-            var color = BorderColor();
-            if (color != "")
-            {
-                return @$"border-radius:6px; border: {BorderColor()} {BorderWidth()}px solid;";
-            }
-            return "";
-        }
+        //private string GetBorder()
+        //{
+        //    var color = BorderColor();
+        //    if (color != "")
+        //    {
+        //        return @$"border-radius:6px; border: {BorderColor()} {BorderWidth()}px solid;";
+        //    }
+        //    return "";
+        //}
 
-        private string BorderColor()
-        {
-            var border = "";
-            switch (Message.Role)
-            {
-                case "system":
-                    border = "#424242";
-                    break;
-                case "assistant":
-                    border = "#424242";
-                    break;
-                case "user":
-                    border = "#424242";
-                    break;
-                default:
-                    border = "#262626";
-                    break;
-            }
+        //private string BorderColor()
+        //{
+        //    var border = "";
+        //    switch (Message.Role)
+        //    {
+        //        case "system":
+        //            border = "#424242";
+        //            break;
+        //        case "assistant":
+        //            border = "#424242";
+        //            break;
+        //        case "user":
+        //            border = "#424242";
+        //            break;
+        //        default:
+        //            border = "#262626";
+        //            break;
+        //    }
 
-            return border;
-        }
+        //    return border;
+        //}
 
-        private int BorderWidth()
-        {
-            switch (Message.Role)
-            {
-                case "system":
-                    return 1;
-                case "assistant":
-                    return 1;
-                case "user":
-                    return 1;
-                default:
-                    return 1;
-            }
-        }
+        //private int BorderWidth()
+        //{
+        //    switch (Message.Role)
+        //    {
+        //        case "system":
+        //            return 1;
+        //        case "assistant":
+        //            return 1;
+        //        case "user":
+        //            return 1;
+        //        default:
+        //            return 1;
+        //    }
+        //}
 
-        private string Background()
-        {
-            var c = "";
-            switch (Message.Role)
-            {
-                case "system":
-                    c = "#242424";
-                    break;
-                case "assistant":
-                    c = "#303030";
+        //private string Background()
+        //{
+        //    var c = "";
+        //    switch (Message.Role)
+        //    {
+        //        case "system":
+        //            c = "#242424";
+        //            break;
+        //        case "assistant":
+        //            c = "#303030";
 
-                    break;
-                case "user":
-                    c = "#505050";
-                    break;
-                default:
-                    return "";
-            }
+        //            break;
+        //        case "user":
+        //            c = "#505050";
+        //            break;
+        //        default:
+        //            return "";
+        //    }
 
-            return c != "" ? $" background-color:{c};" : "";
-        }
+        //    return c != "" ? $" background-color:{c};" : "";
+        //}
 
-        private RadzenTextArea? SystemPrompt { get; set; }
+        //private RadzenTextArea? SystemPrompt { get; set; }
 
         [Inject]
         public ConversationsRepository? ConversationRepository { get; set; }
@@ -227,6 +223,7 @@ namespace BlazorGPT.Shared
 
         [Parameter]
         public bool ShowEditButton { get; set; }
+        bool ShowEdit => ShowEditButton && Message.Role != "tool";
 
     }
 }
