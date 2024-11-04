@@ -235,7 +235,7 @@ namespace BlazorGPT.Pages
                 ResizeListener.OnResized += WindowResized;
                 _browserIsSmall = await ResizeListener.MatchMedia(Breakpoints.SmallDown);
                 initialControlHeight = _browserIsSmall ? 335 : 335;
-                initialControlHeight = BotMode ? 200 : initialControlHeight;
+                initialControlHeight = BotMode ? 100 : initialControlHeight;
                 controlHeight = initialControlHeight;
 
                 await Interop.SetupCopyButtons();

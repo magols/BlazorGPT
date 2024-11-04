@@ -1,8 +1,6 @@
 ﻿using System.Text.Json;
 using Blazored.LocalStorage;
 using BlazorGPT.Settings.PluginSelector;
-using Elastic.Clients.Elasticsearch.IndexManagement;
-
 
 namespace BlazorGPT.Settings;
 
