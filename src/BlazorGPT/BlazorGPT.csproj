@@ -4,9 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>3.1.6.0</AssemblyVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.1.6</Version>
+    <Version>4.0.0</Version>
 
   </PropertyGroup>
   
@@ -39,22 +39,22 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.2.24474.1" />
 
-    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.90.241021.1" />
+    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.91.241101.1" />
 
-    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.90.241021.1" />
+    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.91.241101.1" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.25.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.25.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.25.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.25.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.25.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.25.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.25.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.25.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.26.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.26.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.26.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.26.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.26.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.26.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.26.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.26.0-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.13.0" />
-    <PackageReference Include="Radzen.Blazor" Version="5.5.1" />
+    <PackageReference Include="Radzen.Blazor" Version="5.5.2" />
     <PackageReference Include="SharpToken" Version="2.0.3" />
 
   </ItemGroup>
