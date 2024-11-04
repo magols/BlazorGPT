@@ -46,7 +46,7 @@ namespace BlazorGPT.Components.Account
 
             accountGroup.MapPost("/Logout", async (
                 ClaimsPrincipal user,
-                SignInManager<IdentityUser> signInManager,
+                [FromServices] SignInManager<IdentityUser> signInManager,
                 [FromForm] string returnUrl) =>
             {
                 await signInManager.SignOutAsync();

@@ -15,13 +15,13 @@
     <link href="css/site.css" rel="stylesheet" />
     <link href="css/deisolated.css" rel="stylesheet" />
 
-    <HeadOutlet @rendermode="RenderModeForPage" />
+    <HeadOutlet @rendermode="PageRenderMode" />
 
 </head>
 
     <body class="d-flex flex-column h-100">
         <CascadingValue Name="UserId" Value="UserId">
-            <Routes @rendermode="RenderModeForPage" />
+        <Routes @rendermode="PageRenderMode" />
         </CascadingValue>
 
     <script src="_framework/blazor.web.js" autostart="false"></script>
@@ -44,10 +44,9 @@
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
-        ? null
-        : RenderMode.InteractiveServer;
 
+    private IComponentRenderMode? PageRenderMode =>
+        HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
 
     [Inject]
     public required IHttpContextAccessor HttpContextAccessor { get; set; }

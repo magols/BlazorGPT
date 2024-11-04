@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 namespace BlazorGPT.Components.Account
 {
     // Remove the "else if (EmailSender is IdentityNoOpEmailSender)" block from RegisterConfirmation.razor after updating with a real implementation.
-   public class IdentityNoOpEmailSender : IEmailSender<IdentityUser>
+    public class IdentityNoOpEmailSender : IEmailSender<IdentityUser>
     {
         private readonly IEmailSender emailSender = new NoOpEmailSender();
 
