@@ -43,18 +43,18 @@
 
     <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.91.241101.1" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.26.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.26.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.26.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.26.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.26.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.26.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.28.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.28.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.28.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.28.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.28.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.28.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.28.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.28.0-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.13.0" />
-    <PackageReference Include="Radzen.Blazor" Version="5.5.2" />
+    <PackageReference Include="Radzen.Blazor" Version="5.5.5" />
     <PackageReference Include="SharpToken" Version="2.0.3" />
 
   </ItemGroup>
