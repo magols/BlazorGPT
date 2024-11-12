@@ -19,8 +19,13 @@ namespace BlazorGPT {
 
         public async ValueTask DisposeAsync() {
             if (moduleTask.IsValueCreated) {
-                var module = await moduleTask.Value;
-                await module.DisposeAsync();
+
+                try
+                {
+                    var module = await moduleTask.Value;
+                    await module.DisposeAsync();
+                }
+                catch (JSDisconnectedException) { }
             }
         }
 
