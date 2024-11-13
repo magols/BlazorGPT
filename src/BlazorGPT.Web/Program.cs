@@ -14,10 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using OpenTelemetry.Logs;
 using Serilog;
 using BlazorGPT.Pipeline;
-using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
-using _Imports = BlazorGPT._Imports;
-
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()

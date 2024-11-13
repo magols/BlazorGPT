@@ -3,8 +3,6 @@
 @using System.Text
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using Microsoft.Extensions.Configuration
-
 
 
 @inject UserManager<IdentityUser> UserManager
@@ -18,7 +16,7 @@
 
 <StatusMessage Message="@statusMessage" />
 
-@if (EmailSender is IdentityNoOpEmailSender)
+@if (emailConfirmationLink is not null)
 {
     <p>
         This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
@@ -27,10 +25,8 @@
 }
 else
 {
-    <p>Please check your email to confirm your account.</p>
+    <p role="alert">Please check your email to confirm your account.</p>
 }
-
-    
 
 @code {
     private string? emailConfirmationLink;
@@ -44,9 +40,6 @@ else
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
-
-    [Inject]
-    IConfiguration Configuration { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,7 +56,7 @@ else
         }
         else if (EmailSender is IdentityNoOpEmailSender)
         {
-           // Once you add a real email sender, you should remove this code that lets you confirm the account
+            // Once you add a real email sender, you should remove this code that lets you confirm the account
             var userId = await UserManager.GetUserIdAsync(user);
             var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

@@ -8,31 +8,33 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/" />
-    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css" type="text/css" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/dark.css">
-    <link href="BlazorGPT.Web.styles.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="css/deisolated.css" rel="stylesheet" />
-
-    <HeadOutlet @rendermode="RenderModeForPage" />
-
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/css/bootstrap.css"]" />
+    <link rel="stylesheet" href="@Assets["css/dark.css"]">
+    <link rel="stylesheet" href="@Assets["BlazorGPT.Web.styles.css"]" />
+    <link rel="stylesheet" href="@Assets["css/site.css"]" />
+    <link rel="stylesheet" href="@Assets["css/deisolated.css"]" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <ImportMap />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <HeadOutlet @rendermode="PageRenderMode" />
 </head>
+<body class="d-flex flex-column h-100">
+    <CascadingValue Name="UserId" Value="UserId">
+    <Routes @rendermode="PageRenderMode" />
+    </CascadingValue>
 
-    <body class="d-flex flex-column h-100">
-        <CascadingValue Name="UserId" Value="UserId">
-            <Routes @rendermode="RenderModeForPage" />
-        </CascadingValue>
+<script src="_framework/blazor.web.js" autostart="false"></script>
+    <script src="js/boot.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+    <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
 
-    <script src="_framework/blazor.web.js" autostart="false"></script>
-        <script src="js/boot.js"></script>
-        <script src="/lib/bootstrap/js/bootstrap.js"></script>
-        <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
-        <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
-
-        <ReconnectPanel />
-    </body>
+    <ReconnectPanel />
+</body>
 
 </html>
 
@@ -44,10 +46,9 @@
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
-        ? null
-        : RenderMode.InteractiveServer;
 
+    private IComponentRenderMode? PageRenderMode =>
+        HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
 
     [Inject]
     public required IHttpContextAccessor HttpContextAccessor { get; set; }

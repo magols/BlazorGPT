@@ -50,6 +50,11 @@ public partial class BlazorGptLayout
 
     }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
     async Task SidebarToggleClick()
     {
         sidebarExpanded = !sidebarExpanded;

@@ -5,7 +5,6 @@
 @using Microsoft.AspNetCore.WebUtilities
 
 
-
 @inject UserManager<IdentityUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 
@@ -13,6 +12,13 @@
 
 <h1>Confirm email</h1>
 <StatusMessage Message="@statusMessage" />
+@if (showBackLink)
+{
+    <!-- link back to start page -->
+    <a href="/Account/Login" class="btn btn-primary">Login</a>
+
+}
+
 
 @code {
     private string? statusMessage;
@@ -26,6 +32,7 @@
     [SupplyParameterFromQuery]
     private string? Code { get; set; }
 
+    bool showBackLink;
     protected override async Task OnInitializedAsync()
     {
         if (UserId is null || Code is null)
@@ -44,6 +51,7 @@
             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
             var result = await UserManager.ConfirmEmailAsync(user, code);
             statusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            showBackLink = result.Succeeded;
         }
     }
 }

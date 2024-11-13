@@ -1,19 +1,25 @@
 ﻿@inherits LayoutComponentBase
-@layout AccountLayout
+@layout EmptyLayout
 
 <div>
-    
     <!-- link back to start page -->
     <a href="/" class="btn btn-secondary mb-5">Back</a>
 
     <h2>Change your account settings</h2>
     <hr/>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-lg-3">
             <ManageNavMenu/>
         </div>
-        <div class="col-md-9">
+        <div class="col-lg-9">
             @Body
         </div>
     </div>
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}
