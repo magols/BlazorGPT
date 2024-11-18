@@ -3,7 +3,7 @@ using BlazorGPT.Pipeline;
 using BlazorGPT.Pipeline.Interceptors;
 using BlazorGPT.Settings;
 using BlazorGPT.Settings.PluginSelector;
-
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,14 +20,28 @@ namespace BlazorGPT
 
             services.Configure<PipelineOptions>(config.GetSection("PipelineOptions")); ;
 
-            services.AddDbContextFactory<BlazorGptDBContext>(options =>
+
+            if (config["Database"] == "Sqlite")
             {
-                options.UseSqlServer(config.GetConnectionString("BlazorGptDB"), o =>
+                services.AddDbContextFactory<BlazorGptDBContext>(options =>
                 {
-                    o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    options.UseSqlite(config.GetConnectionString("BlazorGptDB"), o =>
+                    {
+                       // o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
                 });
-            });
-            
+            }
+            else
+            {
+                services.AddDbContextFactory<BlazorGptDBContext>(options =>
+                {
+                    options.UseSqlServer(config.GetConnectionString("BlazorGptDB"), o =>
+                    {
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
+                });
+            }
+
             services.AddScoped<KernelService>();
      
             services.AddScoped<ScriptRepository>();
