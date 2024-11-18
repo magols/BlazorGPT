@@ -20,6 +20,8 @@ Local model support is provided through [Ollama](https://github.com/jmorganca/ol
 
 [Installation instructions](docs/setup.md)
 
+[Developing and using Semantic Kernel plugins](docs/developing.md)
+
 ## Features
 - GUI models config for chat and embeddings
 ![](docs/images/modelconfig.png)
