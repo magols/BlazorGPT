@@ -53,7 +53,7 @@ Note: the Sqlite database is not suitable for production use. You should use SQL
    ```json
       "ApplyMigrationsAtStart": false,
    ```
-
+    Then you also need to have created the database in advance.
 
 4. Run the following commands from the **src/BlazorGPT** directory:
 
