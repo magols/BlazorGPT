@@ -140,7 +140,7 @@ public class ConversationsRepository
     {
         await using var ctx = await _dbContextFactory.CreateDbContextAsync();
         var c = ctx.Conversations
-            .Include(c => c.Messages)
+            .Include(c => c.Messages.OrderBy(m => m.Date))
             .ThenInclude(m => m.BranchedConversations)
             .Include(c => c.QuickProfiles)
             .Include(c => c.BranchedFromMessage)

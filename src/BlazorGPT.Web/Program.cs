@@ -2,6 +2,7 @@ using System.Reflection;
 using Blazored.LocalStorage;
 using BlazorGPT;
 using BlazorGPT.Components.Account;
+using BlazorGPT.Data;
 using BlazorGPT.Web;
 using BlazorGPT.Web.Data;
 using BlazorPro.BlazorSize;
@@ -12,9 +13,10 @@ using Radzen;
 using BlazorGPT.Data.Model;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using OpenTelemetry.Logs;
-using Serilog;
+using Serilog;  
 using BlazorGPT.Pipeline;
 using BlazorGPT.Settings;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -40,9 +42,26 @@ builder.Services.AddTransient<ILoggerFactory>(b =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("UserDB") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+/*
+ * InvalidOperationException: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'ApplicationDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.
+ */
+if (builder.Configuration["Database"] == "Sqlite")
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    {
+        options.UseSqlite(connectionString);
+    });
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+}
 
 builder.Services.AddBlazorGPT(builder.Configuration);
 
@@ -105,6 +124,10 @@ builder.Services.AddScoped<IResizeListener, ResizeListener>();
 builder.WebHost.UseWebRoot("wwwroot");
 
 var app = builder.Build();
+
+app.MigrateUserDbIfEnabled();
+app.MigrateBlazorGptDb();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();

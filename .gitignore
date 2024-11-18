@@ -372,3 +372,9 @@ src/BlazorGPT.Web/wwwroot/README.md
 /src/BlazorGPT.Web/Plugins/PrivatePlugins
 /src/BlazorGPT.Web/Plugins/SamplesProjectPlugins
 
+/src/BlazorGPT.Web/BlazorGpt.db
+/src/BlazorGPT.Web/BlazorGpt.db-shm
+/src/BlazorGPT.Web/BlazorGpt.db-wal
+/src/BlazorGPT.Web/BlazorGptUsers.db
+/src/BlazorGPT.Web/BlazorGptUsers.db-shm
+/src/BlazorGPT.Web/BlazorGptUsers.db-wal
