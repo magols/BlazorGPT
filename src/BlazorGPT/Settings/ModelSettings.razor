@@ -2,101 +2,166 @@
 @using Microsoft.Extensions.Options
 
 @inject IOptions<PipelineOptions> PipelineOptions
-<div class="container border p-3 m-0">
-    <div class="row">
 
-        <div class="col">
-            <strong>Chatmodel</strong>
-        </div>        
-    </div>
-    <RadzenRadioButtonList TValue="ChatModelsProvider" @bind-Value=@model.Provider Change="OnModelsProviderChange">
-        <Items>
-            @if (!PipelineOptions.Value.Providers.OpenAI.ApiKey.IsNullOrEmpty())
-            {
-                <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI"/>
-            }
-            @if (!PipelineOptions.Value.Providers.AzureOpenAI.ApiKey.IsNullOrEmpty())
-            {
-                <RadzenRadioButtonListItem Text="AzureOpenAI" Value="@ChatModelsProvider.AzureOpenAI"/>
-            }
-            @if (!PipelineOptions.Value.Providers.Ollama.ChatModel.IsNullOrEmpty())
-            {
-                <RadzenRadioButtonListItem Text="Ollama" Value="@ChatModelsProvider.Ollama"/>
-            }
-        </Items>
-    </RadzenRadioButtonList>
-    <div class="row m-3">
-        <div class="col-3">
-            <RadzenText Class="mt-3">Model</RadzenText>
-        </div>
-        <div class="col-9">
-            <RadzenDropDown TValue="string"
-                            Change="Save"
-                            Style="font-size: small;"
-                            TValue="string"
-                            Data="_models"@bind-Value="@model.Model"/>
-        </div>
-    </div>
+<RadzenTabs>
 
-    <div class="row m-3">
-        <div class="col-3">
-            <RadzenText>Max tokens</RadzenText>
-
-        </div>
-        <div class="col-9">
-            <RadzenNumeric Change="Save" TValue="int" @bind-Value="@model.MaxTokens" Max="10000" Step="1"></RadzenNumeric>
-        </div>
-    </div>
-    <div class="row m-3">
-        <div class="col-3">
-            <RadzenText>Temperature</RadzenText>
-        </div>
-        <div class="col-1">
-            <RadzenText>@model.Temperature</RadzenText>
-        </div>
-        <div class="col-8">
-            <RadzenSlider Change="Save" TValue="float" @bind-Value="@model.Temperature" Min="0" Max="1" Step="0.1" Class="me-3"/>
-        </div>
-    </div>
-</div>
-
-<div class="container border p-3 m-0">
-    <div class="row">
-
-        <div class="col">
-            <strong>Embeddings</strong>
-        </div>        
-    </div>
-    <RadzenRadioButtonList TValue="EmbeddingsModelProvider" @bind-Value=@model.EmbeddingsProvider Change="OnEmbeddingsModelsProviderChange">
-        <Items>
-            @if (!PipelineOptions.Value.Providers.OpenAI.ApiKey.IsNullOrEmpty())
-            {
-                <RadzenRadioButtonListItem Text="OpenAI" Value="@EmbeddingsModelProvider.OpenAI"/>
-            }
-            @if (!PipelineOptions.Value.Providers.AzureOpenAI.ApiKey.IsNullOrEmpty())
-            {
-                <RadzenRadioButtonListItem Text="AzureOpenAI" Value="EmbeddingsModelProvider.AzureOpenAI"/>
-            }
+    <Tabs>
+        <RadzenTabsItem Text="Chat">
             
-            @if ((!PipelineOptions.Value.Providers.Ollama.ChatModel.IsNullOrEmpty()))
-            {
-                <RadzenRadioButtonListItem Text="Ollama" Value="EmbeddingsModelProvider.Ollama"/>
-            }
-        </Items>
-    </RadzenRadioButtonList>
-    <div class="row m-3">
-        <div class="col-3">
-            <RadzenText Class="mt-3">Model</RadzenText>
-        </div>
-        <div class="col-9">
-            <RadzenDropDown TValue="string"
-                            Change="Save"
-                            Style="font-size: small;"
-                            TValue="string"
-                            Data="_embeddingsModels"@bind-Value="@model.EmbeddingsModel"/>
-        </div>
-    </div>
-</div>
+            
+            <div class="container border p-3 m-0">
+                <div class="row">
+
+                    <div class="col">
+                        <strong>Provider</strong>
+                    </div>        
+                </div>
+                <RadzenRadioButtonList TValue="ChatModelsProvider" @bind-Value=@model.Provider Change="OnModelsProviderChange">
+                    <Items>
+                        @if (!PipelineOptions.Value.Providers.OpenAI.ApiKey.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="OpenAI" Value="@ChatModelsProvider.OpenAI"/>
+                        }
+                        @if (!PipelineOptions.Value.Providers.AzureOpenAI.ApiKey.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="@ChatModelsProvider.AzureOpenAI"/>
+                        }
+                        @if (!PipelineOptions.Value.Providers.Ollama.ChatModel.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="Ollama" Value="@ChatModelsProvider.Ollama"/>
+                        }
+                    </Items>
+                </RadzenRadioButtonList>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText Class="mt-3">Model</RadzenText>
+                    </div>
+                    <div class="col-9">
+                        <RadzenDropDown TValue="string"
+                                        Change="Save"
+                                        Style="font-size: small;"
+                                        TValue="string"
+                                        Data="_models"@bind-Value="@model.Model"/>
+                    </div>
+                </div>
+
+
+   
+            </div>
+
+
+
+            <!-- parameters -->
+            <div class="container border p-3 m-0">
+                <div class="row">
+                    <div class="col">
+                        <strong>Parameters</strong>
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText>Max tokens</RadzenText>
+
+                    </div>
+                    <div class="col-9">
+                        <RadzenNumeric Change="Save" TValue="int" @bind-Value="@model.MaxTokens" Max="10000" Step="1"></RadzenNumeric>
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText>Temperature</RadzenText>
+                    </div>
+                    <div class="col-1">
+                        <RadzenText>@model.Temperature</RadzenText>
+                    </div>
+                    <div class="col-8">
+                        <RadzenSlider Change="Save" TValue="float" @bind-Value="@model.Temperature" Min="0" Max="1" Step="0.01" Class="me-3" />
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText>Top P</RadzenText>
+                    </div>
+                    <div class="col-1">
+                        <RadzenText>@model.TopP</RadzenText>
+                    </div>
+                    <div class="col-8">
+                        <RadzenSlider Change="Save" TValue="float" @bind-Value="@model.TopP" Min="0" Max="1" Step="0.01" Class="me-3" />
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText>Frequency penalty</RadzenText>
+                    </div>
+                    <div class="col-1">
+                        <RadzenText>@model.FrequencyPenalty</RadzenText>
+                    </div>
+                    <div class="col-8">
+                        <RadzenSlider Change="Save" TValue="float" @bind-Value="@model.FrequencyPenalty" Min="0" Max="2.01m" Step="0.01" Class="me-3" />
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText>Presence penalty</RadzenText>
+                    </div>
+                    <div class="col-1">
+                        <RadzenText>@model.PresencePenalty</RadzenText>
+                    </div>
+                    <div class="col-8">
+                        <RadzenSlider Change="Save" TValue="float" @bind-Value="@model.PresencePenalty" Min="0" Max="2.01m" Step="0.01" Class="me-3" />
+                    </div>
+                </div>
+
+            </div>
+        </RadzenTabsItem>
+        
+        <RadzenTabsItem Text="Embeddings">
+            
+            <div class="container border p-3 m-0">
+                <div class="row">
+
+                    <div class="col">
+                        <strong>Provider</strong>
+                    </div>        
+                </div>
+                <RadzenRadioButtonList TValue="EmbeddingsModelProvider" @bind-Value=@model.EmbeddingsProvider Change="OnEmbeddingsModelsProviderChange">
+                    <Items>
+                        @if (!PipelineOptions.Value.Providers.OpenAI.ApiKey.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="OpenAI" Value="@EmbeddingsModelProvider.OpenAI"/>
+                        }
+                        @if (!PipelineOptions.Value.Providers.AzureOpenAI.ApiKey.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="AzureOpenAI" Value="EmbeddingsModelProvider.AzureOpenAI"/>
+                        }
+            
+                        @if ((!PipelineOptions.Value.Providers.Ollama.ChatModel.IsNullOrEmpty()))
+                        {
+                            <RadzenRadioButtonListItem Text="Ollama" Value="EmbeddingsModelProvider.Ollama"/>
+                        }
+                    </Items>
+                </RadzenRadioButtonList>
+                <div class="row m-3">
+                    <div class="col-3">
+                        <RadzenText Class="mt-3">Model</RadzenText>
+                    </div>
+                    <div class="col-9">
+                        <RadzenDropDown TValue="string"
+                                        Change="Save"
+                                        Style="font-size: small;"
+                                        TValue="string"
+                                        Data="_embeddingsModels"@bind-Value="@model.EmbeddingsModel"/>
+                    </div>
+                </div>
+            </div>
+        </RadzenTabsItem>
+
+    </Tabs>
+
+</RadzenTabs>
+
+
+
 
 @code {
 

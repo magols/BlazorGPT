@@ -4,9 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
+    <AssemblyVersion>4.2.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.1.0</Version>
+    <Version>4.2.0</Version>
 
   </PropertyGroup>
   
@@ -39,18 +39,18 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 
-    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.92.241112.1" />
+    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.93.241118.1" />
 
-    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.92.241112.1" />
+    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.93.241118.1" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.29.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.29.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.29.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.29.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.29.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.29.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.29.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.29.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.30.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.30.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.30.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.30.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.30.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.30.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.30.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.30.0-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.13.0" />

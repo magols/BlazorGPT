@@ -6,6 +6,8 @@ using BlazorGPT.Settings.PluginSelector;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Connectors.Ollama;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace BlazorGPT.Pipeline.Interceptors;
@@ -54,7 +56,7 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
         var approvalFilter = _serviceProvider.GetRequiredService<FunctionApprovalFilter>();
 
         var config = await _modelConfigurationService.GetConfig();
-       
+        
         kernel  = await _kernelService.CreateKernelAsync(config.Provider, config.Model, functionInvocationFilters: new List<IFunctionInvocationFilter>(){functionFilter, approvalFilter });
 
         await LoadPluginsAsync(kernel);
@@ -64,21 +66,23 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
 
         ChatHistory chatHistory = conversation.ToChatHistory();
 
+        var promptSettings = GetPromptExecutionSettings(config);
+
         try
         {
-            OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
-            {
-                ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
-                TopP = 0,
-                MaxTokens = _modelConfigurationService.GetDefaultConfig().MaxTokens,
-                Temperature = 0
-            };
+            //OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
+            //{
+            //    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+            //    TopP = 0,
+            //    MaxTokens = _modelConfigurationService.GetDefaultConfig().MaxTokens,
+            //    Temperature = 0
+            //};
 
             IChatCompletionService chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
        
             var response = await chatCompletion.GetChatMessageContentAsync(
                 chatHistory,
-                executionSettings: openAIPromptExecutionSettings,
+                executionSettings: promptSettings,
                 kernel: kernel, cancellationToken: cancellationToken);
 
             conversation.Messages.Last().Content = response.Content;
@@ -95,6 +99,53 @@ public class FunctionCallingInterceptor : InterceptorBase, IInterceptor
             conversationState.RemoveCurrentConversation(conversation.UserId);
         }
     }
+    private PromptExecutionSettings GetPromptExecutionSettings(ModelConfiguration _modelConfiguration)
+    {
+        PromptExecutionSettings pes;
+        switch (_modelConfiguration!.Provider)
+        {
+            case ChatModelsProvider.AzureOpenAI:
+
+                pes = new AzureOpenAIPromptExecutionSettings()
+                {
+                    MaxTokens = _modelConfiguration.MaxTokens,
+                    Temperature = _modelConfiguration.Temperature,
+                    TopP = _modelConfiguration.TopP,
+                    PresencePenalty = _modelConfiguration.PresencePenalty,
+                    FrequencyPenalty = _modelConfiguration.FrequencyPenalty,
+                    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+                };
+                break;
+            case ChatModelsProvider.OpenAI:
+                pes = new OpenAIPromptExecutionSettings()
+                {
+                    MaxTokens = _modelConfiguration.MaxTokens,
+                    Temperature = _modelConfiguration.Temperature,
+                    TopP = _modelConfiguration.TopP,
+                    PresencePenalty = _modelConfiguration.PresencePenalty,
+                    FrequencyPenalty = _modelConfiguration.FrequencyPenalty,
+                    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+                };
+                break;
+
+            case ChatModelsProvider.Ollama:
+
+                pes = new OllamaPromptExecutionSettings()
+                {
+                    Temperature = _modelConfiguration!.Temperature,
+                    TopP = _modelConfiguration!.TopP,
+                    ExtensionData = new Dictionary<string, object>(),
+                    FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+                };
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        return pes;
+    }
+
 
     private async Task LoadPluginsAsync(Kernel kernel)
     {

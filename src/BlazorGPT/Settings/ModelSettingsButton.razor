@@ -10,7 +10,7 @@
 
     private async Task OpenSettings()
     {
-        await DialogService!.OpenAsync<ModelSettings>("Select model", options:new DialogOptions()
+        await DialogService!.OpenAsync<ModelSettings>("Model settings", options:new DialogOptions()
         {
             CloseDialogOnOverlayClick = true,
         });

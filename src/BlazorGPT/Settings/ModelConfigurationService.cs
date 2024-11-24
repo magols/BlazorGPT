@@ -26,8 +26,12 @@ public class ModelConfigurationService
             Provider = _pipelineOptions.Providers.GetChatModelsProvider(),
             Model = _pipelineOptions.Providers.GetChatModel(),
             MaxTokens = _pipelineOptions.MaxTokens,
+            Temperature = _pipelineOptions.Temperature,
+            TopP = _pipelineOptions.TopP,
+            PresencePenalty = _pipelineOptions.PresencePenalty,
+            FrequencyPenalty = _pipelineOptions.FrequencyPenalty,
+            
             MaxPlannerTokens = _pipelineOptions.MaxPlannerTokens,
-            Temperature = 0.0f,
             EmbeddingsModel = _pipelineOptions.Providers.GetEmbeddingsModel(),
             EmbeddingsProvider = _pipelineOptions.Providers.GetEmbeddingsModelProvider()
         };

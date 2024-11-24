@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Connectors.Ollama;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Radzen;
 using Radzen.Blazor;
 
@@ -429,16 +432,11 @@ namespace BlazorGPT.Pages
                     StateHasChanged();
                     await Interop.ScrollToBottom("message-pane");
 
-
-                    var chatRequestSettings = new ChatRequestSettings();
-                    chatRequestSettings.ExtensionData["max_tokens"] = _modelConfiguration!.MaxTokens;
-                    chatRequestSettings.ExtensionData["temperature"] = _modelConfiguration!.Temperature;
+                    PromptExecutionSettings pes = GetPromptExecutionSettings();
 
                     Conversation = await
-                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, chatRequestSettings, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
-
+                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, pes, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
                 }
-
 
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
 
@@ -519,6 +517,50 @@ namespace BlazorGPT.Pages
 
             Model.Prompt = "";
             promptIsReady = false;
+        }
+
+        private PromptExecutionSettings GetPromptExecutionSettings()
+        {
+            PromptExecutionSettings pes;
+            switch (_modelConfiguration!.Provider)
+            {
+                case ChatModelsProvider.AzureOpenAI:
+
+                    pes = new AzureOpenAIPromptExecutionSettings()
+                    {
+                        MaxTokens = _modelConfiguration.MaxTokens,
+                        Temperature = _modelConfiguration.Temperature,
+                        TopP = _modelConfiguration.TopP,
+                        PresencePenalty = _modelConfiguration.PresencePenalty,
+                        FrequencyPenalty = _modelConfiguration.FrequencyPenalty
+                    };
+                    break;
+                case ChatModelsProvider.OpenAI:
+                    pes = new OpenAIPromptExecutionSettings()
+                    {
+                        MaxTokens = _modelConfiguration.MaxTokens,
+                        Temperature = _modelConfiguration.Temperature,
+                        TopP = _modelConfiguration.TopP,
+                        PresencePenalty = _modelConfiguration.PresencePenalty,
+                        FrequencyPenalty = _modelConfiguration.FrequencyPenalty
+                    };
+                    break;
+
+                case ChatModelsProvider.Ollama:
+
+                    pes = new OllamaPromptExecutionSettings()
+                    { 
+                        Temperature = _modelConfiguration!.Temperature,
+                        TopP = _modelConfiguration!.TopP,
+                        ExtensionData = new Dictionary<string, object>()
+                    };
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return pes;
         }
 
         private async Task<string> OnStreamCompletion(string s)

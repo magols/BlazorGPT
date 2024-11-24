@@ -197,6 +197,12 @@ public class PipelineOptions
     public ModelsProvidersOptions Providers { get; set; } =  new ModelsProvidersOptions();
 
     public int MaxTokens { get; set; }
+
+    public float Temperature { get; set; }
+    public float TopP { get; set; }
+    public float PresencePenalty { get; set; }
+    public float FrequencyPenalty { get; set; }
+ 
     public int MaxPlannerTokens { get; set; }
 
     public string[]? EnabledInterceptors { get; set; }
