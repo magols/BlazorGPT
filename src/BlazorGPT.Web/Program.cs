@@ -42,9 +42,7 @@ builder.Services.AddTransient<ILoggerFactory>(b =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("UserDB") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-/*
- * InvalidOperationException: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'ApplicationDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.
- */
+
 if (builder.Configuration["Database"] == "Sqlite")
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
