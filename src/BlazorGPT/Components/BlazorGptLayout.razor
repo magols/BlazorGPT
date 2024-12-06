@@ -22,7 +22,7 @@
 
                         <AuthorizeView>
                             <Authorized>
-                                <RadzenButton Icon="add" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="GoToNew"/>
+                                <RadzenButton Icon="edit_square" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Medium" Click="GoToNew"/>
 
                             </Authorized>
                         </AuthorizeView>
@@ -48,7 +48,7 @@
                 <RadzenPanelMenuItem Text="BlazorGPT" Path="/"/>
                 <AuthorizeView>
                     <Authorized>
-                        <RadzenPanelMenuItem Icon="chat" Text="New" Path="conversation" Click="GoToNew" />
+                        <RadzenPanelMenuItem Icon="edit_square" Text="New" Path="conversation" Click="GoToNew" />
                         <RadzenPanelMenuItem Icon="history" Text="History" Path="conversations" />
                         <hr/>
                         <RadzenPanelMenuItem Icon="list" Text="System prompts" Path="systemprompts" />

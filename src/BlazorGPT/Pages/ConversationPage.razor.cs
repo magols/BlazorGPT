@@ -186,6 +186,7 @@ namespace BlazorGPT.Pages
 
         private int controlHeight { get; set; }
         private int initialControlHeight = 0;
+        private bool controlIsResized;
 
         private Kernel _kernel = null!;
         private CancellationTokenSource _cancellationTokenSource = null!;
@@ -217,7 +218,12 @@ namespace BlazorGPT.Pages
             await InvokeAsync(StateHasChanged);
         }
 
- 
+        //protected override Task OnParametersSetAsync()
+        //{
+        //    controlIsResized = false;
+        //    return Task.CompletedTask;
+        //}
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -241,10 +247,11 @@ namespace BlazorGPT.Pages
                 initialControlHeight = BotMode ? 100 : initialControlHeight;
                 controlHeight = initialControlHeight;
 
-                await Interop.SetupCopyButtons();
-
                 await Interop.ScrollToBottom("layout-body");
                 await Interop.ScrollToBottom("message-pane");
+                await Interop.SetupCopyButtons();
+                StateHasChanged();
+
             }
 
             if (! _browserIsSmall && (BotMode || selectedTabIndex == 0))
