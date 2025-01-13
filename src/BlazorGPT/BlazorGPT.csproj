@@ -26,7 +26,7 @@
 
     <PackageReference Include="BlazorPro.BlazorSize" Version="9.0.0" />
 
-    <PackageReference Include="Markdig" Version="0.38.0" />
+    <PackageReference Include="Markdig" Version="0.40.0" />
     <PackageReference Include="Markdown.ColorCode" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
@@ -39,22 +39,22 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 
-    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.94.241201.1" />
+    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.95.241216.2" />
 
-    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.94.241201.1" />
+    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.95.241216.2" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.32.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.32.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.32.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.32.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.32.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.32.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.32.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.32.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.33.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Redis" Version="1.33.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.33.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.33.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.33.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.33.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.33.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.33.0-alpha" />
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NRedisStack" Version="0.13.1" />
-    <PackageReference Include="Radzen.Blazor" Version="5.6.15" />
+    <PackageReference Include="Radzen.Blazor" Version="5.7.4" />
     <PackageReference Include="SharpToken" Version="2.0.3" />
 
   </ItemGroup>
