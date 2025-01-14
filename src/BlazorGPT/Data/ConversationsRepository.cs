@@ -268,5 +268,19 @@ public class ConversationsRepository
         }
     }
 
+    public async Task DeleteAllConversations(string userId)
+    {
+        await using var ctx = await _dbContextFactory.CreateDbContextAsync();
 
+        // first delete all the branched conversations as they are constraints
+        var conversations = ctx.Conversations.Where(c => c.UserId == userId && c.BranchedFromMessageId != null).ToList();
+        ctx.Conversations.RemoveRange(conversations);
+        await ctx.SaveChangesAsync();
+
+        conversations = ctx.Conversations.Where(c => c.UserId == userId && c.BranchedFromMessageId == null).ToList();
+        ctx.Conversations.RemoveRange(conversations);
+        await ctx.SaveChangesAsync();
+
+
+    }
 }

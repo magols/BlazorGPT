@@ -4,9 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>4.2.3.0</AssemblyVersion>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.2.3</Version>
+    <AssemblyVersion>4.2.4.0</AssemblyVersion>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>4.2.4</Version>
 
   </PropertyGroup>
   

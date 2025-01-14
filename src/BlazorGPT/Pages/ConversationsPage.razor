@@ -10,6 +10,7 @@
             @if (Conversations.Any())
             {
                 <RadzenButton class="float-end" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Disabled="@(_selectedSummaries == null || !_selectedSummaries.Any())" Click="DeleteSelectedConversations">Delete selected</RadzenButton>
+                <RadzenButton class="float-end me-2" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Click="DeleteAllConversations">Delete all</RadzenButton>
             }
         </div>
 
@@ -232,6 +233,26 @@
                 Severity = NotificationSeverity.Success,
                 Summary = "Success",
                 Detail = "Conversations deleted",
+                Duration = 3000
+            });
+        }
+    }
+
+    private async Task DeleteAllConversations()
+    {
+        var confirm = await DialogService.Confirm("Are you sure you want to delete all conversations?", "Delete all", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (confirm.HasValue && confirm.Value)
+        {
+            await ConversationsRepository.DeleteAllConversations(UserId);
+            Conversations.Clear();
+            await grid!.Reload();
+
+            NotificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Success",
+                Detail = "All conversations deleted",
                 Duration = 3000
             });
         }
