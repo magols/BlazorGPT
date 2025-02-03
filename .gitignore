@@ -378,3 +378,4 @@ src/BlazorGPT.Web/wwwroot/README.md
 /src/BlazorGPT.Web/BlazorGptUsers.db
 /src/BlazorGPT.Web/BlazorGptUsers.db-shm
 /src/BlazorGPT.Web/BlazorGptUsers.db-wal
+src/BlazorGPT.Web/Plugins/*.dll
