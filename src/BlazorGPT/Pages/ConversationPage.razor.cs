@@ -218,12 +218,6 @@ namespace BlazorGPT.Pages
             await InvokeAsync(StateHasChanged);
         }
 
-        //protected override Task OnParametersSetAsync()
-        //{
-        //    controlIsResized = false;
-        //    return Task.CompletedTask;
-        //}
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -442,7 +436,7 @@ namespace BlazorGPT.Pages
                     PromptExecutionSettings pes = GetPromptExecutionSettings();
 
                     Conversation = await
-                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, pes, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
+                        KernelService.ChatCompletionAsStreamAsync(_kernel, Conversation, null, OnStreamCompletion, cancellationToken: _cancellationTokenSource.Token);
                 }
 
                 await using var ctx = await DbContextFactory.CreateDbContextAsync();
@@ -739,6 +733,12 @@ namespace BlazorGPT.Pages
                 Model = !string.IsNullOrEmpty(_modelConfiguration?.Model) ? _modelConfiguration!.Model : PipelineOptions.Value.Providers.OpenAI.ChatModel!,
                 UserId = UserId
             };
+
+            // if OpenAI and model is o1 or o2, dont add a system message
+            if (c.Model.Contains("o1-") || c.Model.Contains("o2-"))
+            {
+                return c;
+            }
 
             var message = new ConversationMessage("system", "You are a helpful assistant.");
             if (BotMode) message.Content = BotSystemInstruction!;

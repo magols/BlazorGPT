@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BlazorGPT.Web-c48be10f-d69c-4f07-a429-1e1b836ce01d</UserSecretsId>
-    <AssemblyVersion>4.2.5.0</AssemblyVersion>
+    <AssemblyVersion>4.2.6.0</AssemblyVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -14,24 +14,24 @@
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="BlazorPro.BlazorSize" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.2" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.2" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.2" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.10.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.49.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.1" />
