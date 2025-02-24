@@ -108,8 +108,7 @@
                     And your prompt is "Jerry Seinfeld" the message sent is "Write an blog post about Jerry Seinfeld"<br />
 
                 </RadzenText>
-                @*<b ></b> *@
-                <br />
+             
 
             </RadzenCard>
 
@@ -157,8 +156,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
-
         if (AuthenticationState != null)
         {
             var authState = await AuthenticationState;
@@ -168,9 +165,8 @@
                 UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
             }
         }
+    
 
-
-        await LoadScrips();
         if (ScriptId.HasValue)
         {
             var script = Scripts.FirstOrDefault(s => s.Id == ScriptId);
@@ -182,17 +178,21 @@
 
     }
 
-    public async Task LoadScrips()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender)
+        {
+             await LoadScripts();
+        }
+    }
 
-
+    public async Task LoadScripts()
+    {
         var res = await ScriptRepository.GetScripts(UserId);
         Scripts = res;
         await _grid!.Reload();
         StateHasChanged();
     }
-
- 
 
     private async Task CreateScript()
     {
@@ -200,7 +200,7 @@
         {
             var res = await ScriptRepository.CreateScript(UserId, newName);
             newName = "";
-            await LoadScrips();
+            await LoadScripts();
 
         }
     }
@@ -217,7 +217,7 @@
             await ScriptRepository.DeleteScript(script.Id);
         }
 
-        await LoadScrips();
+        await LoadScripts();
 
         NotificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Script deleted", Detail = "Script deleted" });
 
@@ -239,7 +239,7 @@
     private async Task CancelEdit(Script script)
     {
         _grid!.CancelEditRow(script);
-        await LoadScrips();
+        await LoadScripts();
     }
 
     private void OnSelect(Script arg)
