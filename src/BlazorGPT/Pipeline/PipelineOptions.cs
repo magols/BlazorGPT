@@ -7,7 +7,7 @@ public class ModelsProvidersOptions
 {
     public OpenAIModelsOptions OpenAI { get; set; } = new OpenAIModelsOptions();
     public AzureOpenAIModelsOptions AzureOpenAI { get; set; } = new AzureOpenAIModelsOptions();
-    public LocalModelsOptions Local { get; set; } = new LocalModelsOptions();
+    public GoogleAIOptions GoogleAI { get; set; } = new GoogleAIOptions();
 
     public OllamaOptions Ollama { get; set; } = new OllamaOptions();
 
@@ -23,13 +23,13 @@ public class ModelsProvidersOptions
             {
                 return ChatModelsProvider.AzureOpenAI;
             }
-            if (Local.IsConfigured())
+            if (GoogleAI.IsConfigured())
             {
-                return ChatModelsProvider.Local;
+                return ChatModelsProvider.GoogleAI;
             }
         }
 
-        return ChatModelsProvider.Local; 
+        return ChatModelsProvider.GoogleAI; 
     }
 
     public string GetChatModel()
@@ -46,9 +46,9 @@ public class ModelsProvidersOptions
                 return AzureOpenAI.ChatModel;
             }
 
-            if (Local.IsConfigured())
+            if (GoogleAI.IsConfigured())
             {
-                return Local.LocalModelName;
+                return GoogleAI.ChatModel;
             }
         }
 
@@ -72,9 +72,9 @@ public class ModelsProvidersOptions
             return Ollama.EmbeddingsModel;
         }
 
-        if (Local.IsConfigured())
+        if (GoogleAI.IsConfigured())
         {
-            return Local.EmbeddingsModel;
+            return GoogleAI.EmbeddingsModel;
         }
 
         return string.Empty;
@@ -98,12 +98,12 @@ public class ModelsProvidersOptions
             return EmbeddingsModelProvider.Ollama;
         }
 
-        if (Local.IsConfigured())
+        if (GoogleAI.IsConfigured())
         {
-            return EmbeddingsModelProvider.Local;
+            return EmbeddingsModelProvider.GoogleAI;
         }
 
-        return EmbeddingsModelProvider.Local;
+        throw new Exception("No embeddings model provider configured");
 
     }
 }
@@ -123,9 +123,28 @@ public class OllamaOptions
         return !string.IsNullOrEmpty(BaseUrl);
     }
 }
-public class LocalModelsOptions
+
+
+public enum ChatModelsProvider
 {
-    public string LocalModelName { get; set; } = string.Empty;
+    OpenAI,
+    AzureOpenAI,
+    Ollama,
+    GoogleAI,
+}
+
+public enum EmbeddingsModelProvider
+{
+    OpenAI,
+    AzureOpenAI,
+    Ollama,
+    GoogleAI
+}
+
+
+public class OpenAIModelsOptions
+{
+    public string ApiKey { get; set; } = string.Empty;
 
     public string ChatModel { get; set; } = string.Empty;
     public string[] ChatModels { get; set; } = Array.Empty<string>();
@@ -135,28 +154,12 @@ public class LocalModelsOptions
 
     public bool IsConfigured()
     {
-        return string.IsNullOrEmpty(LocalModelName);
+        return !string.IsNullOrEmpty(ApiKey);
     }
 }
 
-public enum ChatModelsProvider
-{
-    OpenAI,
-    AzureOpenAI,
-    Ollama,
-    Local
-}
-
-public enum EmbeddingsModelProvider
-{
-    OpenAI,
-    AzureOpenAI,
-    Ollama,
-    Local
-}
-
-
-public class OpenAIModelsOptions
+// options for GoogleAI Cloud AI models
+public class GoogleAIOptions
 {
     public string ApiKey { get; set; } = string.Empty;
 

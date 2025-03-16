@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Connectors.Google;
 using Microsoft.SemanticKernel.Connectors.Ollama;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Connectors.Redis;
@@ -55,9 +56,9 @@ public class KernelService
             {
                 provider = ChatModelsProvider.AzureOpenAI;
             }
-            else if (_options.Providers.Local.IsConfigured())
+            else if (_options.Providers.GoogleAI.IsConfigured())
             {
-                provider = ChatModelsProvider.Local;
+                provider = ChatModelsProvider.GoogleAI;
             }
 
             if (provider == null)
@@ -103,6 +104,14 @@ public class KernelService
             
         }
 
+        if (provider == ChatModelsProvider.GoogleAI)
+        {
+            model ??= _options.Providers.GoogleAI.ChatModel;
+            builder.AddGoogleAIGeminiChatCompletion(model, _options.Providers.GoogleAI.ApiKey);
+            builder.AddGoogleAIEmbeddingGeneration(model, _options.Providers.GoogleAI.ApiKey);
+        }
+
+
         if (promptRenderFilters != null)
         {
             foreach (var filter in promptRenderFilters)
@@ -145,9 +154,9 @@ public class KernelService
 	            provider = EmbeddingsModelProvider.Ollama;
             }
 
-			else if (_options.Providers.Local.IsConfigured())
+			else if (_options.Providers.GoogleAI.IsConfigured())
             {
-                provider = EmbeddingsModelProvider.Local;
+                provider = EmbeddingsModelProvider.GoogleAI;
             }
 
             if (provider == null)
@@ -205,6 +214,20 @@ public class KernelService
 				.Build();
 			return mem;
 		}
+
+        if (provider == EmbeddingsModelProvider.GoogleAI)
+        {
+            var svc = new GoogleAITextEmbeddingGenerationService(model ?? _options.Providers.GoogleAI.EmbeddingsModel,
+                _options.Providers.GoogleAI.ApiKey);
+
+            var mem = new MemoryBuilder()
+                .WithTextEmbeddingGeneration(svc)
+                .WithMemoryStore(memoryStore)
+                .Build();
+
+            return mem;
+        }
+
 
         return new MemoryBuilder()
             .WithMemoryStore(memoryStore)

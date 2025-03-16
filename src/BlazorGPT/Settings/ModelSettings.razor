@@ -30,6 +30,11 @@
                         {
                             <RadzenRadioButtonListItem Text="Ollama" Value="@ChatModelsProvider.Ollama"/>
                         }
+                        @if (!PipelineOptions.Value.Providers.GoogleAI.ChatModel.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="Google" Value="@ChatModelsProvider.GoogleAI" />
+                        }
+
                     </Items>
                 </RadzenRadioButtonList>
                 <div class="row m-3">
@@ -139,6 +144,11 @@
                         {
                             <RadzenRadioButtonListItem Text="Ollama" Value="EmbeddingsModelProvider.Ollama"/>
                         }
+                        
+                        @if (!PipelineOptions.Value.Providers.GoogleAI.ChatModel.IsNullOrEmpty())
+                        {
+                            <RadzenRadioButtonListItem Text="Google" Value="EmbeddingsModelProvider.GoogleAI" />
+                        }
                     </Items>
                 </RadzenRadioButtonList>
                 <div class="row m-3">
@@ -199,9 +209,9 @@
                 _models = PipelineOptions.Value.Providers.Ollama.Models;
                 break;
 
-            case ChatModelsProvider.Local:
-                if (setDefault) model.Model = PipelineOptions.Value.Providers.Local.ChatModel;
-                _models = PipelineOptions.Value.Providers.Local.ChatModels;
+            case ChatModelsProvider.GoogleAI:
+                if (setDefault) model.Model = PipelineOptions.Value.Providers.GoogleAI.ChatModel;
+                _models = PipelineOptions.Value.Providers.GoogleAI.ChatModels;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -260,9 +270,9 @@
                 _embeddingsModels = PipelineOptions.Value.Providers.Ollama.EmbeddingsModels;
                 break;
 
-            case EmbeddingsModelProvider.Local:
-                if (setDefault) model.EmbeddingsModel = PipelineOptions.Value.Providers.Local.EmbeddingsModel;
-                _embeddingsModels = PipelineOptions.Value.Providers.Local.EmbeddingsModels;
+            case EmbeddingsModelProvider.GoogleAI:
+                if (setDefault) model.EmbeddingsModel = PipelineOptions.Value.Providers.GoogleAI.EmbeddingsModel;
+                _embeddingsModels = PipelineOptions.Value.Providers.GoogleAI.EmbeddingsModels;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Connectors.Google;
 using Microsoft.SemanticKernel.Connectors.Ollama;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Radzen;
@@ -556,6 +557,16 @@ namespace BlazorGPT.Pages
                         ExtensionData = new Dictionary<string, object>()
                     };
                     break;
+
+                case ChatModelsProvider.GoogleAI:
+                    pes = new GeminiPromptExecutionSettings()
+                    {
+                        MaxTokens = _modelConfiguration.MaxTokens,
+                        Temperature = _modelConfiguration.Temperature,
+                        TopP = _modelConfiguration.TopP,
+                    };
+                    break;
+
 
                 default:
                     throw new ArgumentOutOfRangeException();
